@@ -65,9 +65,9 @@ Akead Software Solutions GmbH
 
 ## Untersuchungsanliegen der individuellen Themenstellungen
 
-Ekrem Furkan: wird für die Dokumentengestaltung zuständig sein und eine benutzerfreundliche Handy-App in Flutter entwickeln.
-Helac Vedad: programmiert das Frontend in Angular, ist für die User-Anmeldung und für die Datenverwaltung in der Webanwendung zuständig. Zusätzlich wird ein Dokumenten-Scanner eingebaut.
-Öztirak Yunus: wird das Backend, die Grundfunktionen und die Datenbank (Microsoft SQL Server) in C# implementieren. Außerdem kommt noch das Speichern von Dokumenten und das Integrieren der Kontoauszüge in die Postenlisten dazu.
+* Ekrem Furkan: wird für die Dokumentengestaltung zuständig sein und eine benutzerfreundliche Handy-App in Flutter entwickeln.
+* Helac Vedad: programmiert das Frontend in Angular, ist für die User-Anmeldung und für die Datenverwaltung in der Webanwendung zuständig. Zusätzlich wird ein Dokumenten-Scanner eingebaut.
+* Öztirak Yunus: wird das Backend, die Grundfunktionen und die Datenbank (Microsoft SQL Server) in C# implementieren. Außerdem kommt noch das Speichern von Dokumenten und das Integrieren der Kontoauszüge in die Postenlisten dazu.
 
 
 ## Zielsetzung
