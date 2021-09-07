@@ -1,15 +1,18 @@
 ﻿using BillingSoftware.Core.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace BillingSoftware.Core.Entities
 {
     public class Position
     {
+        [Required]
         public Product Product { get; set; }
+        [Required]
         public double Quantity { get; set; }
-        public double Discount { get; set; }
+        public double Discount { get; set; } = 0;
         public TypeOfDiscount TypeOfDiscount { get; set; } = TypeOfDiscount.Prozent;
         public double TotalPriceNet
         {

@@ -13,5 +13,6 @@ namespace BillingSoftware.Core.Entities
         public List<Address> Addresses { get; set; }
         public List<User> Users { get; set; }
         public List<IContact> Contacts { get; set; }
+        public List<Offer> Offers { get; set; }
     }
 }
