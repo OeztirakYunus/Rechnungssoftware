@@ -15,6 +15,8 @@ namespace BillingSoftware.Core.Entities
         public string OfferNumber { get; set; }
         [Required]
         public DateTime OfferDate { get; set; }
+        [Required]
+        public string Subject { get; set; }
         public string HeaderText { get; set; }
         [Required]
         public List<Position> Positions { get; set; }
