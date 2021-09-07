@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BillingSoftware.Core.Entities
 {
-    public class Position
+    public class Position : EntityObject
     {
         [Required]
         public Product Product { get; set; }
