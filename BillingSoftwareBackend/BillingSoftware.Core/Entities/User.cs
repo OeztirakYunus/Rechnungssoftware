@@ -8,14 +8,15 @@ namespace BillingSoftware.Core.Entities
 {
     public class User : EntityObject
     {
-        [MaxLength(50)]
+        [Required]
         public string FirstName { get; set; }
-        [MaxLength(50)]
+        [Required]
         public string LastName { get; set; }
-        [MaxLength(50)]
+        [Required]
         public string Password { get; set; }
-        [MaxLength(100)]
-        public string Email { get; set; }        
+        [Required, EmailAddress]
+        public string Email { get; set; }       
+        [Required]
         public Role Role { get; set; } = Role.USER;
     }
 }
