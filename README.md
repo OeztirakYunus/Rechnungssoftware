@@ -130,4 +130,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 [issues-shield]: https://img.shields.io/github/issues/OeztirakYunus/Rechnungssoftware.svg?style=for-the-badge
 [issues-url]: https://github.com/OeztirakYunus/Rechnungssoftware/issues
 [license-shield]: https://img.shields.io/github/license/OeztirakYunus/Rechnungssoftware.svg?style=for-the-badge
-[license-url]: https://github.com/OeztirakYunus/Rechnungssoftware/blob/main/LICENSE.txt
+[license-url]: https://github.com/OeztirakYunus/Rechnungssoftware/blob/main/LICENSE
