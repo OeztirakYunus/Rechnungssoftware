@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
 using BillingSoftware.Core.Entities.Contacts;
 using Microsoft.EntityFrameworkCore;
