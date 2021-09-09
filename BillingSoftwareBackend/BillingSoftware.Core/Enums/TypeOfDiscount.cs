@@ -6,7 +6,7 @@ namespace BillingSoftware.Core.Enums
 {
     public enum TypeOfDiscount
     {
-        Prozent,
+        Percent,
         Euro
     }
 }

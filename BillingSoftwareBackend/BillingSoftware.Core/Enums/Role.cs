@@ -6,7 +6,7 @@ namespace BillingSoftware.Core.Enums
 {
     public enum Role
     {
-        ADMIN,
-        USER
+        Admin,
+        User
     }
 }

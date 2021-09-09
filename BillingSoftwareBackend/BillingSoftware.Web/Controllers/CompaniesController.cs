@@ -22,13 +22,30 @@ namespace BillingSoftware.Web.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Company>>> GetCompanies()
         {
-            return await _context.Companies.ToListAsync();
+            return await _context.Companies
+                .Include(u => u.Users)
+                .Include(a => a.Addresses)
+                .Include(c => c.Contacts)
+                .Include(o => o.Offers)
+                .Include(o => o.OrderConfirmations)
+                .Include(d => d.DeliveryNotes)
+                .Include(i => i.Invoices)
+                .ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Company>> GetCompany(int id)
         {
-            var company = await _context.Companies.FindAsync(id);
+            var company = await _context.Companies
+                .Include(u => u.Users)
+                .Include(a => a.Addresses)
+                .Include(c => c.Contacts)
+                .Include(o => o.Offers)
+                .Include(o => o.OrderConfirmations)
+                .Include(d => d.DeliveryNotes)
+                .Include(i => i.Invoices)
+                .Where(e => e.Id == id)
+                .FirstOrDefaultAsync();
 
             if (company == null)
             {

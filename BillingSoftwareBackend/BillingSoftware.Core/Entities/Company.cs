@@ -15,14 +15,13 @@ namespace BillingSoftware.Core.Entities
         public string Email { get; set; }
         [Required]
         public string PhoneNumber { get; set; }
-        public List<Address> Addresses { get; set; }
+        public List<Address> Addresses { get; set; } = new();
         [Required]
-        public List<User> Users { get; set; }
-        [NotMapped]
-        public List<IContact> Contacts { get; set; }
-        public List<Offer> Offers { get; set; }
-        public List<OrderConfirmation> OrderConfirmations { get; set; }
-        public List<DeliveryNote> DeliveryNotes { get; set; }
-        public List<Invoice> Invoices { get; set; }
+        public List<User> Users { get; set; } = new();
+        public List<Contact> Contacts { get; set; } = new();
+        public List<Offer> Offers { get; set; } = new();
+        public List<OrderConfirmation> OrderConfirmations { get; set; } = new();
+        public List<DeliveryNote> DeliveryNotes { get; set; } = new();
+        public List<Invoice> Invoices { get; set; } = new();
     }
 }

@@ -10,8 +10,8 @@ namespace BillingSoftware.Core.Entities
 {
     public class Invoice : EntityObject
     {
-        [Required, NotMapped]
-        public IContact Client { get; set; }
+        [Required]
+        public Contact Client { get; set; }
         [Required]
         public string InvoiceNumber { get; set; }
         [Required]
@@ -21,12 +21,12 @@ namespace BillingSoftware.Core.Entities
         public string Subject { get; set; }
         public string HeaderText { get; set; }
         [Required]
-        public List<Position> Positions { get; set; }
+        public List<Position> Positions { get; set; } = new();
         public string FlowText { get; set; }
         [Required]
         public User ContactPerson { get; set; }
         public double TotalDiscount { get; set; } = 0;
-        public TypeOfDiscount TypeOfDiscount { get; set; } = TypeOfDiscount.Prozent;
+        public TypeOfDiscount TypeOfDiscount { get; set; } = TypeOfDiscount.Percent;
         public double TotalPriceNet
         {
             get
@@ -36,7 +36,7 @@ namespace BillingSoftware.Core.Entities
                 {
                     totalPriceNet += item.TotalPriceNet;
                 }
-                if (TypeOfDiscount == TypeOfDiscount.Prozent)
+                if (TypeOfDiscount == TypeOfDiscount.Percent)
                 {
                     return totalPriceNet * (1 - (TotalDiscount / 100));
                 }
@@ -55,7 +55,7 @@ namespace BillingSoftware.Core.Entities
                 {
                     totalPriceGross += item.TotalPriceGross;
                 }
-                if (TypeOfDiscount == TypeOfDiscount.Prozent)
+                if (TypeOfDiscount == TypeOfDiscount.Percent)
                 {
                     return totalPriceGross * (1 - (TotalDiscount / 100));
                 }

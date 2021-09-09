@@ -6,7 +6,7 @@ namespace BillingSoftware.Core.Enums
 {
     public enum ProductCategory
     {
-        Artikel,
-        Dienstleistung
+        Article,
+        Service
     }
 }

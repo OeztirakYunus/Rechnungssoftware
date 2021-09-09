@@ -6,8 +6,8 @@ namespace BillingSoftware.Core.Enums
 {
     public enum Gender
     {
-        HERR,
-        FRAU,
-        SONSTIGE
+        Male,
+        Female,
+        Others
     }
 }

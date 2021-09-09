@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BillingSoftware.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210907210030_InitDb")]
+    [Migration("20210909003909_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,15 +35,12 @@ namespace BillingSoftware.Persistence.Migrations
                     b.Property<int?>("CompanyId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ContactId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("OrganisationContactId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PersonContactId")
-                        .HasColumnType("int");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
@@ -62,9 +59,7 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("OrganisationContactId");
-
-                    b.HasIndex("PersonContactId");
+                    b.HasIndex("ContactId");
 
                     b.ToTable("Addresses");
                 });
@@ -98,39 +93,15 @@ namespace BillingSoftware.Persistence.Migrations
                     b.ToTable("Companies");
                 });
 
-            modelBuilder.Entity("BillingSoftware.Core.Entities.Contacts.OrganisationContact", b =>
+            modelBuilder.Entity("BillingSoftware.Core.Entities.Contact", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NameOfOrganisation")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OrganisationContacts");
-                });
-
-            modelBuilder.Entity("BillingSoftware.Core.Entities.Contacts.PersonContact", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -145,6 +116,9 @@ namespace BillingSoftware.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("NameOfOrganisation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -156,9 +130,14 @@ namespace BillingSoftware.Persistence.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TypeOfContactEnum")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("PersonContacts");
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Contacts");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.DeliveryNote", b =>
@@ -167,6 +146,9 @@ namespace BillingSoftware.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ClientId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("CompanyId")
                         .HasColumnType("int");
@@ -204,6 +186,8 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClientId");
+
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("ContactPersonId");
@@ -217,6 +201,9 @@ namespace BillingSoftware.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ClientId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("CompanyId")
                         .HasColumnType("int");
@@ -257,6 +244,8 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClientId");
+
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("ContactPersonId");
@@ -270,6 +259,9 @@ namespace BillingSoftware.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ClientId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("CompanyId")
                         .HasColumnType("int");
@@ -307,6 +299,8 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClientId");
+
                     b.HasIndex("CompanyId");
 
                     b.HasIndex("ContactPersonId");
@@ -320,6 +314,9 @@ namespace BillingSoftware.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ClientId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("CompanyId")
                         .HasColumnType("int");
@@ -356,6 +353,8 @@ namespace BillingSoftware.Persistence.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
 
                     b.HasIndex("CompanyId");
 
@@ -505,17 +504,24 @@ namespace BillingSoftware.Persistence.Migrations
                         .WithMany("Addresses")
                         .HasForeignKey("CompanyId");
 
-                    b.HasOne("BillingSoftware.Core.Entities.Contacts.OrganisationContact", null)
+                    b.HasOne("BillingSoftware.Core.Entities.Contact", null)
                         .WithMany("Addresses")
-                        .HasForeignKey("OrganisationContactId");
+                        .HasForeignKey("ContactId");
+                });
 
-                    b.HasOne("BillingSoftware.Core.Entities.Contacts.PersonContact", null)
-                        .WithMany("Addresses")
-                        .HasForeignKey("PersonContactId");
+            modelBuilder.Entity("BillingSoftware.Core.Entities.Contact", b =>
+                {
+                    b.HasOne("BillingSoftware.Core.Entities.Company", null)
+                        .WithMany("Contacts")
+                        .HasForeignKey("CompanyId");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.DeliveryNote", b =>
                 {
+                    b.HasOne("BillingSoftware.Core.Entities.Contact", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId");
+
                     b.HasOne("BillingSoftware.Core.Entities.Company", null)
                         .WithMany("DeliveryNotes")
                         .HasForeignKey("CompanyId");
@@ -524,11 +530,17 @@ namespace BillingSoftware.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("ContactPersonId");
 
+                    b.Navigation("Client");
+
                     b.Navigation("ContactPerson");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Invoice", b =>
                 {
+                    b.HasOne("BillingSoftware.Core.Entities.Contact", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId");
+
                     b.HasOne("BillingSoftware.Core.Entities.Company", null)
                         .WithMany("Invoices")
                         .HasForeignKey("CompanyId");
@@ -537,11 +549,17 @@ namespace BillingSoftware.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("ContactPersonId");
 
+                    b.Navigation("Client");
+
                     b.Navigation("ContactPerson");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Offer", b =>
                 {
+                    b.HasOne("BillingSoftware.Core.Entities.Contact", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId");
+
                     b.HasOne("BillingSoftware.Core.Entities.Company", null)
                         .WithMany("Offers")
                         .HasForeignKey("CompanyId");
@@ -550,11 +568,17 @@ namespace BillingSoftware.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("ContactPersonId");
 
+                    b.Navigation("Client");
+
                     b.Navigation("ContactPerson");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.OrderConfirmation", b =>
                 {
+                    b.HasOne("BillingSoftware.Core.Entities.Contact", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId");
+
                     b.HasOne("BillingSoftware.Core.Entities.Company", null)
                         .WithMany("OrderConfirmations")
                         .HasForeignKey("CompanyId");
@@ -562,6 +586,8 @@ namespace BillingSoftware.Persistence.Migrations
                     b.HasOne("BillingSoftware.Core.Entities.User", "ContactPerson")
                         .WithMany()
                         .HasForeignKey("ContactPersonId");
+
+                    b.Navigation("Client");
 
                     b.Navigation("ContactPerson");
                 });
@@ -602,6 +628,8 @@ namespace BillingSoftware.Persistence.Migrations
                 {
                     b.Navigation("Addresses");
 
+                    b.Navigation("Contacts");
+
                     b.Navigation("DeliveryNotes");
 
                     b.Navigation("Invoices");
@@ -613,12 +641,7 @@ namespace BillingSoftware.Persistence.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("BillingSoftware.Core.Entities.Contacts.OrganisationContact", b =>
-                {
-                    b.Navigation("Addresses");
-                });
-
-            modelBuilder.Entity("BillingSoftware.Core.Entities.Contacts.PersonContact", b =>
+            modelBuilder.Entity("BillingSoftware.Core.Entities.Contact", b =>
                 {
                     b.Navigation("Addresses");
                 });

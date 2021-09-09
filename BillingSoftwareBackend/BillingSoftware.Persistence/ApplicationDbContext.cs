@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Text;
 using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
-using BillingSoftware.Core.Entities.Contacts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -22,8 +21,7 @@ namespace BillingSoftware.Persistence
         public DbSet<Position> Positions { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<OrganisationContact> OrganisationContacts { get; set; }
-        public DbSet<PersonContact> PersonContacts { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
