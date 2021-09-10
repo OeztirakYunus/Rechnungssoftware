@@ -15,17 +15,16 @@ namespace BillingSoftware.Core.Entities
         public string Email { get; set; }
         [Required]
         public string PhoneNumber { get; set; }
-        public List<Address> Addresses { get; set; } = new();
-        [Required]
-        public List<User> Users { get; set; } = new();
-        public List<Contact> Contacts { get; set; } = new();
-        public List<Offer> Offers { get; set; } = new();
-        public List<OrderConfirmation> OrderConfirmations { get; set; } = new();
-        public List<DeliveryNote> DeliveryNotes { get; set; } = new();
-        public List<Invoice> Invoices { get; set; } = new();
+        public ICollection<Address> Addresses { get; set; }
+        public ICollection<User> Users { get; set; }
+        public ICollection<Contact> Contacts { get; set; }
+        public ICollection<Offer> Offers { get; set; }
+        public ICollection<OrderConfirmation> OrderConfirmations { get; set; }
+        public ICollection<DeliveryNote> DeliveryNotes { get; set; }
+        public ICollection<Invoice> Invoices { get; set; }
         public void AddUser(User user)
         {
-            //user.Company = this;
+            user.Company = this;
             Users.Add(user);
         }
     }

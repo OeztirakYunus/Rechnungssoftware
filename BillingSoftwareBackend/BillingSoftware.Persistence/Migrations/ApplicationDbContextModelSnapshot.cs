@@ -617,9 +617,11 @@ namespace BillingSoftware.Persistence.Migrations
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.User", b =>
                 {
-                    b.HasOne("BillingSoftware.Core.Entities.Company", null)
+                    b.HasOne("BillingSoftware.Core.Entities.Company", "Company")
                         .WithMany("Users")
                         .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Company", b =>

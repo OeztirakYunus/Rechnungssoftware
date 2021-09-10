@@ -21,7 +21,7 @@ namespace BillingSoftware.Core.Entities
         public string Subject { get; set; }
         public string HeaderText { get; set; }
         [Required]
-        public List<Position> Positions { get; set; } = new();
+        public ICollection<Position> Positions { get; set; }
         public string FlowText { get; set; }
         [Required]
         public User ContactPerson { get; set; }

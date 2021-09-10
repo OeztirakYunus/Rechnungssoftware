@@ -13,14 +13,14 @@ namespace BillingSoftware.Persistence
     public class ApplicationDbContext : DbContext
     {
         public DbSet<Address> Addresses { get; set; }
-        public DbSet<Company> Companies { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<DeliveryNote> DeliveryNotes { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Offer> Offers { get; set; }
         public DbSet<OrderConfirmation> OrderConfirmations { get; set; }
         public DbSet<Position> Positions { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<Company> Companies { get; set; }
         public DbSet<Contact> Contacts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
