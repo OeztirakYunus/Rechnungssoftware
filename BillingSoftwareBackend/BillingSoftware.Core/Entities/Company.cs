@@ -23,5 +23,10 @@ namespace BillingSoftware.Core.Entities
         public List<OrderConfirmation> OrderConfirmations { get; set; } = new();
         public List<DeliveryNote> DeliveryNotes { get; set; } = new();
         public List<Invoice> Invoices { get; set; } = new();
+        public void AddUser(User user)
+        {
+            //user.Company = this;
+            Users.Add(user);
+        }
     }
 }

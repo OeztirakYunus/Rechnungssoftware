@@ -19,4 +19,8 @@
     <ProjectReference Include="..\BillingSoftware.Core\BillingSoftware.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Bussines\" />
+  </ItemGroup>
+
 </Project>

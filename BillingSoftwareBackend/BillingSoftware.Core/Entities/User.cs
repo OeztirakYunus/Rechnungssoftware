@@ -18,5 +18,6 @@ namespace BillingSoftware.Core.Entities
         public string Email { get; set; }       
         [Required]
         public Role Role { get; set; } = Role.User;
+        //public Company Company { get; set; }
     }
 }
