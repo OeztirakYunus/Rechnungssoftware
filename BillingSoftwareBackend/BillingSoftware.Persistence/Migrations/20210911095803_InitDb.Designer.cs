@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BillingSoftware.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210910215941_InitDb")]
+    [Migration("20210911095803_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

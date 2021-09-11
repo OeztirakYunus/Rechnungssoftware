@@ -19,6 +19,6 @@ namespace BillingSoftware.Core.Entities
         public string PhoneNumber { get; set; }
         [EmailAddress]
         public string Email { get; set; }
-        public ICollection<Address> Addresses { get; set; }
+        public List<Address> Addresses { get; set; } = new();
     }
 }

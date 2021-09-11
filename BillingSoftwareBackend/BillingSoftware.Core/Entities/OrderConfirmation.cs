@@ -18,7 +18,7 @@ namespace BillingSoftware.Core.Entities
         public DateTime OrderConfirmationDate { get; set; }
         public string HeaderText { get; set; }
         [Required]
-        public ICollection<Position> Positions { get; set; }
+        public List<Position> Positions { get; set; } = new();
         [Required]
         public string Subject { get; set; }
         public string FlowText { get; set; }
