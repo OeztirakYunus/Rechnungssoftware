@@ -7,6 +7,7 @@ using BillingSoftware.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore.Proxies;
 
 namespace BillingSoftware.Persistence
 {
@@ -31,7 +32,9 @@ namespace BillingSoftware.Persistence
             //var configuration = builder.Build();
             //var connectionString = configuration["ConnectionStrings:DefaultConnection"];
             //optionsBuilder.UseSqlServer(connectionString);
-            optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLOCALDB;Initial Catalog=BillingSoftwareDb;Integrated Security=True");
+            optionsBuilder
+                .UseLazyLoadingProxies(true)
+                .UseSqlServer("Data Source=(localdb)\\MSSQLLOCALDB;Initial Catalog=BillingSoftwareDb;Integrated Security=True");
         }
     }
 }

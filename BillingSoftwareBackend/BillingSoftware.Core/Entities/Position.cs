@@ -9,7 +9,7 @@ namespace BillingSoftware.Core.Entities
     public class Position : EntityObject
     {
         [Required]
-        public Product Product { get; set; }
+        public virtual Product Product { get; set; }
         [Required]
         public double Quantity { get; set; }
         public double Discount { get; set; } = 0;

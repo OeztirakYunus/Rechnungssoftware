@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BillingSoftware.Core.DataTransferObjects;
 using BillingSoftware.Core.Entities;
 using BillingSoftware.Persistence;
 using Microsoft.AspNetCore.Mvc;
@@ -23,32 +22,15 @@ namespace BillingSoftware.Web.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Company>>> GetCompanies()
         {
-            return await _context.Companies
-                .Include(u => u.Users)
-                .Include(a => a.Addresses)
-                .Include(c => c.Contacts)
-                .Include(o => o.Offers)
-                .Include(o => o.OrderConfirmations)
-                .Include(d => d.DeliveryNotes)
-                .Include(i => i.Invoices)
-                .ToListAsync();
+            return await _context.Companies.ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Company>> GetCompany(int id)
         {
-            var company = await _context.Companies
-                //.Include(u => u.Users)
-                //.Include(a => a.Addresses)
-                //.Include(c => c.Contacts)
-                //.Include(o => o.Offers)
-                //.Include(o => o.OrderConfirmations)
-                //.Include(d => d.DeliveryNotes)
-                //.Include(i => i.Invoices)
-                //.Where(e => e.Id == id)
-                //.FirstOrDefaultAsync();
-                .FindAsync(id);
-            if(company.Users == null)
+            var company = await _context.Companies.FindAsync(id);
+
+            if (company.Users == null)
             {
                 System.Console.WriteLine("Is null");
             }
@@ -94,16 +76,16 @@ namespace BillingSoftware.Web.Controllers
             return NoContent();
         }
 
-        [HttpPut("add-user")]
-        public async Task<IActionResult> AddUserToCompany(CompanyAndUserDto companyAndUserDto)
+        [HttpPut("add-user/{userId}/{companyId}")]
+        public async Task<IActionResult> AddUserToCompany(int userId, int companyId)
         {
-            if(companyAndUserDto == null || companyAndUserDto.Company == null || companyAndUserDto.User == null)
-            {
-                return BadRequest("User or Company is null.");
-            }
+            var company = await _context.Companies.FindAsync(companyId);
+            var user = await _context.Users.FindAsync(userId);
 
-            var company = companyAndUserDto.Company;
-            var user = companyAndUserDto.User;
+            if (company == null || user == null)
+            {
+                return BadRequest("User or Company not found.");
+            }
 
             if(company.Users == null)
             {
@@ -118,12 +100,39 @@ namespace BillingSoftware.Web.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException ex)
             {
-                throw;
+                return BadRequest(ex.Message);
             }
 
-            return NoContent();
+            return Ok("User successfully added to company");
+        }
+
+        [HttpPut("delete-user/{userId}/{companyId}")]
+        public async Task<IActionResult> DeleteUserFromCompany(int userId, int companyId)
+        {
+            var company = await _context.Companies.FindAsync(companyId);
+            var user = await _context.Users.FindAsync(userId);
+
+            if (company == null || user == null)
+            {
+                return BadRequest("User or Company not found.");
+            }
+
+            company.DeleteUser(user);
+            _context.Entry(company).State = EntityState.Modified;
+            _context.Entry(user).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return Ok("User successfully deleted from company");
         }
 
         [HttpPost]

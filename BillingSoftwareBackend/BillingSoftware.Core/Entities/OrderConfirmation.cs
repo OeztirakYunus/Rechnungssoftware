@@ -11,19 +11,19 @@ namespace BillingSoftware.Core.Entities
     public class OrderConfirmation : EntityObject
     {
         [Required]
-        public Contact Client { get; set; }
+        public virtual Contact Client { get; set; }
         [Required]
         public string OrderConfirmationNumber { get; set; }
         [Required]
         public DateTime OrderConfirmationDate { get; set; }
         public string HeaderText { get; set; }
         [Required]
-        public List<Position> Positions { get; set; } = new();
+        public virtual List<Position> Positions { get; set; } = new();
         [Required]
         public string Subject { get; set; }
         public string FlowText { get; set; }
         [Required]
-        public User ContactPerson { get; set; }
+        public virtual User ContactPerson { get; set; }
         public double TotalDiscount { get; set; } = 0;
         public TypeOfDiscount TypeOfDiscount { get; set; } = TypeOfDiscount.Percent;
         public double TotalPriceNet
