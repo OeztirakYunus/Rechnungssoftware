@@ -22,6 +22,8 @@ namespace BillingSoftware.Core.Entities
         public virtual List<OrderConfirmation> OrderConfirmations { get; set; } = new();
         public virtual List<DeliveryNote> DeliveryNotes { get; set; } = new();
         public virtual List<Invoice> Invoices { get; set; } = new();
+        public virtual List<Product> Products { get; set; } = new();
+
         public void AddUser(User user)
         {
             user.Company = this;
