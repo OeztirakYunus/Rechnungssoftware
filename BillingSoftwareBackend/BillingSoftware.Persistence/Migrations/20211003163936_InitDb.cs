@@ -24,27 +24,6 @@ namespace BillingSoftware.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Products",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ArticleNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ValueAddedTax = table.Column<double>(type: "float", nullable: false),
-                    SellingPriceNet = table.Column<double>(type: "float", nullable: false),
-                    PurchasingPriceNet = table.Column<double>(type: "float", nullable: false),
-                    Category = table.Column<int>(type: "int", nullable: false),
-                    Unit = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Products", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Contacts",
                 columns: table => new
                 {
@@ -66,6 +45,34 @@ namespace BillingSoftware.Persistence.Migrations
                     table.PrimaryKey("PK_Contacts", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Contacts_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ArticleNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ValueAddedTax = table.Column<double>(type: "float", nullable: false),
+                    SellingPriceNet = table.Column<double>(type: "float", nullable: false),
+                    PurchasingPriceNet = table.Column<double>(type: "float", nullable: false),
+                    Category = table.Column<int>(type: "int", nullable: false),
+                    Unit = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CompanyId = table.Column<int>(type: "int", nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Products_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
                         principalColumn: "Id",
@@ -443,6 +450,11 @@ namespace BillingSoftware.Persistence.Migrations
                 name: "IX_Positions_ProductId",
                 table: "Positions",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_CompanyId",
+                table: "Products",
+                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_CompanyId",
