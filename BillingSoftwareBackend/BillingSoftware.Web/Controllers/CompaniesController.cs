@@ -23,92 +23,91 @@ namespace BillingSoftware.Web.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Company>>> GetCompanies()
         {
-            return Ok(await _uow.CompanyRepository.GetAllAsync());
+            try
+            {
+                return Ok(await _uow.CompanyRepository.GetAllAsync());
+            }
+            catch (System.Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Company>> GetCompany(int id)
-        //{
-        //    var company = await _context.Companies.FindAsync(id);
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Company>> GetCompany(int id)
+        {
+            try
+            {
+                var company = await _uow.CompanyRepository.GetByIdAsync(id);
+                return company;
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //    if (company.Users == null)
-        //    {
-        //        System.Console.WriteLine("Is null");
-        //    }
-        //    else
-        //    {
-        //        System.Console.WriteLine(company.Users.First().FirstName);
-        //    }
-
-        //    if (company == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return company;
-        //}
-
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutCompany(int id, Company company)
-        //{
-        //    if (id != company.Id)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    _context.Entry(company).State = EntityState.Modified;
-
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!CompanyExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return NoContent();
-        //}
+        [HttpPut()]
+        public async Task<IActionResult> PutCompany(Company company)
+        {
+            try
+            {
+                _uow.CompanyRepository.Update(company);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpPost]
-        public async Task/*<ActionResult<Company>>*/ PostCompany(Company company)
+        public async Task<IActionResult> PostCompany(Company company)
         {
-            await _uow.CompanyRepository.AddAsync(company);
-            await _uow.SaveChangesAsync();
+            try
+            {
+                await _uow.CompanyRepository.AddAsync(company);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-            //return CreatedAtAction("GetCompany", new { id = company.Id }, company);
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCompany(int id)
+        {
+            try
+            {
+                await _uow.CompanyRepository.Remove(id);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("add-address/{companyId}")]
         public async Task<IActionResult> AddAddressToCompany(int companyId, Address address)
         {
-            await _uow.CompanyRepository.AddAddress(companyId, address);
-            await _uow.SaveChangesAsync();
-
-            return Ok("H");
+            try
+            {
+                await _uow.CompanyRepository.AddAddress(companyId, address);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult<Company>> DeleteCompany(int id)
-        //{
-        //    var company = await _context.Companies.FindAsync(id);
-        //    if (company == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _context.Companies.Remove(company);
-        //    await _context.SaveChangesAsync();
-
-        //    return company;
-        //}
         //#region CompanyListOperations
         //[HttpPut("add-user/{userId}/{companyId}")]
         //public async Task<IActionResult> AddUserToCompany(int userId, int companyId)

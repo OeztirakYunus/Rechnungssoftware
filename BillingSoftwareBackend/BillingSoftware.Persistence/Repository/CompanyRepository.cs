@@ -23,7 +23,7 @@ namespace BillingSoftware.Persistence.Repository
             var company = await _context.Companies.FindAsync(companyId);
             if(company == null)
             {
-                throw new CompanyNotFoundException();
+                throw new EntityNotFoundException("Company does not exist.");
             }
 
             var tempAddress = await _context.Addresses.FindAsync(address.Id);
@@ -46,7 +46,7 @@ namespace BillingSoftware.Persistence.Repository
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
             {
-                throw new CompanyNotFoundException();
+                throw new EntityNotFoundException("Company does not exist.");
             }
 
             var tempContact = await _context.Contacts.FindAsync(contact.Id);
@@ -64,7 +64,7 @@ namespace BillingSoftware.Persistence.Repository
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
             {
-                throw new CompanyNotFoundException();
+                throw new EntityNotFoundException("Company does not exist.");
             }
 
             var tempDeliveryNote = await _context.DeliveryNotes.FindAsync(deliveryNote.Id);
@@ -82,7 +82,7 @@ namespace BillingSoftware.Persistence.Repository
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
             {
-                throw new CompanyNotFoundException();
+                throw new EntityNotFoundException("Company does not exist.");
             }
 
             var tempInvoice = await _context.Invoices.FindAsync(invoice.Id);
@@ -100,7 +100,7 @@ namespace BillingSoftware.Persistence.Repository
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
             {
-                throw new CompanyNotFoundException();
+                throw new EntityNotFoundException("Company does not exist.");
             }
 
             var tempOffer = await _context.Offers.FindAsync(offer.Id);
@@ -118,7 +118,7 @@ namespace BillingSoftware.Persistence.Repository
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
             {
-                throw new CompanyNotFoundException();
+                throw new EntityNotFoundException("Company does not exist.");
             }
 
             var tempOrderConfirmation = await _context.OrderConfirmations.FindAsync(orderConfirmation.Id);
@@ -136,7 +136,7 @@ namespace BillingSoftware.Persistence.Repository
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
             {
-                throw new CompanyNotFoundException();
+                throw new EntityNotFoundException("Company does not exist.");
             }
 
             var tempProduct = await _context.Products.FindAsync(product.Id);
@@ -154,7 +154,7 @@ namespace BillingSoftware.Persistence.Repository
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
             {
-                throw new CompanyNotFoundException();
+                throw new EntityNotFoundException("Company does not exist.");
             }
 
             var tempUser = await _context.Users.FindAsync(user.Id);
@@ -167,44 +167,140 @@ namespace BillingSoftware.Persistence.Repository
             company.Users.Add(tempUser);
         }
 
-        public Task DeleteAddress(int companyId, Address address)
+        public async Task DeleteAddress(int companyId, int addressId)
         {
-            throw new NotImplementedException();
+            var company = await _context.Companies.FindAsync(companyId);
+            if (company == null)
+            {
+                throw new EntityNotFoundException("Company does not exist.");
+            }
+
+            var tempAddress = await _context.Addresses.FindAsync(addressId);
+            if (tempAddress == null)
+            {
+                throw new EntityNotFoundException("Address does not exist.");
+            }
+
+            _context.Addresses.Remove(tempAddress);
         }
 
-        public Task DeleteContact(int companyId, Contact contact)
+        public async Task DeleteContact(int companyId, int contactId)
         {
-            throw new NotImplementedException();
+            var company = await _context.Companies.FindAsync(companyId);
+            if (company == null)
+            {
+                throw new EntityNotFoundException("Company does not exist.");
+            }
+
+            var tempContact = await _context.Contacts.FindAsync(contactId);
+            if (tempContact == null)
+            {
+                throw new EntityNotFoundException("Contact does not exist.");
+            }
+
+            _context.Contacts.Remove(tempContact);
         }
 
-        public Task DeleteDeliveryNote(int companyId, DeliveryNote deliveryNote)
+        public async Task DeleteDeliveryNote(int companyId, int deliveryNoteId)
         {
-            throw new NotImplementedException();
+            var company = await _context.Companies.FindAsync(companyId);
+            if (company == null)
+            {
+                throw new EntityNotFoundException("Company does not exist.");
+            }
+
+            var tempDeliveryNote = await _context.DeliveryNotes.FindAsync(deliveryNoteId);
+            if (tempDeliveryNote == null)
+            {
+                throw new EntityNotFoundException("Delivery Note does not exist.");
+            }
+
+            _context.DeliveryNotes.Remove(tempDeliveryNote);
         }
 
-        public Task DeleteInvoice(int companyId, Invoice invoice)
+        public async Task DeleteInvoice(int companyId, int invoiceId)
         {
-            throw new NotImplementedException();
+            var company = await _context.Companies.FindAsync(companyId);
+            if (company == null)
+            {
+                throw new EntityNotFoundException("Company does not exist.");
+            }
+
+            var tempInvoice = await _context.Invoices.FindAsync(invoiceId);
+            if (tempInvoice == null)
+            {
+                throw new EntityNotFoundException("Invoice does not exist.");
+            }
+
+            _context.Invoices.Remove(tempInvoice);
         }
 
-        public Task DeleteOffer(int companyId, Offer offer)
+        public async Task DeleteOffer(int companyId, int offerId)
         {
-            throw new NotImplementedException();
+            var company = await _context.Companies.FindAsync(companyId);
+            if (company == null)
+            {
+                throw new EntityNotFoundException("Company does not exist.");
+            }
+
+            var tempOffer = await _context.Offers.FindAsync(offerId);
+            if (tempOffer == null)
+            {
+                throw new EntityNotFoundException("Offer does not exist.");
+            }
+
+            _context.Offers.Remove(tempOffer);
         }
 
-        public Task DeleteOrderConfirmation(int companyId, OrderConfirmation orderConfirmation)
+        public async Task DeleteOrderConfirmation(int companyId, int orderConfirmationId)
         {
-            throw new NotImplementedException();
+            var company = await _context.Companies.FindAsync(companyId);
+            if (company == null)
+            {
+                throw new EntityNotFoundException("Company does not exist.");
+            }
+
+            var tempOrderConfirmation = await _context.OrderConfirmations.FindAsync(orderConfirmationId);
+            if (tempOrderConfirmation == null)
+            {
+                throw new EntityNotFoundException("Order Confirmation does not exist.");
+            }
+
+            _context.OrderConfirmations.Remove(tempOrderConfirmation);
         }
 
-        public Task DeleteProduct(int companyId, Product product)
+        public async Task DeleteProduct(int companyId, int productId)
         {
-            throw new NotImplementedException();
+            var company = await _context.Companies.FindAsync(companyId);
+            if (company == null)
+            {
+                throw new EntityNotFoundException("Company does not exist.");
+            }
+
+            var tempProduct = await _context.Products.FindAsync(productId);
+            if (tempProduct == null)
+            {
+                throw new EntityNotFoundException("Product does not exist.");
+            }
+
+            _context.Products.Remove(tempProduct);
         }
 
-        public Task DeleteUser(int companyId, User user)
+        public async Task DeleteUser(int companyId, int userId)
         {
-            throw new NotImplementedException();
+            var company = await _context.Companies.FindAsync(companyId);
+            if (company == null)
+            {
+                throw new EntityNotFoundException("Company does not exist.");
+            }
+
+            var tempUser = await _context.Users.FindAsync(userId);
+            if (tempUser == null)
+            {
+                throw new EntityNotFoundException("User does not exist.");
+            }
+
+            _context.Users.Remove(tempUser);
         }
 
         public Task<Company[]> GetAllAsync()
@@ -217,9 +313,10 @@ namespace BillingSoftware.Persistence.Repository
             return await _context.Companies.FindAsync(id);
         }
 
-        public void Remove(Company entity)
+        public async Task Remove(int id)
         {
-            _context.Companies.Remove(entity);
+            var company = await GetByIdAsync(id);
+            _context.Companies.Remove(company);
         }
 
         public Company Update(Company entity)

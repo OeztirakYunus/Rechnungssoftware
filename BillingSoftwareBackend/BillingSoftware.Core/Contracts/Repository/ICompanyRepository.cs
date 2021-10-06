@@ -17,13 +17,13 @@ namespace BillingSoftware.Core.Contracts.Repository
         Task AddOrderConfirmation(int companyId, OrderConfirmation orderConfirmation);
         Task AddProduct(int companyId, Product product);
         Task AddUser(int companyId, User user);
-        Task DeleteAddress(int companyId, Address address);
-        Task DeleteContact(int companyId, Contact contact);
-        Task DeleteDeliveryNote(int companyId, DeliveryNote deliveryNote);
-        Task DeleteInvoice(int companyId, Invoice invoice);
-        Task DeleteOffer(int companyId, Offer offer);
-        Task DeleteOrderConfirmation(int companyId, OrderConfirmation orderConfirmation);
-        Task DeleteProduct(int companyId, Product product);
-        Task DeleteUser(int companyId, User user);
+        Task DeleteAddress(int companyId, int addressId);
+        Task DeleteContact(int companyId, int contactId);
+        Task DeleteDeliveryNote(int companyId, int deliveryNoteId);
+        Task DeleteInvoice(int companyId, int invoiceId);
+        Task DeleteOffer(int companyId, int offerId);
+        Task DeleteOrderConfirmation(int companyId, int orderConfirmationId);
+        Task DeleteProduct(int companyId, int productId);
+        Task DeleteUser(int companyId, int userId);
     }
 }
