@@ -108,267 +108,229 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        //#region CompanyListOperations
-        //[HttpPut("add-user/{userId}/{companyId}")]
-        //public async Task<IActionResult> AddUserToCompany(int userId, int companyId)
-        //{
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    var user = await _context.Users.FindAsync(userId);
+        [HttpPut("add-contact/{companyId}")]
+        public async Task<IActionResult> AddContactToCompany(int companyId, Contact contact)
+        {
+            try
+            {
+                await _uow.CompanyRepository.AddContact(companyId, contact);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //    if (company == null || user == null)
-        //    {
-        //        return BadRequest("User or Company not found.");
-        //    }
+        [HttpPut("add-delivery-note/{companyId}")]
+        public async Task<IActionResult> AddDeliveryNoteToCompany(int companyId, DeliveryNote deliveryNote)
+        {
+            try
+            {
+                await _uow.CompanyRepository.AddDeliveryNote(companyId, deliveryNote);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //    company.AddUser(user);
-        //    return await SaveModifiedCompany(company, user);
-        //}
+        [HttpPut("add-invoice/{companyId}")]
+        public async Task<IActionResult> AddInvoiceToCompany(int companyId, Invoice invoice)
+        {
+            try
+            {
+                await _uow.CompanyRepository.AddInvoice(companyId, invoice);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //[HttpPut("delete-user/{userId}/{companyId}")]
-        //public async Task<IActionResult> DeleteUserFromCompany(int userId, int companyId)
-        //{
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    var user = await _context.Users.FindAsync(userId);
+        [HttpPut("add-offer/{companyId}")]
+        public async Task<IActionResult> AddOfferToCompany(int companyId, Offer offer)
+        {
+            try
+            {
+                await _uow.CompanyRepository.AddOffer(companyId, offer);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //    if (company == null || user == null)
-        //    {
-        //        return BadRequest("User or Company not found.");
-        //    }
+        [HttpPut("add-order-confirmation/{companyId}")]
+        public async Task<IActionResult> AddOrderConfirmationToCompany(int companyId, OrderConfirmation orderConfirmation)
+        {
+            try
+            {
+                await _uow.CompanyRepository.AddOrderConfirmation(companyId, orderConfirmation);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //    company.DeleteUser(user);
-        //    return await SaveModifiedCompany(company, user);
-        //}
+        [HttpPut("add-product/{companyId}")]
+        public async Task<IActionResult> AddProductToCompany(int companyId, Product product)
+        {
+            try
+            {
+                await _uow.CompanyRepository.AddProduct(companyId, product);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //[HttpPut("add-offer/{offerId}/{companyId}")]
-        //public async Task<IActionResult> AddOfferToCompany(int offerId, int companyId)
-        //{
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    var offer = await _context.Offers.FindAsync(offerId);
+        [HttpPut("add-user/{companyId}")]
+        public async Task<IActionResult> AddUserToCompany(int companyId, User user)
+        {
+            try
+            {
+                await _uow.CompanyRepository.AddUser(companyId, user);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //    if (company == null || offer == null)
-        //    {
-        //        return BadRequest("Offer or Company not found.");
-        //    }
+        [HttpPut("delete-address/{companyId}/{addressId}")]
+        public async Task<IActionResult> DeleteAddressFromCompany(int companyId, int addressId)
+        {
+            try
+            {
+                await _uow.CompanyRepository.DeleteAddress(companyId, addressId);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //    company.Offers.Add(offer);
-        //    return await SaveModifiedCompany(company, offer);
-        //}
+        [HttpPut("delete-contact/{companyId}/{contactId}")]
+        public async Task<IActionResult> DeleteContactFromCompany(int companyId, int contactId)
+        {
+            try
+            {
+                await _uow.CompanyRepository.DeleteContact(companyId, contactId);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //[HttpPut("delete-offer/{offerId}/{companyId}")]
-        //public async Task<IActionResult> DeleteOfferFromCompany(int offerId, int companyId)
-        //{
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    var offer = await _context.Offers.FindAsync(offerId);
+        [HttpPut("delete-delivery-note/{companyId}/{deliveryNoteId}")]
+        public async Task<IActionResult> DeleteDeliveryNoteFromCompany(int companyId, int deliveryNoteId)
+        {
+            try
+            {
+                await _uow.CompanyRepository.DeleteDeliveryNote(companyId, deliveryNoteId);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //    if (company == null || offer == null)
-        //    {
-        //        return BadRequest("Offer or Company not found.");
-        //    }
+        [HttpPut("delete-invoice/{companyId}/{invoiceId}")]
+        public async Task<IActionResult> DeleteInvoiceFromCompany(int companyId, int invoiceId)
+        {
+            try
+            {
+                await _uow.CompanyRepository.DeleteInvoice(companyId, invoiceId);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //    company.Offers.Remove(offer);
-        //    return await SaveModifiedCompany(company, offer);
-        //}
+        [HttpPut("delete-offer/{companyId}/{offerId}")]
+        public async Task<IActionResult> DeleteOfferFromCompany(int companyId, int offerId)
+        {
+            try
+            {
+                await _uow.CompanyRepository.DeleteOffer(companyId, offerId);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //[HttpPut("add-contact/{contactId}/{companyId}")]
-        //public async Task<IActionResult> AddContactToCompany(int contactId, int companyId)
-        //{
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    var contact = await _context.Contacts.FindAsync(contactId);
+        [HttpPut("delete-order-confirmation/{companyId}/{orderConfirmationId}")]
+        public async Task<IActionResult> DeleteOrderConfirmationFromCompany(int companyId, int orderConfirmationId)
+        {
+            try
+            {
+                await _uow.CompanyRepository.DeleteOrderConfirmation(companyId, orderConfirmationId);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //    if (company == null || contact == null)
-        //    {
-        //        return BadRequest("Contact or Company not found.");
-        //    }
+        [HttpPut("delete-product/{companyId}/{productId}")]
+        public async Task<IActionResult> DeleteProductFromCompany(int companyId, int productId)
+        {
+            try
+            {
+                await _uow.CompanyRepository.DeleteProduct(companyId, productId);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //    company.Contacts.Add(contact);
-        //    return await SaveModifiedCompany(company, contact);
-        //}
-
-        //[HttpPut("delete-contact/{contactId}/{companyId}")]
-        //public async Task<IActionResult> DeleteContactFromCompany(int contactId, int companyId)
-        //{
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    var contact = await _context.Contacts.FindAsync(contactId);
-
-        //    if (company == null || contact == null)
-        //    {
-        //        return BadRequest("Contact or Company not found.");
-        //    }
-
-        //    company.Contacts.Remove(contact);
-        //    return await SaveModifiedCompany(company, contact);
-        //}
-
-        //[HttpPut("add-delivery-note/{deliveryNoteId}/{companyId}")]
-        //public async Task<IActionResult> AddDeliveryNoteToCompany(int deliveryNoteId, int companyId)
-        //{
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    var deliveryNote = await _context.DeliveryNotes.FindAsync(deliveryNoteId);
-
-        //    if (company == null || deliveryNote == null)
-        //    {
-        //        return BadRequest("Delivery note or Company not found.");
-        //    }
-
-        //    company.DeliveryNotes.Add(deliveryNote);
-        //    return await SaveModifiedCompany(company, deliveryNote);
-        //}
-
-        //[HttpPut("delete-delivery-note/{deliveryNoteId}/{companyId}")]
-        //public async Task<IActionResult> DeleteDeliveryNoteFromCompany(int deliveryNoteId, int companyId)
-        //{
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    var deliveryNote = await _context.DeliveryNotes.FindAsync(deliveryNoteId);
-
-        //    if (company == null || deliveryNote == null)
-        //    {
-        //        return BadRequest("Delivery note or Company not found.");
-        //    }
-
-        //    company.DeliveryNotes.Remove(deliveryNote);
-        //    return await SaveModifiedCompany(company, deliveryNote);
-        //}
-
-        //[HttpPut("add-invoice/{invoiceId}/{companyId}")]
-        //public async Task<IActionResult> AddInvoiceToCompany(int invoiceId, int companyId)
-        //{
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    var invoice = await _context.Invoices.FindAsync(invoiceId);
-
-        //    if (company == null || invoice == null)
-        //    {
-        //        return BadRequest("Invoice or Company not found.");
-        //    }
-
-        //    company.Invoices.Add(invoice);
-        //    return await SaveModifiedCompany(company, invoice);
-        //}
-
-        //[HttpPut("delete-invoice/{invoiceId}/{companyId}")]
-        //public async Task<IActionResult> DeleteInvoiceFromCompany(int invoiceId, int companyId)
-        //{
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    var invoice = await _context.Invoices.FindAsync(invoiceId);
-
-        //    if (company == null || invoice == null)
-        //    {
-        //        return BadRequest("Invoice or Company not found.");
-        //    }
-
-        //    company.Invoices.Remove(invoice);
-        //    return await SaveModifiedCompany(company, invoice);
-        //}
-
-        //[HttpPut("add-order-confirmation/{orderConfirmationId}/{companyId}")]
-        //public async Task<IActionResult> AddOrderConfirmationToCompany(int orderConfirmationId, int companyId)
-        //{
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    var orderConfirmation = await _context.OrderConfirmations.FindAsync(orderConfirmationId);
-
-        //    if (company == null || orderConfirmation == null)
-        //    {
-        //        return BadRequest("Order confirmation or Company not found.");
-        //    }
-
-        //    company.OrderConfirmations.Add(orderConfirmation);
-        //    return await SaveModifiedCompany(company, orderConfirmation);
-        //}
-
-        //[HttpPut("delete-order-confirmation/{orderConfirmationId}/{companyId}")]
-        //public async Task<IActionResult> DeleteOrderConfirmationFromCompany(int orderConfirmationId, int companyId)
-        //{
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    var orderConfirmation = await _context.OrderConfirmations.FindAsync(orderConfirmationId);
-
-        //    if (company == null || orderConfirmation == null)
-        //    {
-        //        return BadRequest("Order confirmation or Company not found.");
-        //    }
-
-        //    company.OrderConfirmations.Remove(orderConfirmation);
-        //    return await SaveModifiedCompany(company, orderConfirmation);
-        //}
-
-        //[HttpPut("add-product/{productId}/{companyId}")]
-        //public async Task<IActionResult> AddProductToCompany(int productId, int companyId)
-        //{
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    var product = await _context.Products.FindAsync(productId);
-
-        //    if (company == null || product == null)
-        //    {
-        //        return BadRequest("Product or Company not found.");
-        //    }
-
-        //    company.Products.Add(product);
-        //    return await SaveModifiedCompany(company, product);
-        //}
-
-        //[HttpPut("delete-product/{invoiceId}/{companyId}")]
-        //public async Task<IActionResult> DeleteProductFromCompany(int productId, int companyId)
-        //{
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    var product = await _context.Products.FindAsync(productId);
-
-        //    if (company == null || product == null)
-        //    {
-        //        return BadRequest("Product or Company not found.");
-        //    }
-
-        //    company.Products.Remove(product);
-        //    return await SaveModifiedCompany(company, product);
-        //}
-
-        //[HttpPut("add-address/{addressId}/{companyId}")]
-        //public async Task<IActionResult> AddAddressToCompany(int addressId, int companyId)
-        //{
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    var address = await _context.Addresses.FindAsync(addressId);
-
-        //    if (company == null || address == null)
-        //    {
-        //        return BadRequest("Address or Company not found.");
-        //    }
-
-        //    company.Addresses.Add(address);
-        //    return await SaveModifiedCompany(company, address);
-        //}
-
-        //[HttpPut("delete-address/{addressId}/{companyId}")]
-        //public async Task<IActionResult> DeleteAddressFromCompany(int addressId, int companyId)
-        //{
-        //    var company = await _context.Companies.FindAsync(companyId);
-        //    var address = await _context.Addresses.FindAsync(addressId);
-
-        //    if (company == null || address == null)
-        //    {
-        //        return BadRequest("Address or Company not found.");
-        //    }
-
-        //    company.Addresses.Remove(address);
-        //    return await SaveModifiedCompany(company, address);
-        //}
-
-        //private async Task<IActionResult> SaveModifiedCompany(Company company, object obj)
-        //{
-        //    _context.Entry(company).State = EntityState.Modified;
-        //    _context.Entry(obj).State = EntityState.Modified;
-
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-
-        //    return Ok("Company successfully modified");
-        //}
-        //#endregion
-        //private bool CompanyExists(int id)
-        //{
-        //    return _context.Companies.Any(e => e.Id == id);
-        //}
+        [HttpPut("delete-user/{companyId}/{userId}")]
+        public async Task<IActionResult> DeleteUserFromCompany(int companyId, int userId)
+        {
+            try
+            {
+                await _uow.CompanyRepository.DeleteUser(companyId, userId);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
