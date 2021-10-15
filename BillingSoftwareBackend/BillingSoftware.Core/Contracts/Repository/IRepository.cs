@@ -11,7 +11,7 @@ namespace BillingSoftware.Core.Contracts.Repository
         Task<T> GetByIdAsync(int id);
         Task<T[]> GetAllAsync();
         Task AddAsync(T entity);
-        T Update(T entity);
+        void Update(T entity);
         Task Remove(int id);
     }
 }

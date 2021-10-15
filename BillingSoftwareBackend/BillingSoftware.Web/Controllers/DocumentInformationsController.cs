@@ -11,21 +11,21 @@ namespace BillingSoftware.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ContactsController : ControllerBase
+    public class DocumentInformationsController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
 
-        public ContactsController(IUnitOfWork uow)
+        public DocumentInformationsController(IUnitOfWork uow)
         {
             _uow = uow;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Contact>>> GetContacts()
+        public async Task<ActionResult<IEnumerable<DocumentInformations>>> GetDocumentInformations()
         {
             try
             {
-                return Ok(await _uow.ContactRepository.GetAllAsync());
+                return Ok(await _uow.DocumentInformationsRepository.GetAllAsync());
             }
             catch (System.Exception ex)
             {
@@ -34,12 +34,12 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Contact>> GetContact(int id)
+        public async Task<ActionResult<DocumentInformations>> GetDocumentInformation(int id)
         {
             try
             {
-                var contact = await _uow.ContactRepository.GetByIdAsync(id);
-                return contact;
+                var documentInformations = await _uow.DocumentInformationsRepository.GetByIdAsync(id);
+                return documentInformations;
             }
             catch (System.Exception ex)
             {
@@ -48,13 +48,13 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> PutContact(Contact contact)
+        public async Task<IActionResult> PutDocumentInformation(DocumentInformations documentInformations)
         {
             try
             {
-                var entity = await _uow.ContactRepository.GetByIdAsync(contact.Id);
-                entity.CopyProperties(contact);
-                _uow.ContactRepository.Update(entity);
+                var entity = await _uow.DocumentInformationsRepository.GetByIdAsync(documentInformations.Id);
+                entity.CopyProperties(documentInformations);
+                _uow.DocumentInformationsRepository.Update(entity);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -65,11 +65,11 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostContact(Contact contact)
+        public async Task<IActionResult> PostDocumentInformations(DocumentInformations documentInformations)
         {
             try
             {
-                await _uow.ContactRepository.AddAsync(contact);
+                await _uow.DocumentInformationsRepository.AddAsync(documentInformations);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -80,11 +80,11 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Contact>> DeleteContact(int id)
+        public async Task<ActionResult<User>> DeleteDocumentInformations(int id)
         {
             try
             {
-                await _uow.ContactRepository.Remove(id);
+                await _uow.DocumentInformationsRepository.Remove(id);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }

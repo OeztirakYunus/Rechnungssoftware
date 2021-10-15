@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
 using BillingSoftware.Persistence;
 using Microsoft.AspNetCore.Mvc;
@@ -12,88 +13,85 @@ namespace BillingSoftware.Web.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            return await _context.Products.ToListAsync();
+            try
+            {
+                return Ok(await _uow.ProductRepository.GetAllAsync());
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return product;
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, Product product)
-        {
-            if (id != product.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(product).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                var product = await _uow.ProductRepository.GetByIdAsync(id);
+                return product;
             }
-            catch (DbUpdateConcurrencyException)
+            catch (System.Exception ex)
             {
-                if (!ProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
+        }
 
-            return NoContent();
+        [HttpPut]
+        public async Task<IActionResult> PutProduct(Product product)
+        {
+            try
+            {
+                var entity = await _uow.ProductRepository.GetByIdAsync(product.Id);
+                entity.CopyProperties(product);
+                _uow.ProductRepository.Update(entity);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult<Position>> PostProduct(Product product)
+        public async Task<IActionResult> PostProduct(Product product)
         {
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+            try
+            {
+                await _uow.ProductRepository.AddAsync(product);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<Product>> DeleteProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
+            try
             {
-                return NotFound();
+                await _uow.ProductRepository.Remove(id);
+                await _uow.SaveChangesAsync();
+                return Ok();
             }
-
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-
-            return product;
-        }
-
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.Id == id);
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

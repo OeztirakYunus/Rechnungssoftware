@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
 using BillingSoftware.Persistence;
 using Microsoft.AspNetCore.Mvc;
@@ -12,88 +13,85 @@ namespace BillingSoftware.Web.Controllers
     [ApiController]
     public class InvoicesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public InvoicesController(ApplicationDbContext context)
+        public InvoicesController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Invoice>>> GetInvoices()
         {
-            return await _context.Invoices.ToListAsync();
+            try
+            {
+                return Ok(await _uow.InvoiceRepository.GetAllAsync());
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Invoice>> GetInvoice(int id)
         {
-            var invoice = await _context.Invoices.FindAsync(id);
-
-            if (invoice == null)
-            {
-                return NotFound();
-            }
-
-            return invoice;
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutInvoice(int id, Invoice invoice)
-        {
-            if (id != invoice.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(invoice).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                var invoice = await _uow.InvoiceRepository.GetByIdAsync(id);
+                return invoice;
             }
-            catch (DbUpdateConcurrencyException)
+            catch (System.Exception ex)
             {
-                if (!InvoiceExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
+        }
 
-            return NoContent();
+        [HttpPut]
+        public async Task<IActionResult> PutInvoice(Invoice invoice)
+        {
+            try
+            {
+                var entity = await _uow.InvoiceRepository.GetByIdAsync(invoice.Id);
+                entity.CopyProperties(invoice);
+                _uow.InvoiceRepository.Update(entity);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult<Invoice>> PostInvoice(Invoice invoice)
+        public async Task<IActionResult> PostInvoice(Invoice invoice)
         {
-            _context.Invoices.Add(invoice);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetInvoice", new { id = invoice.Id }, invoice);
+            try
+            {
+                await _uow.InvoiceRepository.AddAsync(invoice);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Invoice>> DeleteInvoice(int id)
+        public async Task<IActionResult> DeleteInvoice(int id)
         {
-            var invoice = await _context.Invoices.FindAsync(id);
-            if (invoice == null)
+            try
             {
-                return NotFound();
+                await _uow.InvoiceRepository.Remove(id);
+                await _uow.SaveChangesAsync();
+                return Ok();
             }
-
-            _context.Invoices.Remove(invoice);
-            await _context.SaveChangesAsync();
-
-            return invoice;
-        }
-
-        private bool InvoiceExists(int id)
-        {
-            return _context.Invoices.Any(e => e.Id == id);
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

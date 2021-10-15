@@ -22,9 +22,29 @@ namespace BillingSoftware.Persistence
         {
             _context = context;
             CompanyRepository = new CompanyRepository(_context);
+            AddressRepository = new AddressRepository(_context);
+            UserRepository = new UserRepository(_context);
+            ContactRepository = new ContactRepository(_context);
+            DeliveryNoteRepository = new DeliveryNoteRepository(_context);
+            DocumentInformationsRepository = new DocumentInformationsRepository(_context);
+            InvoiceRepository = new InvoiceRepository(_context);
+            OfferRepository = new OfferRepository(_context);
+            OrderConfirmationRepository = new OrderConfirmationRepository(_context);
+            PositionRepository = new PositionRepository(_context);
+            ProductRepository = new ProductRepository(_context);
         }
 
         public ICompanyRepository CompanyRepository { get; }
+        public IAddressRepository AddressRepository { get; }
+        public IContactRepository ContactRepository { get; }
+        public IDeliveryNoteRepository DeliveryNoteRepository { get; }
+        public IDocumentInformationsRepository DocumentInformationsRepository { get; }
+        public IInvoiceRepository InvoiceRepository { get; }
+        public IOfferRepository OfferRepository { get; }
+        public IOrderConfirmationRepository OrderConfirmationRepository { get; }
+        public IPositionRepository PositionRepository { get; }
+        public IProductRepository ProductRepository { get; }
+        public IUserRepository UserRepository { get; }
 
         public async Task<int> SaveChangesAsync() => await _context.SaveChangesAsync();
         public async Task DeleteDatabaseAsync() => await _context.Database.EnsureDeletedAsync();

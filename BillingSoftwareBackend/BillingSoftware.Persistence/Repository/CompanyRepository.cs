@@ -10,12 +10,10 @@ using System.Threading.Tasks;
 
 namespace BillingSoftware.Persistence.Repository
 {
-    public class CompanyRepository : ICompanyRepository
+    public class CompanyRepository : Repository<Company>, ICompanyRepository
     {
-        ApplicationDbContext _context;
-        public CompanyRepository(ApplicationDbContext context)
+        public CompanyRepository(ApplicationDbContext context) : base(context)
         {
-            _context = context;
         }
 
         public async Task AddAddress(int companyId, Address address)
@@ -34,11 +32,6 @@ namespace BillingSoftware.Persistence.Repository
             }
 
             company.Addresses.Add(tempAddress);
-        }
-
-        public async Task AddAsync(Company entity)
-        {
-            await _context.AddAsync(entity);
         }
 
         public async Task AddContact(int companyId, Contact contact)
@@ -303,25 +296,10 @@ namespace BillingSoftware.Persistence.Repository
             _context.Users.Remove(tempUser);
         }
 
-        public Task<Company[]> GetAllAsync()
+        override public Task<Company[]> GetAllAsync()
         {
             return _context.Companies.ToArrayAsync();
         }
 
-        public async Task<Company> GetByIdAsync(int id)
-        {
-            return await _context.Companies.FindAsync(id);
-        }
-
-        public async Task Remove(int id)
-        {
-            var company = await GetByIdAsync(id);
-            _context.Companies.Remove(company);
-        }
-
-        public Company Update(Company entity)
-        {
-            return _context.Companies.Update(entity).Entity;
-        }
     }
 }

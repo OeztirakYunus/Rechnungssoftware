@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
-using BillingSoftware.Persistence;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BillingSoftware.Web.Controllers
 {
@@ -12,88 +10,85 @@ namespace BillingSoftware.Web.Controllers
     [ApiController]
     public class AddressesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public AddressesController(ApplicationDbContext context)
+        public AddressesController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Address>>> GetAddresses()
         {
-            return await _context.Addresses.ToListAsync();
+            try
+            {
+                return Ok(await _uow.AddressRepository.GetAllAsync());
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Address>> GetAddress(int id)
         {
-            var address = await _context.Addresses.FindAsync(id);
-
-            if (address == null)
-            {
-                return NotFound();
-            }
-
-            return address;
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutAddress(int id, Address address)
-        {
-            if (id != address.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(address).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                var address = await _uow.AddressRepository.GetByIdAsync(id);
+                return address;
             }
-            catch (DbUpdateConcurrencyException)
+            catch (System.Exception ex)
             {
-                if (!AddressExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
+        }
 
-            return NoContent();
+        [HttpPut]
+        public async Task<IActionResult> PutAddress(Address address)
+        {
+            try
+            {
+                var entity = await _uow.AddressRepository.GetByIdAsync(address.Id);
+                entity.CopyProperties(address);
+                _uow.AddressRepository.Update(entity);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult<Address>> PostAddress(Address address)
+        public async Task<IActionResult> PostAddress(Address address)
         {
-            _context.Addresses.Add(address);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetAddress", new { id = address.Id }, address);
+            try
+            {
+                await _uow.AddressRepository.AddAsync(address);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Address>> DeleteAddress(int id)
+        public async Task<IActionResult> DeleteAddress(int id)
         {
-            var address = await _context.Addresses.FindAsync(id);
-            if (address == null)
+            try
             {
-                return NotFound();
+                await _uow.AddressRepository.Remove(id);
+                await _uow.SaveChangesAsync();
+                return Ok();
             }
-
-            _context.Addresses.Remove(address);
-            await _context.SaveChangesAsync();
-
-            return address;
-        }
-
-        private bool AddressExists(int id)
-        {
-            return _context.Addresses.Any(e => e.Id == id);
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

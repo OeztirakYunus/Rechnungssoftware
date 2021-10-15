@@ -23,6 +23,7 @@ namespace BillingSoftware.Persistence
         public DbSet<Product> Products { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<Contact> Contacts { get; set; }
+        public DbSet<DocumentInformations> DocumentInformations { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

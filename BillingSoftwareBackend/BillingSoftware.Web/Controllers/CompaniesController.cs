@@ -48,12 +48,14 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut()]
+        [HttpPut]
         public async Task<IActionResult> PutCompany(Company company)
         {
             try
             {
-                _uow.CompanyRepository.Update(company);
+                var entity = await _uow.CompanyRepository.GetByIdAsync(company.Id);
+                entity.CopyProperties(company);
+                _uow.CompanyRepository.Update(entity);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }

@@ -8,7 +8,17 @@ namespace BillingSoftware.Core.Contracts
 {
     public interface IUnitOfWork : IAsyncDisposable
     {
-        ICompanyRepository CompanyRepository { get; }
+        public ICompanyRepository CompanyRepository { get; }
+        public IAddressRepository AddressRepository { get; }
+        public IContactRepository ContactRepository { get; }
+        public IDeliveryNoteRepository DeliveryNoteRepository { get; }
+        public IDocumentInformationsRepository DocumentInformationsRepository { get; }
+        public IInvoiceRepository InvoiceRepository { get; }
+        public IOfferRepository OfferRepository { get; }
+        public IOrderConfirmationRepository OrderConfirmationRepository { get; }
+        public IPositionRepository PositionRepository { get; }
+        public IProductRepository ProductRepository { get; }
+        public IUserRepository UserRepository { get; }
 
         Task<int> SaveChangesAsync();
         Task DeleteDatabaseAsync();
