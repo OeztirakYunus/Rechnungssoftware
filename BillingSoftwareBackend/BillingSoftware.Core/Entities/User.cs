@@ -26,6 +26,7 @@ namespace BillingSoftware.Core.Entities
             Password = other.Password;
             Email = other.Email;
             Role = other.Role;
+            Company.CopyProperties(other.Company);
         }
     }
 }
