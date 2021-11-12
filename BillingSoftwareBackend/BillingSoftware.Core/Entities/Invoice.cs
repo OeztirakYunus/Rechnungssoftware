@@ -17,7 +17,7 @@ namespace BillingSoftware.Core.Entities
         public DateTime PaymentTerm { get; set; }
         [Required]
         public virtual DocumentInformations InvoiceInformations { get; set; }
-
+        public Status Status { get; set; } = Status.OPEN;
         public void CopyProperties(Invoice other)
         {
             InvoiceNumber = other.InvoiceNumber;

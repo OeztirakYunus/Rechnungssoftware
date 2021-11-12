@@ -25,7 +25,7 @@ namespace BillingSoftware.Web.Controllers
         {
             try
             {
-                return Ok(await _uow.AddressRepository.GetAllAsync());
+                return Ok(await _uow.OfferRepository.GetAllAsync());
             }
             catch (System.Exception ex)
             {
@@ -91,6 +91,21 @@ namespace BillingSoftware.Web.Controllers
             catch (System.Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("offer-to-orderconfirmation")]
+        public async Task<IActionResult> OfferToOrderConfirmation(Offer offer)
+        {
+            try
+            {
+                var orderConfirmation = await _uow.OfferRepository.OfferToOrderConfirmation(offer);
+                await _uow.SaveChangesAsync();
+                return Ok(orderConfirmation);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message  + "\n" + ex.InnerException.Message);
             }
         }
     }

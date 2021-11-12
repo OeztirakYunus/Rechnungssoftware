@@ -16,7 +16,7 @@ namespace BillingSoftware.Core.Entities
         public DateTime OrderConfirmationDate { get; set; }
         [Required]
         public virtual DocumentInformations OrderConfirmationInformations { get; set; }
-
+        public Status Status { get; set; } = Status.OPEN;
         public void CopyProperties(OrderConfirmation other)
         {
             OrderConfirmationNumber = other.OrderConfirmationNumber;

@@ -19,6 +19,11 @@ namespace BillingSoftware.Persistence.Repository
 
         public async Task AddAsync(T entity)
         {
+            await AddAsync<T>(entity);
+        }
+
+        public async Task AddAsync<E>(E entity)
+        {
             await _context.AddAsync(entity);
         }
 
@@ -40,6 +45,11 @@ namespace BillingSoftware.Persistence.Repository
         }
 
         public void Update(T entity)
+        {
+            Update<T>(entity);
+        }
+
+        public void Update<E>(E entity)
         {
             _context.Update(entity);
         }

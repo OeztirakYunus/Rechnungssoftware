@@ -16,6 +16,7 @@ namespace BillingSoftware.Core.Entities
         public DateTime DeliveryNoteDate { get; set; }
         [Required]
         public virtual DocumentInformations DeliveryNoteInformations { get; set; }
+        public Status Status { get; set; } = Status.OPEN;
 
         public void CopyProperties(DeliveryNote other)
         {
