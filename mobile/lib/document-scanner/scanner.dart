@@ -1,7 +1,7 @@
 // ignore_for_file: file_names
 import 'dart:io';
 
-import 'package:demo5/document-scanner/documents.dart';
+import 'package:demo5/document-scanner/documents_list.dart';
 import 'package:flutter/material.dart';
 import 'package:document_scanner/document_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -67,7 +67,7 @@ class _ScannerState extends State<Scanner> {
                           ? Stack(children: [
                               Positioned(
                                 bottom: 20,
-                                left: 0,
+                                left: 10,
                                 right: 0,
                                 child: ElevatedButton(
                                     child: const Text("Nochmal scannen"),
@@ -79,12 +79,13 @@ class _ScannerState extends State<Scanner> {
                               ),
                               Positioned(
                                   bottom: 20,
+                                  right: 10,
                                   child: ElevatedButton(
                                     child: const Text("Speichern"),
                                     onPressed: () {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
-                                              builder: (context) => Documents(
+                                              builder: (context) => DocumentList(
                                                   scannedDocument:
                                                       scannedDocument)));
                                     },
