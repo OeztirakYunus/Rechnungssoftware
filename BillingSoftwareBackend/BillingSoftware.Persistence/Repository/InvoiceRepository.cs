@@ -14,5 +14,15 @@ namespace BillingSoftware.Persistence.Repository
         {
             return _context.Invoices.ToArrayAsync();
         }
+
+        public DeliveryNote InvoiceToDeliveryNote(Invoice invoice)
+        {
+            DeliveryNote deliveryNote = new DeliveryNote();
+            deliveryNote.DeliveryNoteDate = System.DateTime.Now;
+            deliveryNote.DeliveryNoteNumber = "DN " + invoice.Id;
+            deliveryNote.DeliveryNoteInformations = invoice.InvoiceInformations;
+            Update(deliveryNote);
+            return deliveryNote;
+        }
     }
 }

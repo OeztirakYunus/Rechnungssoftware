@@ -9,6 +9,6 @@ namespace BillingSoftware.Core.Contracts.Repository
 {
     public interface IOfferRepository : IRepository<Offer>
     {
-        public Task<OrderConfirmation> OfferToOrderConfirmation(Offer offer);
+        public OrderConfirmation OfferToOrderConfirmation(Offer offer);
     }
 }

@@ -84,13 +84,43 @@ namespace BillingSoftware.Web.Controllers
         {
             try
             {
-                await _uow.AddressRepository.Remove(id);
+                await _uow.OrderConfirmationRepository.Remove(id);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
             catch (System.Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("order-confirmation-to-invoice")]
+        public async Task<IActionResult> OrderConfirmationToInvoice(OrderConfirmation orderConfirmation)
+        {
+            try
+            {
+                var invoice = _uow.OrderConfirmationRepository.OrderConfirmationToInvoice(orderConfirmation);
+                await _uow.SaveChangesAsync();
+                return Ok(invoice);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message + "\n" + ex.InnerException.Message);
+            }
+        }
+
+        [HttpPost("order-confirmation-to-delivery-note")]
+        public async Task<IActionResult> OrderConfirmationToDeliveryNote(OrderConfirmation orderConfirmation)
+        {
+            try
+            {
+                var deliveryNote = _uow.OrderConfirmationRepository.OrderConfirmationToDeliveryNote(orderConfirmation);
+                await _uow.SaveChangesAsync();
+                return Ok(deliveryNote);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message + "\n" + ex.InnerException.Message);
             }
         }
     }

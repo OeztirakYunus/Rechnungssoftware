@@ -25,7 +25,7 @@ namespace BillingSoftware.Web.Controllers
         {
             try
             {
-                return Ok(await _uow.AddressRepository.GetAllAsync());
+                return Ok(await _uow.PositionRepository.GetAllAsync());
             }
             catch (System.Exception ex)
             {

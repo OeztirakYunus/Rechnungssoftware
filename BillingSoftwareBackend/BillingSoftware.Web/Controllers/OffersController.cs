@@ -94,12 +94,12 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPost("offer-to-orderconfirmation")]
+        [HttpPost("offer-to-order-confirmation")]
         public async Task<IActionResult> OfferToOrderConfirmation(Offer offer)
         {
             try
             {
-                var orderConfirmation = await _uow.OfferRepository.OfferToOrderConfirmation(offer);
+                var orderConfirmation = _uow.OfferRepository.OfferToOrderConfirmation(offer);
                 await _uow.SaveChangesAsync();
                 return Ok(orderConfirmation);
             }

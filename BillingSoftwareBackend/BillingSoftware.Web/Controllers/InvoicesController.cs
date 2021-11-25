@@ -93,5 +93,20 @@ namespace BillingSoftware.Web.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("invoice-to-delivery-note")]
+        public async Task<IActionResult> InvoiceToDeliveryNote(Invoice invoice)
+        {
+            try
+            {
+                var deliveryNote = _uow.InvoiceRepository.InvoiceToDeliveryNote(invoice);
+                await _uow.SaveChangesAsync();
+                return Ok(deliveryNote);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message + "\n" + ex.InnerException.Message);
+            }
+        }
     }
 }

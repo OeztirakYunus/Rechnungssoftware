@@ -1,5 +1,6 @@
 ﻿using BillingSoftware.Core.Contracts.Repository;
 using BillingSoftware.Core.Entities;
+using BillingSoftware.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
@@ -13,6 +14,30 @@ namespace BillingSoftware.Persistence.Repository
         override public Task<OrderConfirmation[]> GetAllAsync()
         {
             return _context.OrderConfirmations.ToArrayAsync();
+        }
+
+        public Invoice OrderConfirmationToInvoice(OrderConfirmation orderConfirmation)
+        {
+            Invoice invoice = new Invoice();
+            invoice.InvoiceDate = System.DateTime.Now;
+            invoice.InvoiceNumber = "I " + orderConfirmation.Id;
+            invoice.InvoiceInformations = invoice.InvoiceInformations;
+            invoice.Status = Status.CLOSED;
+            Update(invoice);
+            Update(orderConfirmation);
+            return invoice;
+        }
+
+        public DeliveryNote OrderConfirmationToDeliveryNote(OrderConfirmation orderConfirmation)
+        {
+            DeliveryNote deliveryNote = new DeliveryNote();
+            deliveryNote.DeliveryNoteDate = System.DateTime.Now;
+            deliveryNote.DeliveryNoteNumber = "DN " + orderConfirmation.Id;
+            deliveryNote.DeliveryNoteInformations = deliveryNote.DeliveryNoteInformations;
+            deliveryNote.Status = Status.CLOSED;
+            Update(deliveryNote);
+            Update(orderConfirmation);
+            return deliveryNote;
         }
     }
 }

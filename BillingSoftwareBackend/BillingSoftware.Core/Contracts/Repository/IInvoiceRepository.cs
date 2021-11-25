@@ -9,5 +9,6 @@ namespace BillingSoftware.Core.Contracts.Repository
 {
     public interface IInvoiceRepository : IRepository<Invoice>
     {
+        public DeliveryNote InvoiceToDeliveryNote(Invoice invoice);
     }
 }

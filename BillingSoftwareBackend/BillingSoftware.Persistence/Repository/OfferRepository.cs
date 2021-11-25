@@ -16,7 +16,7 @@ namespace BillingSoftware.Persistence.Repository
             return _context.Offers.ToArrayAsync();
         }
 
-        public async Task<OrderConfirmation> OfferToOrderConfirmation(Offer offer)
+        public OrderConfirmation OfferToOrderConfirmation(Offer offer)
         {
             OrderConfirmation orderConfirmation = new OrderConfirmation();
             orderConfirmation.OrderConfirmationDate = System.DateTime.Now;
