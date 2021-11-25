@@ -43,5 +43,13 @@ namespace BillingSoftware.Core.Entities
                 }
             }
         }
+
+        public void CopyProperties(Position other)
+        {
+            Product.CopyProperties(other.Product);
+            Quantity = other.Quantity;
+            Discount = other.Discount;
+            TypeOfDiscount = other.TypeOfDiscount;
+        }
     }
 }

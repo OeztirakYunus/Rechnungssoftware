@@ -145,21 +145,48 @@ namespace BillingSoftware.Persistence.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ClientId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ContactPersonId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DeliveryNoteDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("DeliveryNoteInformationsId")
+                        .HasColumnType("int");
+
                     b.Property<string>("DeliveryNoteNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("DeliveryNoteInformationsId");
+
+                    b.ToTable("DeliveryNotes");
+                });
+
+            modelBuilder.Entity("BillingSoftware.Core.Entities.DocumentInformations", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ContactPersonId")
+                        .HasColumnType("int");
 
                     b.Property<string>("FlowText")
                         .HasColumnType("nvarchar(max)");
@@ -186,11 +213,9 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.HasIndex("CompanyId");
-
                     b.HasIndex("ContactPersonId");
 
-                    b.ToTable("DeliveryNotes");
+                    b.ToTable("DocumentInformations");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Invoice", b =>
@@ -200,23 +225,14 @@ namespace BillingSoftware.Persistence.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ClientId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("CompanyId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ContactPersonId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FlowText")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("HeaderText")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("InvoiceDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("InvoiceInformationsId")
+                        .HasColumnType("int");
 
                     b.Property<string>("InvoiceNumber")
                         .IsRequired()
@@ -230,23 +246,14 @@ namespace BillingSoftware.Persistence.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("TotalDiscount")
-                        .HasColumnType("float");
-
-                    b.Property<int>("TypeOfDiscount")
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
-
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("ContactPersonId");
+                    b.HasIndex("InvoiceInformationsId");
 
                     b.ToTable("Invoices");
                 });
@@ -258,23 +265,14 @@ namespace BillingSoftware.Persistence.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ClientId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("CompanyId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ContactPersonId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FlowText")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("HeaderText")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("OfferDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("OfferInformationsId")
+                        .HasColumnType("int");
 
                     b.Property<string>("OfferNumber")
                         .IsRequired()
@@ -285,23 +283,14 @@ namespace BillingSoftware.Persistence.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("TotalDiscount")
-                        .HasColumnType("float");
-
-                    b.Property<int>("TypeOfDiscount")
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
-
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("ContactPersonId");
+                    b.HasIndex("OfferInformationsId");
 
                     b.ToTable("Offers");
                 });
@@ -313,23 +302,14 @@ namespace BillingSoftware.Persistence.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ClientId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("CompanyId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ContactPersonId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FlowText")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("HeaderText")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("OrderConfirmationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("OrderConfirmationInformationsId")
+                        .HasColumnType("int");
 
                     b.Property<string>("OrderConfirmationNumber")
                         .IsRequired()
@@ -340,23 +320,14 @@ namespace BillingSoftware.Persistence.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("TotalDiscount")
-                        .HasColumnType("float");
-
-                    b.Property<int>("TypeOfDiscount")
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
-
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("ContactPersonId");
+                    b.HasIndex("OrderConfirmationInformationsId");
 
                     b.ToTable("OrderConfirmations");
                 });
@@ -368,19 +339,10 @@ namespace BillingSoftware.Persistence.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("DeliveryNoteId")
-                        .HasColumnType("int");
-
                     b.Property<double>("Discount")
                         .HasColumnType("float");
 
-                    b.Property<int?>("InvoiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("OfferId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("OrderConfirmationId")
+                    b.Property<int?>("DocumentInformationsId")
                         .HasColumnType("int");
 
                     b.Property<int?>("ProductId")
@@ -399,13 +361,7 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DeliveryNoteId");
-
-                    b.HasIndex("InvoiceId");
-
-                    b.HasIndex("OfferId");
-
-                    b.HasIndex("OrderConfirmationId");
+                    b.HasIndex("DocumentInformationsId");
 
                     b.HasIndex("ProductId");
 
@@ -521,13 +477,22 @@ namespace BillingSoftware.Persistence.Migrations
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.DeliveryNote", b =>
                 {
-                    b.HasOne("BillingSoftware.Core.Entities.Contact", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId");
-
                     b.HasOne("BillingSoftware.Core.Entities.Company", null)
                         .WithMany("DeliveryNotes")
                         .HasForeignKey("CompanyId");
+
+                    b.HasOne("BillingSoftware.Core.Entities.DocumentInformations", "DeliveryNoteInformations")
+                        .WithMany()
+                        .HasForeignKey("DeliveryNoteInformationsId");
+
+                    b.Navigation("DeliveryNoteInformations");
+                });
+
+            modelBuilder.Entity("BillingSoftware.Core.Entities.DocumentInformations", b =>
+                {
+                    b.HasOne("BillingSoftware.Core.Entities.Contact", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId");
 
                     b.HasOne("BillingSoftware.Core.Entities.User", "ContactPerson")
                         .WithMany()
@@ -540,78 +505,48 @@ namespace BillingSoftware.Persistence.Migrations
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Invoice", b =>
                 {
-                    b.HasOne("BillingSoftware.Core.Entities.Contact", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId");
-
                     b.HasOne("BillingSoftware.Core.Entities.Company", null)
                         .WithMany("Invoices")
                         .HasForeignKey("CompanyId");
 
-                    b.HasOne("BillingSoftware.Core.Entities.User", "ContactPerson")
+                    b.HasOne("BillingSoftware.Core.Entities.DocumentInformations", "InvoiceInformations")
                         .WithMany()
-                        .HasForeignKey("ContactPersonId");
+                        .HasForeignKey("InvoiceInformationsId");
 
-                    b.Navigation("Client");
-
-                    b.Navigation("ContactPerson");
+                    b.Navigation("InvoiceInformations");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Offer", b =>
                 {
-                    b.HasOne("BillingSoftware.Core.Entities.Contact", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId");
-
                     b.HasOne("BillingSoftware.Core.Entities.Company", null)
                         .WithMany("Offers")
                         .HasForeignKey("CompanyId");
 
-                    b.HasOne("BillingSoftware.Core.Entities.User", "ContactPerson")
+                    b.HasOne("BillingSoftware.Core.Entities.DocumentInformations", "OfferInformations")
                         .WithMany()
-                        .HasForeignKey("ContactPersonId");
+                        .HasForeignKey("OfferInformationsId");
 
-                    b.Navigation("Client");
-
-                    b.Navigation("ContactPerson");
+                    b.Navigation("OfferInformations");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.OrderConfirmation", b =>
                 {
-                    b.HasOne("BillingSoftware.Core.Entities.Contact", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId");
-
                     b.HasOne("BillingSoftware.Core.Entities.Company", null)
                         .WithMany("OrderConfirmations")
                         .HasForeignKey("CompanyId");
 
-                    b.HasOne("BillingSoftware.Core.Entities.User", "ContactPerson")
+                    b.HasOne("BillingSoftware.Core.Entities.DocumentInformations", "OrderConfirmationInformations")
                         .WithMany()
-                        .HasForeignKey("ContactPersonId");
+                        .HasForeignKey("OrderConfirmationInformationsId");
 
-                    b.Navigation("Client");
-
-                    b.Navigation("ContactPerson");
+                    b.Navigation("OrderConfirmationInformations");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Position", b =>
                 {
-                    b.HasOne("BillingSoftware.Core.Entities.DeliveryNote", null)
+                    b.HasOne("BillingSoftware.Core.Entities.DocumentInformations", null)
                         .WithMany("Positions")
-                        .HasForeignKey("DeliveryNoteId");
-
-                    b.HasOne("BillingSoftware.Core.Entities.Invoice", null)
-                        .WithMany("Positions")
-                        .HasForeignKey("InvoiceId");
-
-                    b.HasOne("BillingSoftware.Core.Entities.Offer", null)
-                        .WithMany("Positions")
-                        .HasForeignKey("OfferId");
-
-                    b.HasOne("BillingSoftware.Core.Entities.OrderConfirmation", null)
-                        .WithMany("Positions")
-                        .HasForeignKey("OrderConfirmationId");
+                        .HasForeignKey("DocumentInformationsId");
 
                     b.HasOne("BillingSoftware.Core.Entities.Product", "Product")
                         .WithMany()
@@ -660,22 +595,7 @@ namespace BillingSoftware.Persistence.Migrations
                     b.Navigation("Addresses");
                 });
 
-            modelBuilder.Entity("BillingSoftware.Core.Entities.DeliveryNote", b =>
-                {
-                    b.Navigation("Positions");
-                });
-
-            modelBuilder.Entity("BillingSoftware.Core.Entities.Invoice", b =>
-                {
-                    b.Navigation("Positions");
-                });
-
-            modelBuilder.Entity("BillingSoftware.Core.Entities.Offer", b =>
-                {
-                    b.Navigation("Positions");
-                });
-
-            modelBuilder.Entity("BillingSoftware.Core.Entities.OrderConfirmation", b =>
+            modelBuilder.Entity("BillingSoftware.Core.Entities.DocumentInformations", b =>
                 {
                     b.Navigation("Positions");
                 });

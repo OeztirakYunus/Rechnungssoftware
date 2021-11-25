@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
 using BillingSoftware.Persistence;
 using Microsoft.AspNetCore.Mvc;
@@ -12,88 +13,115 @@ namespace BillingSoftware.Web.Controllers
     [ApiController]
     public class OrderConfirmationsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public OrderConfirmationsController(ApplicationDbContext context)
+        public OrderConfirmationsController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderConfirmation>>> GetOrderConfirmations()
         {
-            return await _context.OrderConfirmations.ToListAsync();
+            try
+            {
+                return Ok(await _uow.OrderConfirmationRepository.GetAllAsync());
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderConfirmation>> GetOrderConfirmation(int id)
         {
-            var orderConfirmation = await _context.OrderConfirmations.FindAsync(id);
-
-            if (orderConfirmation == null)
-            {
-                return NotFound();
-            }
-
-            return orderConfirmation;
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrderConfirmation(int id, OrderConfirmation orderConfirmation)
-        {
-            if (id != orderConfirmation.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(orderConfirmation).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                var orderInformation = await _uow.OrderConfirmationRepository.GetByIdAsync(id);
+                return orderInformation;
             }
-            catch (DbUpdateConcurrencyException)
+            catch (System.Exception ex)
             {
-                if (!OrderConfirmationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
+        }
 
-            return NoContent();
+        [HttpPut]
+        public async Task<IActionResult> PutOrderConfirmation(OrderConfirmation orderConfirmation)
+        {
+            try
+            {
+                var entity = await _uow.OrderConfirmationRepository.GetByIdAsync(orderConfirmation.Id);
+                entity.CopyProperties(orderConfirmation);
+                _uow.OrderConfirmationRepository.Update(entity);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult<OrderConfirmation>> PostOrderConfirmation(OrderConfirmation orderConfirmation)
+        public async Task<IActionResult> PostOrderConfirmation(OrderConfirmation orderConfirmation)
         {
-            _context.OrderConfirmations.Add(orderConfirmation);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetOrderConfirmation", new { id = orderConfirmation.Id }, orderConfirmation);
+            try
+            {
+                await _uow.OrderConfirmationRepository.AddAsync(orderConfirmation);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<OrderConfirmation>> DeleteOrderConfirmation(int id)
         {
-            var orderConfirmation = await _context.OrderConfirmations.FindAsync(id);
-            if (orderConfirmation == null)
+            try
             {
-                return NotFound();
+                await _uow.OrderConfirmationRepository.Remove(id);
+                await _uow.SaveChangesAsync();
+                return Ok();
             }
-
-            _context.OrderConfirmations.Remove(orderConfirmation);
-            await _context.SaveChangesAsync();
-
-            return orderConfirmation;
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        private bool OrderConfirmationExists(int id)
+        [HttpPost("order-confirmation-to-invoice")]
+        public async Task<IActionResult> OrderConfirmationToInvoice(OrderConfirmation orderConfirmation)
         {
-            return _context.OrderConfirmations.Any(e => e.Id == id);
+            try
+            {
+                var invoice = _uow.OrderConfirmationRepository.OrderConfirmationToInvoice(orderConfirmation);
+                await _uow.SaveChangesAsync();
+                return Ok(invoice);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message + "\n" + ex.InnerException.Message);
+            }
+        }
+
+        [HttpPost("order-confirmation-to-delivery-note")]
+        public async Task<IActionResult> OrderConfirmationToDeliveryNote(OrderConfirmation orderConfirmation)
+        {
+            try
+            {
+                var deliveryNote = _uow.OrderConfirmationRepository.OrderConfirmationToDeliveryNote(orderConfirmation);
+                await _uow.SaveChangesAsync();
+                return Ok(deliveryNote);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message + "\n" + ex.InnerException.Message);
+            }
         }
     }
 }

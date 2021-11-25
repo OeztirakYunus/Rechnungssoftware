@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
 using BillingSoftware.Persistence;
 using Microsoft.AspNetCore.Mvc;
@@ -12,88 +13,85 @@ namespace BillingSoftware.Web.Controllers
     [ApiController]
     public class DeliveryNotesController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public DeliveryNotesController(ApplicationDbContext context)
+        public DeliveryNotesController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DeliveryNote>>> GetDeliveryNotes()
         {
-            return await _context.DeliveryNotes.ToListAsync();
+            try
+            {
+                return Ok(await _uow.DeliveryNoteRepository.GetAllAsync());
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<DeliveryNote>> GetDeliveryNote(int id)
         {
-            var deliveryNote = await _context.DeliveryNotes.FindAsync(id);
-
-            if (deliveryNote == null)
-            {
-                return NotFound();
-            }
-
-            return deliveryNote;
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutDeliveryNote(int id, DeliveryNote deliveryNote)
-        {
-            if (id != deliveryNote.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(deliveryNote).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                var deliveryNote = await _uow.DeliveryNoteRepository.GetByIdAsync(id);
+                return deliveryNote;
             }
-            catch (DbUpdateConcurrencyException)
+            catch (System.Exception ex)
             {
-                if (!DeliveryNoteExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
+        }
 
-            return NoContent();
+        [HttpPut]
+        public async Task<IActionResult> PutDeliveryNote(DeliveryNote deliveryNote)
+        {
+            try
+            {
+                var entity = await _uow.DeliveryNoteRepository.GetByIdAsync(deliveryNote.Id);
+                entity.CopyProperties(deliveryNote);
+                _uow.DeliveryNoteRepository.Update(entity);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult<DeliveryNote>> PostDeliveryNote(DeliveryNote deliveryNote)
+        public async Task<IActionResult> PostDeliveryNote(DeliveryNote deliveryNote)
         {
-            _context.DeliveryNotes.Add(deliveryNote);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetDeliveryNote", new { id = deliveryNote.Id }, deliveryNote);
+            try
+            {
+                await _uow.DeliveryNoteRepository.AddAsync(deliveryNote);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<DeliveryNote>> DeleteDeliveryNote(int id)
+        public async Task<IActionResult> DeleteDeliveryNote(int id)
         {
-            var deliveryNote = await _context.DeliveryNotes.FindAsync(id);
-            if (deliveryNote == null)
+            try
             {
-                return NotFound();
+                await _uow.DeliveryNoteRepository.Remove(id);
+                await _uow.SaveChangesAsync();
+                return Ok();
             }
-
-            _context.DeliveryNotes.Remove(deliveryNote);
-            await _context.SaveChangesAsync();
-
-            return deliveryNote;
-        }
-
-        private bool DeliveryNoteExists(int id)
-        {
-            return _context.DeliveryNotes.Any(e => e.Id == id);
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

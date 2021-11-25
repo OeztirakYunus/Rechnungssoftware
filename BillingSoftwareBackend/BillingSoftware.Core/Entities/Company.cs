@@ -24,15 +24,43 @@ namespace BillingSoftware.Core.Entities
         public virtual List<Invoice> Invoices { get; set; } = new();
         public virtual List<Product> Products { get; set; } = new();
 
-        public void AddUser(User user)
+        public void CopyProperties(Company other)
         {
-            user.Company = this;
-            Users.Add(user);
-        }
-        public void DeleteUser(User user)
-        {
-            Users.Remove(user);
-            user.Company = null;
+            CompanyName = other.CompanyName;
+            Email = other.Email;
+            PhoneNumber = other.PhoneNumber;
+            for (int i = 0; i < Addresses.Count; i++)
+            {
+                Addresses[i].CopyProperties(other.Addresses[i]);
+            }
+            for (int i = 0; i < Users.Count; i++)
+            {
+                Users[i].CopyProperties(other.Users[i]);
+            }
+            for (int i = 0; i < Contacts.Count; i++)
+            {
+                Contacts[i].CopyProperties(other.Contacts[i]);
+            }
+            for (int i = 0; i < Offers.Count; i++)
+            {
+                Offers[i].CopyProperties(other.Offers[i]);
+            }
+            for (int i = 0; i < OrderConfirmations.Count; i++)
+            {
+                OrderConfirmations[i].CopyProperties(other.OrderConfirmations[i]);
+            }
+            for (int i = 0; i < DeliveryNotes.Count; i++)
+            {
+                DeliveryNotes[i].CopyProperties(other.DeliveryNotes[i]);
+            }
+            for (int i = 0; i < Invoices.Count; i++)
+            {
+                Invoices[i].CopyProperties(other.Invoices[i]);
+            }
+            for (int i = 0; i < Products.Count; i++)
+            {
+                Products[i].CopyProperties(other.Products[i]);
+            }
         }
     }
 }

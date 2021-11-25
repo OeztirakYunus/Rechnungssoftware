@@ -19,5 +19,14 @@ namespace BillingSoftware.Core.Entities
         [Required]
         public Role Role { get; set; } = Role.User;
         public virtual Company Company { get; set; }
+        public void CopyProperties(User other)
+        {
+            FirstName = other.FirstName;
+            LastName = other.LastName;
+            Password = other.Password;
+            Email = other.Email;
+            Role = other.Role;
+            Company.CopyProperties(other.Company);
+        }
     }
 }

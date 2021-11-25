@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
 using BillingSoftware.Persistence;
 using Microsoft.AspNetCore.Mvc;
@@ -12,88 +13,85 @@ namespace BillingSoftware.Web.Controllers
     [ApiController]
     public class PositionsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _uow;
 
-        public PositionsController(ApplicationDbContext context)
+        public PositionsController(IUnitOfWork uow)
         {
-            _context = context;
+            _uow = uow;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Position>>> GetPositions()
         {
-            return await _context.Positions.ToListAsync();
+            try
+            {
+                return Ok(await _uow.PositionRepository.GetAllAsync());
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Position>> GetPosition(int id)
         {
-            var position = await _context.Positions.FindAsync(id);
-
-            if (position == null)
-            {
-                return NotFound();
-            }
-
-            return position;
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPosition(int id, Position position)
-        {
-            if (id != position.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(position).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                var position = await _uow.PositionRepository.GetByIdAsync(id);
+                return position;
             }
-            catch (DbUpdateConcurrencyException)
+            catch (System.Exception ex)
             {
-                if (!PositionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex.Message);
             }
+        }
 
-            return NoContent();
+        [HttpPut]
+        public async Task<IActionResult> PutPosition(Position position)
+        {
+            try
+            {
+                var entity = await _uow.PositionRepository.GetByIdAsync(position.Id);
+                entity.CopyProperties(position);
+                _uow.PositionRepository.Update(entity);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<ActionResult<Position>> PostPosition(Position position)
+        public async Task<IActionResult> PostPosition(Position position)
         {
-            _context.Positions.Add(position);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetPosition", new { id = position.Id }, position);
+            try
+            {
+                await _uow.PositionRepository.AddAsync(position);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<Position>> DeletePosition(int id)
         {
-            var position = await _context.Positions.FindAsync(id);
-            if (position == null)
+            try
             {
-                return NotFound();
+                await _uow.PositionRepository.Remove(id);
+                await _uow.SaveChangesAsync();
+                return Ok();
             }
-
-            _context.Positions.Remove(position);
-            await _context.SaveChangesAsync();
-
-            return position;
-        }
-
-        private bool PositionExists(int id)
-        {
-            return _context.Positions.Any(e => e.Id == id);
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

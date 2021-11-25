@@ -20,5 +20,21 @@ namespace BillingSoftware.Core.Entities
         [EmailAddress]
         public string Email { get; set; }
         public virtual List<Address> Addresses { get; set; } = new();
+
+        public void CopyProperties(Contact other)
+        {
+            TypeOfContactEnum = other.TypeOfContactEnum;
+            Gender = other.Gender;
+            Title = other.Title;
+            FirstName = other.FirstName;
+            LastName = other.LastName;
+            NameOfOrganisation = other.NameOfOrganisation;
+            PhoneNumber = other.PhoneNumber;
+            Email = other.Email;
+            for (int i = 0; i < Addresses.Count; i++)
+            {
+                Addresses[i].CopyProperties(other.Addresses[i]);
+            }
+        }
     }
 }
