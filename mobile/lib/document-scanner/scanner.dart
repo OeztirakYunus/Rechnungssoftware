@@ -1,18 +1,19 @@
 // ignore_for_file: file_names
 import 'dart:io';
 
+import 'package:demo5/document-scanner/documents.dart';
 import 'package:flutter/material.dart';
 import 'package:document_scanner/document_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class PdfCreator extends StatefulWidget {
-  const PdfCreator({Key? key}) : super(key: key);
+class Scanner extends StatefulWidget {
+  const Scanner({Key? key}) : super(key: key);
 
   @override
-  _PdfCreatorState createState() => _PdfCreatorState();
+  _ScannerState createState() => _ScannerState();
 }
 
-class _PdfCreatorState extends State<PdfCreator> {
+class _ScannerState extends State<Scanner> {
   File? scannedDocument;
   Future<PermissionStatus>? cameraPermissionFuture;
 
@@ -63,18 +64,32 @@ class _PdfCreatorState extends State<PdfCreator> {
                         ],
                       ),
                       scannedDocument != null
-                          ? Positioned(
-                              bottom: 20,
-                              left: 0,
-                              right: 0,
-                              child: ElevatedButton(
-                                  child: const Text("Nochmal scannen"),
-                                  onPressed: () {
-                                    setState(() {
-                                      scannedDocument = null;
-                                    });
-                                  }),
-                            )
+                          ? Stack(children: [
+                              Positioned(
+                                bottom: 20,
+                                left: 0,
+                                right: 0,
+                                child: ElevatedButton(
+                                    child: const Text("Nochmal scannen"),
+                                    onPressed: () {
+                                      setState(() {
+                                        scannedDocument = null;
+                                      });
+                                    }),
+                              ),
+                              Positioned(
+                                  bottom: 20,
+                                  child: ElevatedButton(
+                                    child: const Text("Speichern"),
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) => Documents(
+                                                  scannedDocument:
+                                                      scannedDocument)));
+                                    },
+                                  ))
+                            ])
                           : Container(),
                     ],
                   );

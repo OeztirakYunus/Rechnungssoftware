@@ -2,7 +2,7 @@
 
 import 'dart:io';
 
-import 'package:demo5/pdfCreator.dart';
+import 'package:demo5/document-scanner/scanner.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:open_file/open_file.dart';
@@ -29,10 +29,8 @@ class DeliveryNote extends StatelessWidget {
               ),
               color: Colors.purple,
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const PdfCreator()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const Scanner()));
               }),
         ),
       ),
