@@ -1,12 +1,5 @@
-// ignore_for_file: file_names
-
-import 'dart:io';
-
 import 'package:demo5/document-scanner/scanner.dart';
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_pdf/pdf.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
 
 class DeliveryNote extends StatelessWidget {
   const DeliveryNote({Key? key}) : super(key: key);

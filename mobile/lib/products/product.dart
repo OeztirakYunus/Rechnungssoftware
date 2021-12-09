@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
-import 'package:demo5/addProduct.dart';
+import 'package:demo5/products/addProduct.dart';
 import 'package:flutter/material.dart';
-import 'NavBar.dart';
+import '../NavBar.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 

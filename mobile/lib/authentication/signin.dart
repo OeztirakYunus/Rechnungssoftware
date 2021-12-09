@@ -1,5 +1,5 @@
-import 'package:demo5/product.dart';
-import 'package:demo5/signup.dart';
+import 'package:demo5/products/product.dart';
+import 'package:demo5/authentication/signup.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -35,14 +35,14 @@ class _LoginState extends State<Login> {
                   ),
                 )),
             Container(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Form(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // ignore: prefer_const_constructors
                     Align(
-                      alignment: Alignment(-0.95, 1),
+                      alignment: const Alignment(-0.95, 1),
                       child: const Text(
                         'Email',
                         style: TextStyle(fontSize: 20.00),
@@ -86,41 +86,39 @@ class _LoginState extends State<Login> {
                     const SizedBox(
                       height: 10.00,
                     ),
-                    Container(
-                      child: Column(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width - 10,
-                            child: CheckboxListTile(
-                              title: Text('Anmeldedaten merken'),
-                              value: changed,
-                              onChanged: (changedValue) {
-                                setState(() {
-                                  changed = changedValue;
-                                });
-                              },
-                              controlAffinity: ListTileControlAffinity.leading,
-                            ),
+                    Column(
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width - 10,
+                          child: CheckboxListTile(
+                            title: const Text('Anmeldedaten merken'),
+                            value: changed,
+                            onChanged: (changedValue) {
+                              setState(() {
+                                changed = changedValue;
+                              });
+                            },
+                            controlAffinity: ListTileControlAffinity.leading,
                           ),
-                          Container(
-                            width: 350,
-                            child: RichText(
-                              textAlign: TextAlign.start,
-                              text: TextSpan(
-                                  text: 'Passwort vergessen?',
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => SignUp())),
-                                  style: const TextStyle(
-                                    color: Colors.blueAccent,
-                                    fontSize: 18,
-                                  )),
-                            ),
+                        ),
+                        SizedBox(
+                          width: 350,
+                          child: RichText(
+                            textAlign: TextAlign.start,
+                            text: TextSpan(
+                                text: 'Passwort vergessen?',
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const SignUp())),
+                                style: const TextStyle(
+                                  color: Colors.blueAccent,
+                                  fontSize: 18,
+                                )),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                     const SizedBox(
                       height: 25.00,
@@ -129,7 +127,7 @@ class _LoginState extends State<Login> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Product()),
+                          MaterialPageRoute(builder: (context) => const Product()),
                         );
                       },
                       shape: RoundedRectangleBorder(
@@ -153,7 +151,7 @@ class _LoginState extends State<Login> {
                     text: 'Noch kein Konto?',
                     recognizer: TapGestureRecognizer()
                       ..onTap = () => Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => SignUp())),
+                          MaterialPageRoute(builder: (context) => const SignUp())),
                     style: const TextStyle(
                       color: Colors.blueAccent,
                       fontSize: 18,
