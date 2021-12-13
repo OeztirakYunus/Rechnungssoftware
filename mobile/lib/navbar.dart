@@ -1,28 +1,22 @@
 // ignore_for_file: avoid_returning_null_for_void
 
 import 'package:demo5/contacts.dart';
-import 'package:demo5/deliveryNote.dart';
+import 'package:demo5/delivery_note.dart';
 import 'package:flutter/material.dart';
 
 class NavBar extends StatelessWidget {
   const NavBar({Key? key}) : super(key: key);
-
-  /*Widget createMenuItem({required Image icon, required Text title_}) {
-    final color = Colors.white;
-
-    return ListTile(leading: icon, title: title_);
-  }*/
 
   void selectedItem(BuildContext context, int index) {
     Navigator.of(context).pop();
     switch (index) {
       case 0:
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => Contacts()));
+            .push(MaterialPageRoute(builder: (context) => const Contacts()));
         return;
       case 2:
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => DeliveryNote()));
+            .push(MaterialPageRoute(builder: (context) => const DeliveryNote()));
         return;
     }
   }
