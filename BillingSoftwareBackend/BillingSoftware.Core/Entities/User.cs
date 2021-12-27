@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using BillingSoftware.Core.Enums;
+using Microsoft.AspNetCore.Identity;
 
 namespace BillingSoftware.Core.Entities
 {
