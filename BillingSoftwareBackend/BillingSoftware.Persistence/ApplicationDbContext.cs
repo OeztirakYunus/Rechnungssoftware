@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using BillingSoftware.Core.Contracts;
-using BillingSoftware.Core.Entities;
+﻿using BillingSoftware.Core.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore.Proxies;
 
 namespace BillingSoftware.Persistence
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         public DbSet<Address> Addresses { get; set; }
-        public DbSet<User> Users { get; set; }
         public DbSet<DeliveryNote> DeliveryNotes { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Offer> Offers { get; set; }

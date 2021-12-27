@@ -2,10 +2,6 @@
 using BillingSoftware.Core.Entities;
 using CommonBase.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BillingSoftware.Persistence.Repository
@@ -157,7 +153,7 @@ namespace BillingSoftware.Persistence.Repository
                 tempUser = res.Entity;
             }
 
-            company.Users.Add(tempUser);
+            //company.Users.Add(tempUser);
         }
 
         public async Task DeleteAddress(int companyId, int addressId)

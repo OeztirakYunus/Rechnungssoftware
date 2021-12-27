@@ -47,22 +47,22 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut]
-        public async Task<IActionResult> PutUser(User user)
-        {
-            try
-            {
-                var entity = await _uow.UserRepository.GetByIdAsync(user.Id);
-                entity.CopyProperties(user);
-                _uow.UserRepository.Update(entity);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //[HttpPut]
+        //public async Task<IActionResult> PutUser(User user)
+        //{
+        //    try
+        //    {
+        //        var entity = await _uow.UserRepository.GetByIdAsync(user.Id);
+        //        entity.CopyProperties(user);
+        //        _uow.UserRepository.Update(entity);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         [HttpPost]
         public async Task<IActionResult> PostUser(User user)

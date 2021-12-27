@@ -10,9 +10,9 @@ namespace BillingSoftware.Persistence.Repository
         public UserRepository(ApplicationDbContext context) : base(context)
         {
         }
-        override public Task<User[]> GetAllAsync()
-        {
-            return _context.Users.ToArrayAsync();
-        }
+        //override public Task<User[]> GetAllAsync()
+        //{
+        //    return _context.Users.ToArrayAsync();
+        //}
     }
 }
