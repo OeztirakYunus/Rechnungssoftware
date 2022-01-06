@@ -1,6 +1,8 @@
 ﻿using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Contracts.Repository;
+using BillingSoftware.Core.Entities;
 using BillingSoftware.Persistence.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
