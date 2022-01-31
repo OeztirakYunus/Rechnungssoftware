@@ -15,17 +15,20 @@ namespace BillingSoftware.Persistence
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
         private bool _disposed;
 
-        public UnitOfWork() : this(new ApplicationDbContext())
+        public UnitOfWork(UserManager<User> userManager) : this(new ApplicationDbContext(), userManager)
         {
         }
-        public UnitOfWork(ApplicationDbContext context)
+        public UnitOfWork(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
+
             CompanyRepository = new CompanyRepository(_context);
             AddressRepository = new AddressRepository(_context);
-            UserRepository = new UserRepository(_context);
+            UserRepository = new UserRepository(_userManager);
             ContactRepository = new ContactRepository(_context);
             DeliveryNoteRepository = new DeliveryNoteRepository(_context);
             DocumentInformationsRepository = new DocumentInformationsRepository(_context);

@@ -153,7 +153,7 @@ namespace BillingSoftware.Persistence.Repository
                 tempUser = res.Entity;
             }
 
-            //company.Users.Add(tempUser);
+            company.Users.Add(tempUser as User);
         }
 
         public async Task DeleteAddress(int companyId, int addressId)

@@ -112,7 +112,7 @@ namespace BillingSoftware.Web.Controllers
         /// <param name="newUser"></param>
         /// <returns></returns>
         [HttpPost("register")]
-        public async Task<ActionResult> Register(UserDto newUser)
+        public async Task<ActionResult> Register(UserRegisterDTO newUser)
         {
             var existingUser = await _userManager.FindByEmailAsync(newUser.Email);
             // gibt es schon einen Benutzer mit der Mailadresse?
@@ -149,6 +149,13 @@ namespace BillingSoftware.Web.Controllers
 
             var (token, roles) = await GenerateJwtToken(user);
             return Ok(new { Status = "Ok", Message = $"User {user.Email} successfully added. Token: {new JwtSecurityTokenHandler().WriteToken(token)}" });
+        }
+
+        [HttpGet("get/{email}")]
+        public async Task<ActionResult> GetAll(string email)
+        {
+            var existingUser = await _userManager.FindByEmailAsync(email);
+            return Ok(existingUser);
         }
     }
 }

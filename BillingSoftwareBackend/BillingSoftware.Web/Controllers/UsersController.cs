@@ -2,8 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
+using BillingSoftware.Core.DataTransferObjects;
 using BillingSoftware.Core.Entities;
 using BillingSoftware.Persistence;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,11 +23,12 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
             try
             {
-                return Ok(await _uow.UserRepository.GetAllAsync());
+                var users = await _uow.UserRepository.GetAllUsersAsync();
+                return users;
             }
             catch (System.Exception ex)
             {
@@ -34,11 +37,11 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<UserDto>> GetUser(string id)
         {
             try
             {
-                var user = await _uow.UserRepository.GetByIdAsync(id);
+                var user = await _uow.UserRepository.GetUserByIdAsync(id);
                 return user;
             }
             catch (System.Exception ex)
@@ -64,34 +67,36 @@ namespace BillingSoftware.Web.Controllers
         //    }
         //}
 
-        [HttpPost]
-        public async Task<IActionResult> PostUser(User user)
-        {
-            try
-            {
-                await _uow.UserRepository.AddAsync(user);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> PostUser(User user)
+        //{
+        //    try
+        //    {
+        //        await _uow.UserRepository.AddAsync(user);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteUser(int id)
-        {
-            try
-            {
-                await _uow.UserRepository.Remove(id);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //[HttpDelete("{id}")]
+        //public async Task<ActionResult<User>> DeleteUser(int id)
+        //{
+        //    try
+        //    {
+        //        await _uow.UserRepository.Remove(id);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
+
+        
     }
 }
