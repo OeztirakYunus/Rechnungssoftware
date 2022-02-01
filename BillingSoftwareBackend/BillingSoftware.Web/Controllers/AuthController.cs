@@ -60,6 +60,10 @@ namespace BillingSoftware.Web.Controllers
                     expiration = token.ValidTo
                 });
             }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized($"Wrong email or password");
+            }
             catch (Exception ex)
             {
                 return BadRequest($"Exception: {ex.Message}");
@@ -114,7 +118,7 @@ namespace BillingSoftware.Web.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> Register(UserRegisterDTO newUser)
         {
-            var existingUser = await _userManager.FindByEmailAsync(newUser.Email);
+            var existingUser = await _userManager.FindByEmailAsync(newUser.User.Email);
             // gibt es schon einen Benutzer mit der Mailadresse?
             if (existingUser != null)
             {
@@ -123,9 +127,9 @@ namespace BillingSoftware.Web.Controllers
 
             User user = new User
             {
-                Email = newUser.Email,
+                Email = newUser.User.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = newUser.Email,
+                UserName = newUser.User.Email,
             };
             var resultUser = await _userManager.CreateAsync(user, newUser.Password);
             //var resultRole = await _userManager.AddToRoleAsync(user, "Admin");
@@ -149,13 +153,6 @@ namespace BillingSoftware.Web.Controllers
 
             var (token, roles) = await GenerateJwtToken(user);
             return Ok(new { Status = "Ok", Message = $"User {user.Email} successfully added. Token: {new JwtSecurityTokenHandler().WriteToken(token)}" });
-        }
-
-        [HttpGet("get/{email}")]
-        public async Task<ActionResult> GetAll(string email)
-        {
-            var existingUser = await _userManager.FindByEmailAsync(email);
-            return Ok(existingUser);
         }
     }
 }

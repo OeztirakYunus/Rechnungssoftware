@@ -8,7 +8,7 @@ namespace BillingSoftware.Core.DataTransferObjects
 {
     public class UserRegisterDTO
     {
-        public string Email { get; set; }
+        public UserDto User { get; set; }
         public string Password { get; set; }
     }
 }
