@@ -135,7 +135,7 @@ namespace BillingSoftware.Web.Controllers
                 LastName = newUser.User.LastName
             };
             var resultUser = await _userManager.CreateAsync(user, newUser.Password);
-            //var resultRole = await _userManager.AddToRoleAsync(user, "Admin");
+            var resultRole = await _userManager.AddToRoleAsync(user, "Admin");
 
             if (!resultUser.Succeeded)
             {
@@ -145,16 +145,16 @@ namespace BillingSoftware.Web.Controllers
                     Message = string.Join(" ", resultUser.Errors.Select(e => e.Description))
                 });
             }
-            //else if (!resultRole.Succeeded)
-            //{
-            //    return BadRequest(new
-            //    {
-            //        Status = "Error",
-            //        Message = string.Join(" ", resultRole.Errors.Select(e => e.Description))
-            //    });
-            //}
+            else if (!resultRole.Succeeded)
+            {
+                return BadRequest(new
+                {
+                    Status = "Error",
+                    Message = string.Join(" ", resultRole.Errors.Select(e => e.Description))
+                });
+            }
 
-            
+
             var (token, roles) = await GenerateJwtToken(user);
             return Ok(new { Status = "Ok", Message = $"User {user.Email} successfully added. Token: {new JwtSecurityTokenHandler().WriteToken(token)}" });
         }

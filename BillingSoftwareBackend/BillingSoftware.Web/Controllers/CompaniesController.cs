@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
+using BillingSoftware.Core.DataTransferObjects;
 using BillingSoftware.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -45,6 +46,7 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutCompany(Company company)
         {
             try
@@ -84,6 +86,7 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteCompany(int id)
         {
             try
@@ -252,7 +255,8 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpPut("add-user/{companyId}")]
-        public async Task<IActionResult> AddUserToCompany(int companyId, User user)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddUserToCompany(int companyId, UserAddDto user)
         {
             try
             {
@@ -420,6 +424,7 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpPut("delete-user/{companyId}/{userId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUserFromCompany(int companyId, string userId)
         {
             try

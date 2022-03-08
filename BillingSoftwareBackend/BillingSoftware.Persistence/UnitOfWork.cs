@@ -26,7 +26,7 @@ namespace BillingSoftware.Persistence
             _context = context;
             _userManager = userManager;
 
-            CompanyRepository = new CompanyRepository(_context);
+            CompanyRepository = new CompanyRepository(_context, _userManager);
             AddressRepository = new AddressRepository(_context);
             UserRepository = new UserRepository(_userManager);
             ContactRepository = new ContactRepository(_context);
