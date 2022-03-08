@@ -24,6 +24,6 @@ namespace BillingSoftware.Core.Contracts.Repository
         Task DeleteOffer(int companyId, int offerId);
         Task DeleteOrderConfirmation(int companyId, int orderConfirmationId);
         Task DeleteProduct(int companyId, int productId);
-        Task DeleteUser(int companyId, int userId);
+        Task DeleteUser(int companyId, string userId);
     }
 }

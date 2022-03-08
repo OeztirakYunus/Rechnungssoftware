@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BillingSoftware.Web.Controllers

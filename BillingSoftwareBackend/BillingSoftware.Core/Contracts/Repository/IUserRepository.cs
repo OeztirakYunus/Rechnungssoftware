@@ -10,8 +10,8 @@ namespace BillingSoftware.Core.Contracts.Repository
 {
     public interface IUserRepository
     {
-        public Task<UserDto[]> GetAllUsersAsync();
-        public Task<UserDto> GetUserByIdAsync(string id);
-
+        public Task<User[]> GetAllUsersAsync();
+        public Task<User> GetUserByIdAsync(string id);
+        public Task<User> GetUserByEmail(string email);
     }
 }

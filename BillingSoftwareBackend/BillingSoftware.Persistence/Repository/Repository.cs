@@ -38,7 +38,7 @@ namespace BillingSoftware.Persistence.Repository
             return (T)result;
         }
 
-        public async Task Remove(int id)
+        public virtual async Task Remove(int id)
         {
             var result = await GetByIdAsync(id);
             _context.Remove(result);

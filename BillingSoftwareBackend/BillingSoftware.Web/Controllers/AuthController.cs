@@ -130,6 +130,9 @@ namespace BillingSoftware.Web.Controllers
                 Email = newUser.User.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = newUser.User.Email,
+                Company = newUser.User.Company,
+                FirstName = newUser.User.FirstName,
+                LastName = newUser.User.LastName
             };
             var resultUser = await _userManager.CreateAsync(user, newUser.Password);
             //var resultRole = await _userManager.AddToRoleAsync(user, "Admin");
@@ -151,6 +154,7 @@ namespace BillingSoftware.Web.Controllers
             //    });
             //}
 
+            
             var (token, roles) = await GenerateJwtToken(user);
             return Ok(new { Status = "Ok", Message = $"User {user.Email} successfully added. Token: {new JwtSecurityTokenHandler().WriteToken(token)}" });
         }

@@ -17,37 +17,25 @@ namespace BillingSoftware.Persistence.Repository
             _userManager = userManager;
         }
 
-        public async Task<UserDto[]> GetAllUsersAsync()
+        public async Task<User[]> GetAllUsersAsync()
         {
             return await Task.Run(() =>
             {
-                var usersDto = new List<UserDto>();
                 var users = _userManager.Users;
-                foreach (var item in users)
-                {
-                    usersDto.Add(MapUserToUserDto(item));
-                }
-                return usersDto.ToArray();
+                return users.Include(i => i.Company).ToArrayAsync();//usersDto.ToArray();
             });
         }
 
-        public async Task<UserDto> GetUserByIdAsync(string id)
+        public async Task<User> GetUserByEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return user;
+        }
+
+        public async Task<User> GetUserByIdAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            return MapUserToUserDto(user);
+            return user;
         }
-
-        private UserDto MapUserToUserDto(User user)
-        {
-            return new UserDto()
-            {
-                Company = user.Company,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Id = user.Id,
-            };
-        }
-
     }
 }

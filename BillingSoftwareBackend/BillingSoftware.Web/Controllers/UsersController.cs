@@ -4,10 +4,7 @@ using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.DataTransferObjects;
 using BillingSoftware.Core.Entities;
-using BillingSoftware.Persistence;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BillingSoftware.Web.Controllers
 {
@@ -28,7 +25,9 @@ namespace BillingSoftware.Web.Controllers
             try
             {
                 var users = await _uow.UserRepository.GetAllUsersAsync();
-                return users;
+                var usersDto = new List<UserDto>();
+                users.ToList().ForEach(x => usersDto.Add(MapUserToUserDto(x)));
+                return usersDto.ToArray();
             }
             catch (System.Exception ex)
             {
@@ -42,7 +41,7 @@ namespace BillingSoftware.Web.Controllers
             try
             {
                 var user = await _uow.UserRepository.GetUserByIdAsync(id);
-                return user;
+                return MapUserToUserDto(user);
             }
             catch (System.Exception ex)
             {
@@ -50,53 +49,16 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        //[HttpPut]
-        //public async Task<IActionResult> PutUser(User user)
-        //{
-        //    try
-        //    {
-        //        var entity = await _uow.UserRepository.GetByIdAsync(user.Id);
-        //        entity.CopyProperties(user);
-        //        _uow.UserRepository.Update(entity);
-        //        await _uow.SaveChangesAsync();
-        //        return Ok();
-        //    }
-        //    catch (System.Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
-
-        //[HttpPost]
-        //public async Task<IActionResult> PostUser(User user)
-        //{
-        //    try
-        //    {
-        //        await _uow.UserRepository.AddAsync(user);
-        //        await _uow.SaveChangesAsync();
-        //        return Ok();
-        //    }
-        //    catch (System.Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
-
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult<User>> DeleteUser(int id)
-        //{
-        //    try
-        //    {
-        //        await _uow.UserRepository.Remove(id);
-        //        await _uow.SaveChangesAsync();
-        //        return Ok();
-        //    }
-        //    catch (System.Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
-
-        
+        private UserDto MapUserToUserDto(User user)
+        {
+            return new UserDto()
+            {
+                Company = user.Company,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Id = user.Id
+            };
+        }  
     }
 }

@@ -275,7 +275,7 @@ namespace BillingSoftware.Persistence.Repository
             _context.Products.Remove(tempProduct);
         }
 
-        public async Task DeleteUser(int companyId, int userId)
+        public async Task DeleteUser(int companyId, string userId)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -290,6 +290,44 @@ namespace BillingSoftware.Persistence.Repository
             }
 
             _context.Users.Remove(tempUser);
+        }
+
+        public override async Task Remove(int id)
+        {
+            var company = await GetByIdAsync(id);
+            foreach (var item in company.Products)
+            {
+                await DeleteProduct(id, item.Id);
+            }
+            foreach (var item in company.Addresses)
+            {
+                await DeleteAddress(id, item.Id);
+            }
+            foreach (var item in company.Offers)
+            {
+                await DeleteOffer(id, item.Id);
+            }
+            foreach (var item in company.Invoices)
+            {
+                await DeleteInvoice(id, item.Id);
+            }
+            foreach (var item in company.OrderConfirmations)
+            {
+                await DeleteOrderConfirmation(id, item.Id);
+            }
+            foreach (var item in company.DeliveryNotes)
+            {
+                await DeleteDeliveryNote(id, item.Id);
+            }
+            foreach (var item in company.Users)
+            {
+                await DeleteUser(id, item.Id);
+            }
+            foreach (var item in company.Contacts)
+            {
+                await DeleteContact(id, item.Id);
+            }  
+            await base.Remove(id);
         }
 
         override public Task<Company[]> GetAllAsync()
