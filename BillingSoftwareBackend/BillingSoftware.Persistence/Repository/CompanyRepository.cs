@@ -1,19 +1,21 @@
 ﻿using BillingSoftware.Core.Contracts.Repository;
+using BillingSoftware.Core.DataTransferObjects;
 using BillingSoftware.Core.Entities;
 using CommonBase.Exceptions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BillingSoftware.Persistence.Repository
 {
     public class CompanyRepository : Repository<Company>, ICompanyRepository
     {
-        public CompanyRepository(ApplicationDbContext context) : base(context)
+        private readonly UserManager<User> _userManager;
+
+        public CompanyRepository(ApplicationDbContext context, UserManager<User> userManager) : base(context)
         {
+            _userManager = userManager;
         }
 
         public async Task AddAddress(int companyId, Address address)
@@ -142,7 +144,7 @@ namespace BillingSoftware.Persistence.Repository
             company.Products.Add(tempProduct);
         }
 
-        public async Task AddUser(int companyId, User user)
+        public async Task AddUser(int companyId, UserAddDto user)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -150,14 +152,34 @@ namespace BillingSoftware.Persistence.Repository
                 throw new EntityNotFoundException("Company does not exist.");
             }
 
-            var tempUser = await _context.Users.FindAsync(user.Id);
-            if (tempUser == null)
+            var tempUser = await _userManager.FindByEmailAsync(user.Email);
+            if (tempUser != null)
             {
-                var res = await _context.Users.AddAsync(user);
-                tempUser = res.Entity;
+                throw new Exception($"User with email {user.Email} exists already!");
             }
 
-            company.Users.Add(tempUser);
+            User userToAdd = new User
+            {
+                Email = user.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = user.Email,
+                Company = company,
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            };
+            var resultUser = await _userManager.CreateAsync(userToAdd, user.Password);
+            var resultRole = await _userManager.AddToRoleAsync(userToAdd, user.Role.ToString());
+
+            if (!resultUser.Succeeded)
+            {
+                throw new Exception("Error while adding user!");
+            }
+            else if (!resultRole.Succeeded)
+            {
+                throw new Exception("Error while adding role!");
+            }
+
+            company.Users.Add(userToAdd as User);
         }
 
         public async Task DeleteAddress(int companyId, int addressId)
@@ -279,7 +301,7 @@ namespace BillingSoftware.Persistence.Repository
             _context.Products.Remove(tempProduct);
         }
 
-        public async Task DeleteUser(int companyId, int userId)
+        public async Task DeleteUser(int companyId, string userId)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -294,6 +316,44 @@ namespace BillingSoftware.Persistence.Repository
             }
 
             _context.Users.Remove(tempUser);
+        }
+
+        public override async Task Remove(int id)
+        {
+            var company = await GetByIdAsync(id);
+            foreach (var item in company.Products)
+            {
+                await DeleteProduct(id, item.Id);
+            }
+            foreach (var item in company.Addresses)
+            {
+                await DeleteAddress(id, item.Id);
+            }
+            foreach (var item in company.Offers)
+            {
+                await DeleteOffer(id, item.Id);
+            }
+            foreach (var item in company.Invoices)
+            {
+                await DeleteInvoice(id, item.Id);
+            }
+            foreach (var item in company.OrderConfirmations)
+            {
+                await DeleteOrderConfirmation(id, item.Id);
+            }
+            foreach (var item in company.DeliveryNotes)
+            {
+                await DeleteDeliveryNote(id, item.Id);
+            }
+            foreach (var item in company.Users)
+            {
+                await DeleteUser(id, item.Id);
+            }
+            foreach (var item in company.Contacts)
+            {
+                await DeleteContact(id, item.Id);
+            }  
+            await base.Remove(id);
         }
 
         override public Task<Company[]> GetAllAsync()

@@ -1,6 +1,8 @@
 ﻿using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Contracts.Repository;
+using BillingSoftware.Core.Entities;
 using BillingSoftware.Persistence.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,17 +15,20 @@ namespace BillingSoftware.Persistence
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
         private bool _disposed;
 
-        public UnitOfWork() : this(new ApplicationDbContext())
+        public UnitOfWork(UserManager<User> userManager) : this(new ApplicationDbContext(), userManager)
         {
         }
-        public UnitOfWork(ApplicationDbContext context)
+        public UnitOfWork(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
-            CompanyRepository = new CompanyRepository(_context);
+            _userManager = userManager;
+
+            CompanyRepository = new CompanyRepository(_context, _userManager);
             AddressRepository = new AddressRepository(_context);
-            UserRepository = new UserRepository(_context);
+            UserRepository = new UserRepository(_userManager);
             ContactRepository = new ContactRepository(_context);
             DeliveryNoteRepository = new DeliveryNoteRepository(_context);
             DocumentInformationsRepository = new DocumentInformationsRepository(_context);
