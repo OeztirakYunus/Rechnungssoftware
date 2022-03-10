@@ -23,6 +23,7 @@ namespace BillingSoftware.Core.Entities
             DeliveryNoteNumber = other.DeliveryNoteNumber;
             DeliveryNoteDate = other.DeliveryNoteDate;
             DeliveryNoteInformations.CopyProperties(other.DeliveryNoteInformations);
+            Status = other.Status;
         }
     }
 }

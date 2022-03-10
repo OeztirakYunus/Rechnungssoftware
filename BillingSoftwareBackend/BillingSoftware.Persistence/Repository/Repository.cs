@@ -1,5 +1,6 @@
 ﻿using BillingSoftware.Core.Contracts.Repository;
 using BillingSoftware.Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace BillingSoftware.Persistence.Repository
         public Repository(ApplicationDbContext context)
         {
             _context = context;
+            _context.ChangeTracker.AutoDetectChangesEnabled = false;
         }
 
         public async Task AddAsync(T entity)
@@ -32,7 +34,7 @@ namespace BillingSoftware.Persistence.Repository
             return null;
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public virtual async Task<T> GetByIdAsync(int id)
         {
             var result = await _context.FindAsync(typeof(T), id);
             return (T)result;
@@ -44,12 +46,12 @@ namespace BillingSoftware.Persistence.Repository
             _context.Remove(result);
         }
 
-        public void Update(T entity)
+        public virtual void Update(T entity)
         {
             Update<T>(entity);
         }
 
-        public void Update<E>(E entity)
+        public virtual void Update<E>(E entity)
         {
             _context.Update(entity);
         }

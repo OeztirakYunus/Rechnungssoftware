@@ -1,6 +1,7 @@
 ﻿using BillingSoftware.Core.Contracts.Repository;
 using BillingSoftware.Core.Entities;
 using BillingSoftware.Core.Enums;
+using CommonBase.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
@@ -10,10 +11,6 @@ namespace BillingSoftware.Persistence.Repository
     {
         public OfferRepository(ApplicationDbContext context) : base(context)
         {
-        }
-        override public Task<Offer[]> GetAllAsync()
-        {
-            return _context.Offers.ToArrayAsync();
         }
 
         public OrderConfirmation OfferToOrderConfirmation(Offer offer)
@@ -26,6 +23,20 @@ namespace BillingSoftware.Persistence.Repository
             Update(orderConfirmation);
             Update(offer);
             return orderConfirmation;
+        }
+
+        override public async Task<Offer[]> GetAllAsync()
+        {
+            return await _context.Offers
+                .IncludeAllRecursively()
+                .ToArrayAsync();
+        }
+
+        public override async Task<Offer> GetByIdAsync(int id)
+        {
+            return await _context.Offers
+                .IncludeAllRecursively()
+                .SingleOrDefaultAsync(i => i.Id == id);
         }
     }
 }

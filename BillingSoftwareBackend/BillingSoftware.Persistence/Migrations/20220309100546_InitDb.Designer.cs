@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BillingSoftware.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220307113159_InitDb")]
+    [Migration("20220309100546_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -658,13 +658,15 @@ namespace BillingSoftware.Persistence.Migrations
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Address", b =>
                 {
-                    b.HasOne("BillingSoftware.Core.Entities.Company", null)
+                    b.HasOne("BillingSoftware.Core.Entities.Company", "Company")
                         .WithMany("Addresses")
                         .HasForeignKey("CompanyId");
 
                     b.HasOne("BillingSoftware.Core.Entities.Contact", null)
                         .WithMany("Addresses")
                         .HasForeignKey("ContactId");
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Contact", b =>

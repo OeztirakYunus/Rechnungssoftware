@@ -17,6 +17,7 @@ namespace BillingSoftware.Core.Entities
         [Required]
         public virtual DocumentInformations OrderConfirmationInformations { get; set; }
         public Status Status { get; set; } = Status.OPEN;
+
         public void CopyProperties(OrderConfirmation other)
         {
             OrderConfirmationNumber = other.OrderConfirmationNumber;

@@ -18,7 +18,7 @@ namespace BillingSoftware.Core.Entities
         {
             FirstName = other.FirstName;
             LastName = other.LastName;
-            Company.CopyProperties(other.Company);
+            //Company.CopyProperties(other.Company);
         }
     }
 }

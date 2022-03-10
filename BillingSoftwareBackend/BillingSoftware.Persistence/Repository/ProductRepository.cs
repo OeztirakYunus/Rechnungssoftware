@@ -10,9 +10,10 @@ namespace BillingSoftware.Persistence.Repository
         public ProductRepository(ApplicationDbContext context) : base(context)
         {
         }
-        override public Task<Product[]> GetAllAsync()
+        override public async Task<Product[]> GetAllAsync()
         {
-            return _context.Products.ToArrayAsync();
+            return await _context.Products
+                .ToArrayAsync();
         }
     }
 }

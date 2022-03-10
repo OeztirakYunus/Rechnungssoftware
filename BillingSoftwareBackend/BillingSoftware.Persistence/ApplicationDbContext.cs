@@ -26,7 +26,7 @@ namespace BillingSoftware.Persistence
             //var connectionString = configuration["ConnectionStrings:DefaultConnection"];
             //optionsBuilder.UseSqlServer(connectionString);
             optionsBuilder
-                .UseLazyLoadingProxies(true)
+               // .UseLazyLoadingProxies(true)
                 .UseSqlServer("Data Source=(localdb)\\MSSQLLOCALDB;Initial Catalog=BillingSoftwareDb;Integrated Security=True");
         }
     }

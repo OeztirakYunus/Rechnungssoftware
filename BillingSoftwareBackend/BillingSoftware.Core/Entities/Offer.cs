@@ -17,6 +17,7 @@ namespace BillingSoftware.Core.Entities
         [Required]
         public virtual DocumentInformations OfferInformations { get; set; }
         public Status Status { get; set; } = Status.OPEN;
+
         public void CopyProperties(Offer other)
         {
             OfferNumber = other.OfferNumber;

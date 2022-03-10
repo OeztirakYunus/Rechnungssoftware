@@ -1,5 +1,6 @@
 ﻿using BillingSoftware.Core.Contracts.Repository;
 using BillingSoftware.Core.Entities;
+using CommonBase.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
@@ -10,11 +11,7 @@ namespace BillingSoftware.Persistence.Repository
         public InvoiceRepository(ApplicationDbContext context) : base(context)
         {
         }
-        override public Task<Invoice[]> GetAllAsync()
-        {
-            return _context.Invoices.ToArrayAsync();
-        }
-
+      
         public DeliveryNote InvoiceToDeliveryNote(Invoice invoice)
         {
             DeliveryNote deliveryNote = new DeliveryNote();
@@ -23,6 +20,20 @@ namespace BillingSoftware.Persistence.Repository
             deliveryNote.DeliveryNoteInformations = invoice.InvoiceInformations;
             Update(deliveryNote);
             return deliveryNote;
+        }
+
+        override public async Task<Invoice[]> GetAllAsync()
+        {
+            return await _context.Invoices
+                .IncludeAllRecursively()
+                .ToArrayAsync();
+        }
+
+        public override async Task<Invoice> GetByIdAsync(int id)
+        {
+            return await _context.Invoices
+                .IncludeAllRecursively()
+                .SingleOrDefaultAsync(i => i.Id == id);
         }
     }
 }

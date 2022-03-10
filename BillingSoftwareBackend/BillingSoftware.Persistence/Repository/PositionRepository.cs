@@ -1,5 +1,6 @@
 ﻿using BillingSoftware.Core.Contracts.Repository;
 using BillingSoftware.Core.Entities;
+using CommonBase.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
@@ -10,9 +11,18 @@ namespace BillingSoftware.Persistence.Repository
         public PositionRepository(ApplicationDbContext context) : base(context)
         {
         }
-        override public Task<Position[]> GetAllAsync()
+        override public async Task<Position[]> GetAllAsync()
         {
-            return _context.Positions.ToArrayAsync();
+            return await _context.Positions
+                .IncludeAllRecursively()
+                .ToArrayAsync();
+        }
+
+        public override async Task<Position> GetByIdAsync(int id)
+        {
+            return await _context.Positions
+                .IncludeAllRecursively()
+                .SingleOrDefaultAsync(i => i.Id == id);
         }
     }
 }
