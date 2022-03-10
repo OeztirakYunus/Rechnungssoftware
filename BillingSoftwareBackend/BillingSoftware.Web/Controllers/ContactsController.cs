@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
@@ -31,7 +32,7 @@ namespace BillingSoftware.Web.Controllers
                 var email = HttpContext.User.Identity.Name;
                 var user = await _uow.UserRepository.GetUserByEmail(email);
                 var contacts = await _uow.ContactRepository.GetAllAsync();
-                contacts = contacts.Where(i => user.Company.Contacts.Any(a => a.Id == i.Id)).ToArray();
+                contacts = contacts.Where(i => user.Company.Contacts.Any(a => a.Id.Equals(i.Id))).ToArray();
                 return Ok(contacts);
             }
             catch (System.Exception ex)
@@ -40,19 +41,26 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Contact>> GetContact(int id)
-        //{
-        //    try
-        //    {
-        //        var contact = await _uow.ContactRepository.GetByIdAsync(id);
-        //        return contact;
-        //    }
-        //    catch (System.Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Contact>> GetContact(string id)
+        {
+            try
+            {
+                var guid = Guid.Parse(id);
+
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this contact!" });
+                }
+
+                var contact = await _uow.ContactRepository.GetByIdAsync(guid);
+                return contact;
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpPut]
         public async Task<IActionResult> PutContact(Contact contact)
@@ -97,16 +105,17 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Contact>> DeleteContact(int id)
+        public async Task<ActionResult<Contact>> DeleteContact(string id)
         {
             try
             {
-                if (!await CheckAuthorization(id))
+                var guid = Guid.Parse(id);
+                if (!await CheckAuthorization(guid))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this contact!" });
                 }
 
-                await _uow.ContactRepository.Remove(id);
+                await _uow.ContactRepository.Remove(guid);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -116,11 +125,11 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        private async Task<bool> CheckAuthorization(int contactId)
+        private async Task<bool> CheckAuthorization(Guid contactId)
         {
             var email = HttpContext.User.Identity.Name;
             var user = await _uow.UserRepository.GetUserByEmail(email);
-            return user.Company.Contacts.Any(i => i.Id == contactId);
+            return user.Company.Contacts.Any(i => i.Id.Equals(contactId));
         }
     }
 }

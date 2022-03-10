@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
@@ -29,7 +30,7 @@ namespace BillingSoftware.Web.Controllers
                 var email = HttpContext.User.Identity.Name;
                 var user = await _uow.UserRepository.GetUserByEmail(email);
                 var addresses = await _uow.AddressRepository.GetAllAsync();
-                addresses = addresses.Where(i => user.Company.Addresses.Any(a => a.Id == i.Id)).ToArray();
+                addresses = addresses.Where(i => user.Company.Addresses.Any(a => a.Id.Equals(i.Id))).ToArray();
                 return Ok(addresses);
             }
             catch (System.Exception ex)
@@ -38,19 +39,26 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Address>> GetAddress(int id)
-        //{
-        //    try
-        //    {
-        //        var address = await _uow.AddressRepository.GetByIdAsync(id);
-        //        return address;
-        //    }
-        //    catch (System.Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
-        //}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Address>> GetAddress(string id)
+        {
+            try
+            {
+                var guid = Guid.Parse(id);
+
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this address!" });
+                }
+
+                var address = await _uow.AddressRepository.GetByIdAsync(guid);
+                return address;
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [HttpPut]
         public async Task<IActionResult> PutAddress(Address address)
@@ -93,16 +101,17 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAddress(int id)
+        public async Task<IActionResult> DeleteAddress(string id)
         {
             try
             {
-                if (!await CheckAuthorization(id))
+                var guid = Guid.Parse(id);
+                if (!await CheckAuthorization(guid))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this address!" });
                 }
 
-                await _uow.AddressRepository.Remove(id);
+                await _uow.AddressRepository.Remove(guid);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -112,7 +121,7 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        private async Task<bool> CheckAuthorization(int addressId)
+        private async Task<bool> CheckAuthorization(Guid addressId)
         {
             var email = HttpContext.User.Identity.Name;
             var user = await _uow.UserRepository.GetUserByEmail(email);

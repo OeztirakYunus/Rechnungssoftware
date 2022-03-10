@@ -12,35 +12,33 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BillingSoftware.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220309100546_InitDb")]
+    [Migration("20220310164117_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("ProductVersion", "6.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Address", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("ContactId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("ContactId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Country")
                         .IsRequired()
@@ -70,11 +68,9 @@ namespace BillingSoftware.Persistence.Migrations
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Company", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CompanyName")
                         .IsRequired()
@@ -100,14 +96,12 @@ namespace BillingSoftware.Persistence.Migrations
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Contact", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -148,20 +142,18 @@ namespace BillingSoftware.Persistence.Migrations
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.DeliveryNote", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DeliveryNoteDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DeliveryNoteInformationsId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("DeliveryNoteInformationsId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("DeliveryNoteNumber")
                         .IsRequired()
@@ -186,14 +178,12 @@ namespace BillingSoftware.Persistence.Migrations
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.DocumentInformations", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("ClientId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ClientId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ContactPersonId")
                         .IsRequired()
@@ -231,20 +221,18 @@ namespace BillingSoftware.Persistence.Migrations
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Invoice", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("InvoiceDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("InvoiceInformationsId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("InvoiceInformationsId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("InvoiceNumber")
                         .IsRequired()
@@ -272,20 +260,18 @@ namespace BillingSoftware.Persistence.Migrations
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Offer", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("OfferDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("OfferInformationsId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("OfferInformationsId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("OfferNumber")
                         .IsRequired()
@@ -310,20 +296,18 @@ namespace BillingSoftware.Persistence.Migrations
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.OrderConfirmation", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("OrderConfirmationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("OrderConfirmationInformationsId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("OrderConfirmationInformationsId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("OrderConfirmationNumber")
                         .IsRequired()
@@ -348,20 +332,18 @@ namespace BillingSoftware.Persistence.Migrations
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Position", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("Discount")
                         .HasColumnType("float");
 
-                    b.Property<int?>("DocumentInformationsId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("DocumentInformationsId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("Quantity")
                         .HasColumnType("float");
@@ -385,11 +367,9 @@ namespace BillingSoftware.Persistence.Migrations
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Product", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ArticleNumber")
                         .IsRequired()
@@ -398,8 +378,8 @@ namespace BillingSoftware.Persistence.Migrations
                     b.Property<int>("Category")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -640,8 +620,8 @@ namespace BillingSoftware.Persistence.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -658,15 +638,13 @@ namespace BillingSoftware.Persistence.Migrations
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Address", b =>
                 {
-                    b.HasOne("BillingSoftware.Core.Entities.Company", "Company")
+                    b.HasOne("BillingSoftware.Core.Entities.Company", null)
                         .WithMany("Addresses")
                         .HasForeignKey("CompanyId");
 
                     b.HasOne("BillingSoftware.Core.Entities.Contact", null)
                         .WithMany("Addresses")
                         .HasForeignKey("ContactId");
-
-                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Contact", b =>

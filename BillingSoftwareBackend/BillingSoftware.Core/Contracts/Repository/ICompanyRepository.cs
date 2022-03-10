@@ -10,21 +10,21 @@ namespace BillingSoftware.Core.Contracts.Repository
 {
     public interface ICompanyRepository : IRepository<Company>
     {
-        Task AddAddress(int companyId, Address address);
-        Task AddContact(int companyId, Contact contact);
-        Task AddDeliveryNote(int companyId, DeliveryNote deliveryNote);
-        Task AddInvoice(int companyId, Invoice invoice);
-        Task AddOffer(int companyId, Offer offer);
-        Task AddOrderConfirmation(int companyId, OrderConfirmation orderConfirmation);
-        Task AddProduct(int companyId, Product product);
-        Task AddUser(int companyId, UserAddDto user);
-        Task DeleteAddress(int companyId, int addressId);
-        Task DeleteContact(int companyId, int contactId);
-        Task DeleteDeliveryNote(int companyId, int deliveryNoteId);
-        Task DeleteInvoice(int companyId, int invoiceId);
-        Task DeleteOffer(int companyId, int offerId);
-        Task DeleteOrderConfirmation(int companyId, int orderConfirmationId);
-        Task DeleteProduct(int companyId, int productId);
-        Task DeleteUser(int companyId, string userId);
+        Task AddAddress(Guid companyId, Address address);
+        Task AddContact(Guid companyId, Contact contact);
+        Task AddDeliveryNote(Guid companyId, DeliveryNote deliveryNote);
+        Task AddInvoice(Guid companyId, Invoice invoice);
+        Task AddOffer(Guid companyId, Offer offer);
+        Task AddOrderConfirmation(Guid companyId, OrderConfirmation orderConfirmation);
+        Task AddProduct(Guid companyId, Product product);
+        Task AddUser(Guid companyId, UserAddDto user);
+        Task DeleteAddress(Guid companyId, Guid addressId);
+        Task DeleteContact(Guid companyId, Guid contactId);
+        Task DeleteDeliveryNote(Guid companyId, Guid deliveryNoteId);
+        Task DeleteInvoice(Guid companyId, Guid invoiceId);
+        Task DeleteOffer(Guid companyId, Guid offerId);
+        Task DeleteOrderConfirmation(Guid companyId, Guid orderConfirmationId);
+        Task DeleteProduct(Guid companyId, Guid productId);
+        Task DeleteUser(Guid companyId, string userId);
     }
 }

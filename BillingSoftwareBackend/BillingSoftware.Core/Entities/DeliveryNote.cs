@@ -17,13 +17,5 @@ namespace BillingSoftware.Core.Entities
         [Required]
         public virtual DocumentInformations DeliveryNoteInformations { get; set; }
         public Status Status { get; set; } = Status.OPEN;
-
-        public void CopyProperties(DeliveryNote other)
-        {
-            DeliveryNoteNumber = other.DeliveryNoteNumber;
-            DeliveryNoteDate = other.DeliveryNoteDate;
-            DeliveryNoteInformations.CopyProperties(other.DeliveryNoteInformations);
-            Status = other.Status;
-        }
     }
 }

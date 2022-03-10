@@ -34,13 +34,13 @@ namespace BillingSoftware.Persistence.Repository
             return null;
         }
 
-        public virtual async Task<T> GetByIdAsync(int id)
+        public virtual async Task<T> GetByIdAsync(Guid id)
         {
             var result = await _context.FindAsync(typeof(T), id);
             return (T)result;
         }
 
-        public virtual async Task Remove(int id)
+        public virtual async Task Remove(Guid id)
         {
             var result = await GetByIdAsync(id);
             _context.Remove(result);

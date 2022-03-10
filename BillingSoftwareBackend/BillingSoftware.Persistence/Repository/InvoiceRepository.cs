@@ -2,6 +2,7 @@
 using BillingSoftware.Core.Entities;
 using CommonBase.Extensions;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading.Tasks;
 
 namespace BillingSoftware.Persistence.Repository
@@ -29,7 +30,7 @@ namespace BillingSoftware.Persistence.Repository
                 .ToArrayAsync();
         }
 
-        public override async Task<Invoice> GetByIdAsync(int id)
+        public override async Task<Invoice> GetByIdAsync(Guid id)
         {
             return await _context.Invoices
                 .IncludeAllRecursively()

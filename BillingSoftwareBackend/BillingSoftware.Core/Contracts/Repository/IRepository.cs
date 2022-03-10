@@ -8,12 +8,12 @@ namespace BillingSoftware.Core.Contracts.Repository
 {
     public interface IRepository<T>
     {
-        Task<T> GetByIdAsync(int id);
+        Task<T> GetByIdAsync(Guid id);
         Task<T[]> GetAllAsync();
         Task AddAsync(T entity);
         Task AddAsync<E>(E entity);
         void Update(T entity);
         void Update<E>(E entity);
-        Task Remove(int id);
+        Task Remove(Guid id);
     }
 }

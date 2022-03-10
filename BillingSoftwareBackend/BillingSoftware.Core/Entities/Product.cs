@@ -24,17 +24,5 @@ namespace BillingSoftware.Core.Entities
         [Required]
         public Unit Unit { get; set; }
         public string Description { get; set; }
-
-        public void CopyProperties(Product other)
-        {
-            ArticleNumber = other.ArticleNumber;
-            ProductName = other.ProductName;
-            ValueAddedTax = other.ValueAddedTax;
-            SellingPriceNet = other.SellingPriceNet;
-            PurchasingPriceNet = other.PurchasingPriceNet;
-            Category = other.Category;
-            Unit = other.Unit;
-            Description = other.Description;
-        }
     }
 }

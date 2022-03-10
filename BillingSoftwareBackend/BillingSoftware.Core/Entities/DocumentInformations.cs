@@ -60,21 +60,5 @@ namespace BillingSoftware.Core.Entities
                 }
             }
         }
-
-        public void CopyProperties(DocumentInformations other)
-        {
-            //Client.CopyProperties(other.Client);
-            Subject = other.Subject;
-            HeaderText = other.HeaderText;
-            FlowText = other.FlowText;
-            ContactPerson.CopyProperties(other.ContactPerson);
-            TotalDiscount = other.TotalDiscount;
-            TypeOfDiscount = other.TypeOfDiscount;
-            Positions = new List<Position>();
-            foreach (var item in other.Positions)
-            {
-                Positions.Add(item);
-            }
-        }
     }
 }

@@ -23,53 +23,5 @@ namespace BillingSoftware.Core.Entities
         public virtual List<DeliveryNote> DeliveryNotes { get; set; } = new();
         public virtual List<Invoice> Invoices { get; set; } = new();
         public virtual List<Product> Products { get; set; } = new();
-
-        //public void CopyProperties(Company other)
-        //{
-        //    CompanyName = other.CompanyName;
-        //    Email = other.Email;
-        //    PhoneNumber = other.PhoneNumber;
-        //    Addresses = new List<Address>();
-        //    Users = new List<User>();
-        //    Contacts = new List<Contact>();
-        //    Offers = new List<Offer>();
-        //    OrderConfirmations = new List<OrderConfirmation>();
-        //    DeliveryNotes = new List<DeliveryNote>();
-        //    Invoices = new List<Invoice>();
-        //    Products = new List<Product>();
-
-        //    foreach (var item in other.Addresses)
-        //    {
-        //        Addresses.Add(item);
-        //    }
-        //    foreach (var item in other.Users)
-        //    {
-        //        Users.Add(item);
-        //    }
-        //    foreach (var item in other.Contacts)
-        //    {
-        //        Contacts.Add(item);
-        //    }
-        //    foreach (var item in other.Offers)
-        //    {
-        //        Offers.Add(item);
-        //    }
-        //    foreach (var item in other.OrderConfirmations)
-        //    {
-        //        OrderConfirmations.Add(item);
-        //    }
-        //    foreach (var item in other.Invoices)
-        //    {
-        //        Invoices.Add(item);
-        //    }
-        //    foreach (var item in other.DeliveryNotes)
-        //    {
-        //        DeliveryNotes.Add(item);
-        //    }
-        //    foreach (var item in other.Products)
-        //    {
-        //        Products.Add(item);
-        //    }
-        //}
     }
 }

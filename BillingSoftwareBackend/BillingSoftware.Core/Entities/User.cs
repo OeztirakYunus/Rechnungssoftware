@@ -14,11 +14,5 @@ namespace BillingSoftware.Core.Entities
         [Required]
         public string LastName { get; set; }  
         public virtual Company Company { get; set; }
-        public void CopyProperties(User other)
-        {
-            FirstName = other.FirstName;
-            LastName = other.LastName;
-            //Company.CopyProperties(other.Company);
-        }
     }
 }

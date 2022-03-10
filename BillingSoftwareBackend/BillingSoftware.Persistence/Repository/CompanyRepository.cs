@@ -20,7 +20,7 @@ namespace BillingSoftware.Persistence.Repository
             _userManager = userManager;
         }
 
-        public async Task AddAddress(int companyId, Address address)
+        public async Task AddAddress(Guid companyId, Address address)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if(company == null)
@@ -38,7 +38,7 @@ namespace BillingSoftware.Persistence.Repository
             company.Addresses.Add(tempAddress);
         }
 
-        public async Task AddContact(int companyId, Contact contact)
+        public async Task AddContact(Guid companyId, Contact contact)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -56,7 +56,7 @@ namespace BillingSoftware.Persistence.Repository
             company.Contacts.Add(tempContact);
         }
 
-        public async Task AddDeliveryNote(int companyId, DeliveryNote deliveryNote)
+        public async Task AddDeliveryNote(Guid companyId, DeliveryNote deliveryNote)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -74,7 +74,7 @@ namespace BillingSoftware.Persistence.Repository
             company.DeliveryNotes.Add(tempDeliveryNote);
         }
 
-        public async Task AddInvoice(int companyId, Invoice invoice)
+        public async Task AddInvoice(Guid companyId, Invoice invoice)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -92,7 +92,7 @@ namespace BillingSoftware.Persistence.Repository
             company.Invoices.Add(tempInvoice);
         }
 
-        public async Task AddOffer(int companyId, Offer offer)
+        public async Task AddOffer(Guid companyId, Offer offer)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -110,7 +110,7 @@ namespace BillingSoftware.Persistence.Repository
             company.Offers.Add(tempOffer);
         }
 
-        public async Task AddOrderConfirmation(int companyId, OrderConfirmation orderConfirmation)
+        public async Task AddOrderConfirmation(Guid companyId, OrderConfirmation orderConfirmation)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -128,7 +128,7 @@ namespace BillingSoftware.Persistence.Repository
             company.OrderConfirmations.Add(tempOrderConfirmation);
         }
 
-        public async Task AddProduct(int companyId, Product product)
+        public async Task AddProduct(Guid companyId, Product product)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -146,7 +146,7 @@ namespace BillingSoftware.Persistence.Repository
             company.Products.Add(tempProduct);
         }
 
-        public async Task AddUser(int companyId, UserAddDto user)
+        public async Task AddUser(Guid companyId, UserAddDto user)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -184,7 +184,7 @@ namespace BillingSoftware.Persistence.Repository
             company.Users.Add(userToAdd as User);
         }
 
-        public async Task DeleteAddress(int companyId, int addressId)
+        public async Task DeleteAddress(Guid companyId, Guid addressId)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -201,7 +201,7 @@ namespace BillingSoftware.Persistence.Repository
             _context.Addresses.Remove(tempAddress);
         }
 
-        public async Task DeleteContact(int companyId, int contactId)
+        public async Task DeleteContact(Guid companyId, Guid contactId)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -218,7 +218,7 @@ namespace BillingSoftware.Persistence.Repository
             _context.Contacts.Remove(tempContact);
         }
 
-        public async Task DeleteDeliveryNote(int companyId, int deliveryNoteId)
+        public async Task DeleteDeliveryNote(Guid companyId, Guid deliveryNoteId)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -235,7 +235,7 @@ namespace BillingSoftware.Persistence.Repository
             _context.DeliveryNotes.Remove(tempDeliveryNote);
         }
 
-        public async Task DeleteInvoice(int companyId, int invoiceId)
+        public async Task DeleteInvoice(Guid companyId, Guid invoiceId)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -252,7 +252,7 @@ namespace BillingSoftware.Persistence.Repository
             _context.Invoices.Remove(tempInvoice);
         }
 
-        public async Task DeleteOffer(int companyId, int offerId)
+        public async Task DeleteOffer(Guid companyId, Guid offerId)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -269,7 +269,7 @@ namespace BillingSoftware.Persistence.Repository
             _context.Offers.Remove(tempOffer);
         }
 
-        public async Task DeleteOrderConfirmation(int companyId, int orderConfirmationId)
+        public async Task DeleteOrderConfirmation(Guid companyId, Guid orderConfirmationId)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -286,7 +286,7 @@ namespace BillingSoftware.Persistence.Repository
             _context.OrderConfirmations.Remove(tempOrderConfirmation);
         }
 
-        public async Task DeleteProduct(int companyId, int productId)
+        public async Task DeleteProduct(Guid companyId, Guid productId)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -303,7 +303,7 @@ namespace BillingSoftware.Persistence.Repository
             _context.Products.Remove(tempProduct);
         }
 
-        public async Task DeleteUser(int companyId, string userId)
+        public async Task DeleteUser(Guid companyId, string userId)
         {
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
@@ -320,7 +320,7 @@ namespace BillingSoftware.Persistence.Repository
             _context.Users.Remove(tempUser);
         }
 
-        public override async Task Remove(int id)
+        public override async Task Remove(Guid id)
         {
             var company = await GetByIdAsync(id);
             foreach (var item in company.Products)
@@ -365,7 +365,7 @@ namespace BillingSoftware.Persistence.Repository
                 .ToArrayAsync();
         }
 
-        public override async Task<Company> GetByIdAsync(int id)
+        public override async Task<Company> GetByIdAsync(Guid id)
         {
             return await _context.Companies
                     .IncludeAllRecursively()

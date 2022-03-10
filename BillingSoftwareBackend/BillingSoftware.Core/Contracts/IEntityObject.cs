@@ -1,4 +1,6 @@
-﻿namespace BillingSoftware.Core.Contracts
+﻿using System;
+
+namespace BillingSoftware.Core.Contracts
 {
     /// <summary>
     /// Jede Entität muss eine Id und ein Concurrency-Feld haben
@@ -10,12 +12,12 @@
         /// <summary>
         /// Eindeutige Identität des Objektes.
         /// </summary>
-        int Id { get; set; }
+        Guid Id { get; set; }
 
         /// <summary>
-        /// Die Version dieses Datenbank-Objektes. Diese Version wird beim Erzeugen (Insert) 
-        /// automatisch und mit jeder Änderung neu gesetzt. 
+        /// Die Version dieses Datenbank-Objektes.Diese Version wird beim Erzeugen(Insert)
+        /// automatisch und mit jeder Änderung neu gesetzt.
         /// </summary>
-        //byte[] RowVersion { get; set; }
+        byte[] RowVersion { get; set; }
     }
 }

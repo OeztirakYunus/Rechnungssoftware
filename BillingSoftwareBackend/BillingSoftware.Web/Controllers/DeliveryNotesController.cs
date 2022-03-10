@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
 using BillingSoftware.Persistence;
+using CommonBase.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,7 +27,11 @@ namespace BillingSoftware.Web.Controllers
         {
             try
             {
-                return Ok(await _uow.DeliveryNoteRepository.GetAllAsync());
+                var email = HttpContext.User.Identity.Name;
+                var user = await _uow.UserRepository.GetUserByEmail(email);
+                var deliveryNotes = await _uow.DeliveryNoteRepository.GetAllAsync();
+                deliveryNotes = deliveryNotes.Where(i => user.Company.DeliveryNotes.Any(a => a.Id.Equals(i.Id))).ToArray();
+                return Ok(deliveryNotes);
             }
             catch (System.Exception ex)
             {
@@ -34,11 +40,18 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<DeliveryNote>> GetDeliveryNote(int id)
+        public async Task<ActionResult<DeliveryNote>> GetDeliveryNote(string id)
         {
             try
             {
-                var deliveryNote = await _uow.DeliveryNoteRepository.GetByIdAsync(id);
+                var guid = Guid.Parse(id);
+
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this delivery note!" });
+                }
+
+                var deliveryNote = await _uow.DeliveryNoteRepository.GetByIdAsync(guid);
                 return deliveryNote;
             }
             catch (System.Exception ex)
@@ -52,8 +65,13 @@ namespace BillingSoftware.Web.Controllers
         {
             try
             {
+                if (!await CheckAuthorization(deliveryNote.Id))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to update this delivery note!" });
+                }
+
                 var entity = await _uow.DeliveryNoteRepository.GetByIdAsync(deliveryNote.Id);
-                entity.CopyProperties(deliveryNote);
+                deliveryNote.CopyProperties(entity);
                 _uow.DeliveryNoteRepository.Update(entity);
                 await _uow.SaveChangesAsync();
                 return Ok();
@@ -69,6 +87,11 @@ namespace BillingSoftware.Web.Controllers
         {
             try
             {
+                if (!await CheckAuthorization(deliveryNote.Id))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this delivery note!" });
+                }
+
                 await _uow.DeliveryNoteRepository.AddAsync(deliveryNote);
                 await _uow.SaveChangesAsync();
                 return Ok();
@@ -80,11 +103,17 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDeliveryNote(int id)
+        public async Task<IActionResult> DeleteDeliveryNote(string id)
         {
             try
             {
-                await _uow.DeliveryNoteRepository.Remove(id);
+                var guid = Guid.Parse(id);
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this delivery note!" });
+                }
+
+                await _uow.DeliveryNoteRepository.Remove(guid);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -92,6 +121,13 @@ namespace BillingSoftware.Web.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        private async Task<bool> CheckAuthorization(Guid deliveryNoteId)
+        {
+            var email = HttpContext.User.Identity.Name;
+            var user = await _uow.UserRepository.GetUserByEmail(email);
+            return user.Company.DeliveryNotes.Any(i => i.Id.Equals(deliveryNoteId));
         }
     }
 }

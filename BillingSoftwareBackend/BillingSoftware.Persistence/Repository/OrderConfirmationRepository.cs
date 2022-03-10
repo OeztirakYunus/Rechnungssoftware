@@ -3,6 +3,7 @@ using BillingSoftware.Core.Entities;
 using BillingSoftware.Core.Enums;
 using CommonBase.Extensions;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading.Tasks;
 
 namespace BillingSoftware.Persistence.Repository
@@ -44,7 +45,7 @@ namespace BillingSoftware.Persistence.Repository
                 .ToArrayAsync();
         }
 
-        public override async Task<OrderConfirmation> GetByIdAsync(int id)
+        public override async Task<OrderConfirmation> GetByIdAsync(Guid id)
         {
             return await _context.OrderConfirmations
                 .IncludeAllRecursively()

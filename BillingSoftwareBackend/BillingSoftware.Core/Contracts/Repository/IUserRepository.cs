@@ -11,7 +11,7 @@ namespace BillingSoftware.Core.Contracts.Repository
     public interface IUserRepository
     {
         public Task<User[]> GetAllUsersAsync();
-        public Task<User> GetUserByIdAsync(string id);
+        public Task<User> GetUserByIdAsync(Guid id);
         public Task<User> GetUserByEmail(string email);
     }
 }
