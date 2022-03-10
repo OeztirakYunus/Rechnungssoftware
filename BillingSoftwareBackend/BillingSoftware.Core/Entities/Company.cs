@@ -24,43 +24,52 @@ namespace BillingSoftware.Core.Entities
         public virtual List<Invoice> Invoices { get; set; } = new();
         public virtual List<Product> Products { get; set; } = new();
 
-        public void CopyProperties(Company other)
-        {
-            CompanyName = other.CompanyName;
-            Email = other.Email;
-            PhoneNumber = other.PhoneNumber;
-            for (int i = 0; i < Addresses.Count; i++)
-            {
-                Addresses[i].CopyProperties(other.Addresses[i]);
-            }
-            for (int i = 0; i < Users.Count; i++)
-            {
-                Users[i].CopyProperties(other.Users[i]);
-            }
-            for (int i = 0; i < Contacts.Count; i++)
-            {
-                Contacts[i].CopyProperties(other.Contacts[i]);
-            }
-            for (int i = 0; i < Offers.Count; i++)
-            {
-                Offers[i].CopyProperties(other.Offers[i]);
-            }
-            for (int i = 0; i < OrderConfirmations.Count; i++)
-            {
-                OrderConfirmations[i].CopyProperties(other.OrderConfirmations[i]);
-            }
-            for (int i = 0; i < DeliveryNotes.Count; i++)
-            {
-                DeliveryNotes[i].CopyProperties(other.DeliveryNotes[i]);
-            }
-            for (int i = 0; i < Invoices.Count; i++)
-            {
-                Invoices[i].CopyProperties(other.Invoices[i]);
-            }
-            for (int i = 0; i < Products.Count; i++)
-            {
-                Products[i].CopyProperties(other.Products[i]);
-            }
-        }
+        //public void CopyProperties(Company other)
+        //{
+        //    CompanyName = other.CompanyName;
+        //    Email = other.Email;
+        //    PhoneNumber = other.PhoneNumber;
+        //    Addresses = new List<Address>();
+        //    Users = new List<User>();
+        //    Contacts = new List<Contact>();
+        //    Offers = new List<Offer>();
+        //    OrderConfirmations = new List<OrderConfirmation>();
+        //    DeliveryNotes = new List<DeliveryNote>();
+        //    Invoices = new List<Invoice>();
+        //    Products = new List<Product>();
+
+        //    foreach (var item in other.Addresses)
+        //    {
+        //        Addresses.Add(item);
+        //    }
+        //    foreach (var item in other.Users)
+        //    {
+        //        Users.Add(item);
+        //    }
+        //    foreach (var item in other.Contacts)
+        //    {
+        //        Contacts.Add(item);
+        //    }
+        //    foreach (var item in other.Offers)
+        //    {
+        //        Offers.Add(item);
+        //    }
+        //    foreach (var item in other.OrderConfirmations)
+        //    {
+        //        OrderConfirmations.Add(item);
+        //    }
+        //    foreach (var item in other.Invoices)
+        //    {
+        //        Invoices.Add(item);
+        //    }
+        //    foreach (var item in other.DeliveryNotes)
+        //    {
+        //        DeliveryNotes.Add(item);
+        //    }
+        //    foreach (var item in other.Products)
+        //    {
+        //        Products.Add(item);
+        //    }
+        //}
     }
 }

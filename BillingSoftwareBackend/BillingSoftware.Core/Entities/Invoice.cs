@@ -18,12 +18,14 @@ namespace BillingSoftware.Core.Entities
         [Required]
         public virtual DocumentInformations InvoiceInformations { get; set; }
         public Status Status { get; set; } = Status.OPEN;
+
         public void CopyProperties(Invoice other)
         {
             InvoiceNumber = other.InvoiceNumber;
             InvoiceDate = other.InvoiceDate;
             PaymentTerm = other.PaymentTerm;
             InvoiceInformations.CopyProperties(other.InvoiceInformations);
+            Status = other.Status;
         }
     }
 }

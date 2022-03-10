@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.DataTransferObjects;
 using BillingSoftware.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using CommonBase.Extensions;
 
 namespace BillingSoftware.Web.Controllers
 {
@@ -46,7 +45,6 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutCompany(Company company)
         {
             try
@@ -57,10 +55,9 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to edit this company!" });
                 }
 
-                //var entity = await _uow.CompanyRepository.GetByIdAsync(company.Id);
-                //entity = entity as Company;
-                //entity.CopyProperties(company);
-                _uow.CompanyRepository.Update(company);
+                var entity = await _uow.CompanyRepository.GetByIdAsync(company.Id);
+                company.CopyProperties(entity);
+                _uow.CompanyRepository.Update(entity);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }

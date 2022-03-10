@@ -1,6 +1,7 @@
 ﻿using BillingSoftware.Core.Contracts.Repository;
 using BillingSoftware.Core.DataTransferObjects;
 using BillingSoftware.Core.Entities;
+using CommonBase.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -22,19 +23,25 @@ namespace BillingSoftware.Persistence.Repository
             return await Task.Run(() =>
             {
                 var users = _userManager.Users;
-                return users.Include(i => i.Company).ToArrayAsync();//usersDto.ToArray();
+                return users
+                .IncludeAllRecursively()
+                .ToArrayAsync();//usersDto.ToArray();
             });
         }
 
         public async Task<User> GetUserByEmail(string email)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.Users
+                .IncludeAllRecursively()
+                .SingleOrDefaultAsync(i => i.Email.ToLower().Equals(email.ToLower()));
             return user;
         }
 
         public async Task<User> GetUserByIdAsync(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.Users
+                .IncludeAllRecursively()
+                .SingleOrDefaultAsync(i => i.Id == id);
             return user;
         }
     }

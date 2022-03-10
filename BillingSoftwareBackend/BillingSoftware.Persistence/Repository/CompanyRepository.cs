@@ -2,9 +2,11 @@
 using BillingSoftware.Core.DataTransferObjects;
 using BillingSoftware.Core.Entities;
 using CommonBase.Exceptions;
+using CommonBase.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BillingSoftware.Persistence.Repository
@@ -356,10 +358,18 @@ namespace BillingSoftware.Persistence.Repository
             await base.Remove(id);
         }
 
-        override public Task<Company[]> GetAllAsync()
+        override public async Task<Company[]> GetAllAsync()
         {
-            return _context.Companies.ToArrayAsync();
+            return await _context.Companies
+                .IncludeAllRecursively()
+                .ToArrayAsync();
         }
 
+        public override async Task<Company> GetByIdAsync(int id)
+        {
+            return await _context.Companies
+                    .IncludeAllRecursively()
+                    .SingleOrDefaultAsync(x => x.Id == id);
+        }
     }
 }

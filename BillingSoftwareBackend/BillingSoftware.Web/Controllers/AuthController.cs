@@ -96,7 +96,7 @@ namespace BillingSoftware.Web.Controllers
               issuer: _config["Jwt:Issuer"],
               audience: _config["Jwt:Audience"],
               claims: authClaims,
-              expires: DateTime.Now.AddMinutes(10),
+              expires: DateTime.Now.AddHours(1),
               signingCredentials: credentials);
 
             return (token, string.Join(',', userRoles));
