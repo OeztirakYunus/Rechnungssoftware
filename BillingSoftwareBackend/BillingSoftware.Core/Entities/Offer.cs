@@ -17,5 +17,6 @@ namespace BillingSoftware.Core.Entities
         [Required]
         public virtual DocumentInformations OfferInformations { get; set; }
         public Status Status { get; set; } = Status.OPEN;
+        public Guid CompanyId { get; set; }
     }
 }

@@ -31,10 +31,10 @@ namespace BillingSoftware.Persistence.Repository
             var tempAddress = await _context.Addresses.FindAsync(address.Id);
             if(tempAddress == null)
             {
+                address.CompanyId = companyId;
                 var res = await _context.Addresses.AddAsync(address);
                 tempAddress = res.Entity;
             }
-
             company.Addresses.Add(tempAddress);
         }
 
@@ -371,5 +371,19 @@ namespace BillingSoftware.Persistence.Repository
                     .IncludeAllRecursively()
                     .SingleOrDefaultAsync(x => x.Id == id);
         }
+
+        //public override async Task Update(Company entity)
+        //{
+        //    entity.Addresses.ForEach(async i => {
+        //        var address = await _context.Addresses.FindAsync(i.Id);
+        //        if(address == null)
+        //        {
+        //            address = i;
+        //        }
+        //        await Update(address);
+        //    });
+           
+        //    await base.Update(entity);
+        //}
     }
 }

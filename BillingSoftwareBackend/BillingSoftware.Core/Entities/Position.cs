@@ -43,5 +43,6 @@ namespace BillingSoftware.Core.Entities
                 }
             }
         }
+        public Guid DocumentInformationsId { get; set; }
     }
 }

@@ -58,7 +58,7 @@ namespace BillingSoftware.Web.Controllers
 
                 var entity = await _uow.CompanyRepository.GetByIdAsync(company.Id);
                 company.CopyProperties(entity);            
-                _uow.CompanyRepository.Update(entity);
+                await _uow.CompanyRepository.Update(entity);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -106,19 +106,18 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut("add-address/{companyId}")]
-        public async Task<IActionResult> AddAddressToCompany(string companyId, Address address)
+        [HttpPut("add-address")]
+        public async Task<IActionResult> AddAddressToCompany(Address address)
         {
             try
             {
-                var guid = Guid.Parse(companyId);
                 var compId = await GetCompanyIdForUser();
-                if (!compId.Equals(guid))
+                if (compId.Equals(Guid.Empty))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add an address to this company!" });
                 }
 
-                await _uow.CompanyRepository.AddAddress(guid, address);
+                await _uow.CompanyRepository.AddAddress(compId, address);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }

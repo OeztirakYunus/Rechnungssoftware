@@ -20,5 +20,6 @@ namespace BillingSoftware.Core.Entities
         [EmailAddress]
         public string Email { get; set; }
         public virtual List<Address> Addresses { get; set; } = new();
+        public Guid CompanyId { get; set; }
     }
 }

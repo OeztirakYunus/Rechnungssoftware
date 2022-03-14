@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BillingSoftware.Persistence.Repository
@@ -46,14 +47,17 @@ namespace BillingSoftware.Persistence.Repository
             _context.Remove(result);
         }
 
-        public virtual void Update(T entity)
+        public virtual async Task Update(T entity)
         {
-            Update<T>(entity);
+            await Update<T>(entity);
         }
 
-        public virtual void Update<E>(E entity)
+        public virtual async Task Update<E>(E entity)
         {
-            _context.Update(entity);
+            await Task.Run(() =>
+            {
+                _context.Update(entity);
+            });
         }
     }
 }
