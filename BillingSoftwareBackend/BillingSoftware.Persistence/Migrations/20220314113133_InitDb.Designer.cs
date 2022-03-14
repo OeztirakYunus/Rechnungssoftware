@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BillingSoftware.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220310164117_InitDb")]
+    [Migration("20220314113133_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,7 +100,7 @@ namespace BillingSoftware.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CompanyId")
+                    b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
@@ -146,18 +146,18 @@ namespace BillingSoftware.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CompanyId")
+                    b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DeliveryNoteDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("DeliveryNoteInformationsId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("DeliveryNoteNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("DocumentInformationsId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
@@ -171,7 +171,7 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("DeliveryNoteInformationsId");
+                    b.HasIndex("DocumentInformationsId");
 
                     b.ToTable("DeliveryNotes");
                 });
@@ -182,7 +182,8 @@ namespace BillingSoftware.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ClientId")
+                    b.Property<Guid?>("ClientId")
+                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ContactPersonId")
@@ -225,14 +226,14 @@ namespace BillingSoftware.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CompanyId")
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("DocumentInformationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("InvoiceDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("InvoiceInformationsId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("InvoiceNumber")
                         .IsRequired()
@@ -253,7 +254,7 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("InvoiceInformationsId");
+                    b.HasIndex("DocumentInformationId");
 
                     b.ToTable("Invoices");
                 });
@@ -264,14 +265,14 @@ namespace BillingSoftware.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CompanyId")
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("DocumentInformationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("OfferDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("OfferInformationsId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("OfferNumber")
                         .IsRequired()
@@ -289,7 +290,7 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("OfferInformationsId");
+                    b.HasIndex("DocumentInformationId");
 
                     b.ToTable("Offers");
                 });
@@ -300,14 +301,14 @@ namespace BillingSoftware.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CompanyId")
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("DocumentInformationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("OrderConfirmationDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("OrderConfirmationInformationsId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("OrderConfirmationNumber")
                         .IsRequired()
@@ -325,7 +326,7 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("OrderConfirmationInformationsId");
+                    b.HasIndex("DocumentInformationId");
 
                     b.ToTable("OrderConfirmations");
                 });
@@ -339,7 +340,7 @@ namespace BillingSoftware.Persistence.Migrations
                     b.Property<double>("Discount")
                         .HasColumnType("float");
 
-                    b.Property<Guid?>("DocumentInformationsId")
+                    b.Property<Guid>("DocumentInformationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ProductId")
@@ -358,7 +359,7 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DocumentInformationsId");
+                    b.HasIndex("DocumentInformationId");
 
                     b.HasIndex("ProductId");
 
@@ -378,7 +379,7 @@ namespace BillingSoftware.Persistence.Migrations
                     b.Property<int>("Category")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("CompanyId")
+                    b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
@@ -620,7 +621,7 @@ namespace BillingSoftware.Persistence.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<Guid?>("CompanyId")
+                    b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FirstName")
@@ -638,35 +639,47 @@ namespace BillingSoftware.Persistence.Migrations
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Address", b =>
                 {
-                    b.HasOne("BillingSoftware.Core.Entities.Company", null)
+                    b.HasOne("BillingSoftware.Core.Entities.Company", "Company")
                         .WithMany("Addresses")
                         .HasForeignKey("CompanyId");
 
-                    b.HasOne("BillingSoftware.Core.Entities.Contact", null)
+                    b.HasOne("BillingSoftware.Core.Entities.Contact", "Contact")
                         .WithMany("Addresses")
                         .HasForeignKey("ContactId");
+
+                    b.Navigation("Company");
+
+                    b.Navigation("Contact");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Contact", b =>
                 {
-                    b.HasOne("BillingSoftware.Core.Entities.Company", null)
+                    b.HasOne("BillingSoftware.Core.Entities.Company", "Company")
                         .WithMany("Contacts")
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.DeliveryNote", b =>
                 {
-                    b.HasOne("BillingSoftware.Core.Entities.Company", null)
+                    b.HasOne("BillingSoftware.Core.Entities.Company", "Company")
                         .WithMany("DeliveryNotes")
-                        .HasForeignKey("CompanyId");
-
-                    b.HasOne("BillingSoftware.Core.Entities.DocumentInformations", "DeliveryNoteInformations")
-                        .WithMany()
-                        .HasForeignKey("DeliveryNoteInformationsId")
+                        .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("DeliveryNoteInformations");
+                    b.HasOne("BillingSoftware.Core.Entities.DocumentInformations", "DocumentInformations")
+                        .WithMany()
+                        .HasForeignKey("DocumentInformationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("DocumentInformations");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.DocumentInformations", b =>
@@ -690,54 +703,68 @@ namespace BillingSoftware.Persistence.Migrations
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Invoice", b =>
                 {
-                    b.HasOne("BillingSoftware.Core.Entities.Company", null)
+                    b.HasOne("BillingSoftware.Core.Entities.Company", "Company")
                         .WithMany("Invoices")
-                        .HasForeignKey("CompanyId");
-
-                    b.HasOne("BillingSoftware.Core.Entities.DocumentInformations", "InvoiceInformations")
-                        .WithMany()
-                        .HasForeignKey("InvoiceInformationsId")
+                        .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("InvoiceInformations");
+                    b.HasOne("BillingSoftware.Core.Entities.DocumentInformations", "DocumentInformation")
+                        .WithMany()
+                        .HasForeignKey("DocumentInformationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("DocumentInformation");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Offer", b =>
                 {
-                    b.HasOne("BillingSoftware.Core.Entities.Company", null)
+                    b.HasOne("BillingSoftware.Core.Entities.Company", "Company")
                         .WithMany("Offers")
-                        .HasForeignKey("CompanyId");
-
-                    b.HasOne("BillingSoftware.Core.Entities.DocumentInformations", "OfferInformations")
-                        .WithMany()
-                        .HasForeignKey("OfferInformationsId")
+                        .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("OfferInformations");
+                    b.HasOne("BillingSoftware.Core.Entities.DocumentInformations", "DocumentInformation")
+                        .WithMany()
+                        .HasForeignKey("DocumentInformationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("DocumentInformation");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.OrderConfirmation", b =>
                 {
-                    b.HasOne("BillingSoftware.Core.Entities.Company", null)
+                    b.HasOne("BillingSoftware.Core.Entities.Company", "Company")
                         .WithMany("OrderConfirmations")
-                        .HasForeignKey("CompanyId");
-
-                    b.HasOne("BillingSoftware.Core.Entities.DocumentInformations", "OrderConfirmationInformations")
-                        .WithMany()
-                        .HasForeignKey("OrderConfirmationInformationsId")
+                        .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("OrderConfirmationInformations");
+                    b.HasOne("BillingSoftware.Core.Entities.DocumentInformations", "DocumentInformation")
+                        .WithMany()
+                        .HasForeignKey("DocumentInformationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("DocumentInformation");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Position", b =>
                 {
-                    b.HasOne("BillingSoftware.Core.Entities.DocumentInformations", null)
+                    b.HasOne("BillingSoftware.Core.Entities.DocumentInformations", "DocumentInformation")
                         .WithMany("Positions")
-                        .HasForeignKey("DocumentInformationsId");
+                        .HasForeignKey("DocumentInformationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BillingSoftware.Core.Entities.Product", "Product")
                         .WithMany()
@@ -745,14 +772,20 @@ namespace BillingSoftware.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("DocumentInformation");
+
                     b.Navigation("Product");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Product", b =>
                 {
-                    b.HasOne("BillingSoftware.Core.Entities.Company", null)
+                    b.HasOne("BillingSoftware.Core.Entities.Company", "Company")
                         .WithMany("Products")
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -810,7 +843,9 @@ namespace BillingSoftware.Persistence.Migrations
                 {
                     b.HasOne("BillingSoftware.Core.Entities.Company", "Company")
                         .WithMany("Users")
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Company");
                 });

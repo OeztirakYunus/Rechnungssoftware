@@ -72,7 +72,7 @@ namespace BillingSoftware.Web.Controllers
 
                 var entity = await _uow.DeliveryNoteRepository.GetByIdAsync(deliveryNote.Id);
                 deliveryNote.CopyProperties(entity);
-                _uow.DeliveryNoteRepository.Update(entity);
+                await _uow.DeliveryNoteRepository.Update(entity);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }

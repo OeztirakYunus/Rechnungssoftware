@@ -14,15 +14,15 @@ namespace BillingSoftware.Persistence.Repository
         {
         }
 
-        public OrderConfirmation OfferToOrderConfirmation(Offer offer)
+        public async Task<OrderConfirmation> OfferToOrderConfirmation(Offer offer)
         {
             OrderConfirmation orderConfirmation = new OrderConfirmation();
             orderConfirmation.OrderConfirmationDate = System.DateTime.Now;
             orderConfirmation.OrderConfirmationNumber = "OC " + offer.Id;
-            orderConfirmation.OrderConfirmationInformations = offer.OfferInformations;
+            orderConfirmation.DocumentInformationId = offer.DocumentInformationId;
             offer.Status = Status.CLOSED;
-            Update(orderConfirmation);
-            Update(offer);
+            await Update(orderConfirmation);
+            await Update(offer);
             return orderConfirmation;
         }
 

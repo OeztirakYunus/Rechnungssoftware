@@ -49,6 +49,7 @@ namespace BillingSoftware.Persistence.Repository
             var tempContact = await _context.Contacts.FindAsync(contact.Id);
             if (tempContact == null)
             {
+                contact.CompanyId = companyId;
                 var res = await _context.Contacts.AddAsync(contact);
                 tempContact = res.Entity;
             }
@@ -67,6 +68,7 @@ namespace BillingSoftware.Persistence.Repository
             var tempDeliveryNote = await _context.DeliveryNotes.FindAsync(deliveryNote.Id);
             if (tempDeliveryNote == null)
             {
+                deliveryNote.CompanyId = companyId;
                 var res = await _context.DeliveryNotes.AddAsync(deliveryNote);
                 tempDeliveryNote = res.Entity;
             }
@@ -85,6 +87,7 @@ namespace BillingSoftware.Persistence.Repository
             var tempInvoice = await _context.Invoices.FindAsync(invoice.Id);
             if (tempInvoice == null)
             {
+                invoice.CompanyId = companyId;
                 var res = await _context.Invoices.AddAsync(invoice);
                 tempInvoice = res.Entity;
             }
@@ -103,6 +106,7 @@ namespace BillingSoftware.Persistence.Repository
             var tempOffer = await _context.Offers.FindAsync(offer.Id);
             if (tempOffer == null)
             {
+                offer.CompanyId = companyId;
                 var res = await _context.Offers.AddAsync(offer);
                 tempOffer = res.Entity;
             }
@@ -121,6 +125,7 @@ namespace BillingSoftware.Persistence.Repository
             var tempOrderConfirmation = await _context.OrderConfirmations.FindAsync(orderConfirmation.Id);
             if (tempOrderConfirmation == null)
             {
+                orderConfirmation.CompanyId = companyId;
                 var res = await _context.OrderConfirmations.AddAsync(orderConfirmation);
                 tempOrderConfirmation = res.Entity;
             }
@@ -139,6 +144,7 @@ namespace BillingSoftware.Persistence.Repository
             var tempProduct = await _context.Products.FindAsync(product.Id);
             if (tempProduct == null)
             {
+                product.CompanyId = companyId;
                 var res = await _context.Products.AddAsync(product);
                 tempProduct = res.Entity;
             }

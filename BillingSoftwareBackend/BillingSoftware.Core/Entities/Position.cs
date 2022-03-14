@@ -9,7 +9,7 @@ namespace BillingSoftware.Core.Entities
     public class Position : EntityObject
     {
         [Required]
-        public virtual Product Product { get; set; }
+        public Guid ProductId { get; set; }
         [Required]
         public double Quantity { get; set; }
         public double Discount { get; set; } = 0;
@@ -43,6 +43,10 @@ namespace BillingSoftware.Core.Entities
                 }
             }
         }
-        public Guid DocumentInformationsId { get; set; }
+        public Guid DocumentInformationId { get; set; }
+
+        //Navigation Properties
+        public Product Product { get; set; }
+        public DocumentInformations DocumentInformation { get; set; }
     }
 }

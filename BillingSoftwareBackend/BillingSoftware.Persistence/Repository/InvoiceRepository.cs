@@ -13,13 +13,13 @@ namespace BillingSoftware.Persistence.Repository
         {
         }
       
-        public DeliveryNote InvoiceToDeliveryNote(Invoice invoice)
+        public async Task<DeliveryNote> InvoiceToDeliveryNote(Invoice invoice)
         {
             DeliveryNote deliveryNote = new DeliveryNote();
             deliveryNote.DeliveryNoteDate = System.DateTime.Now;
             deliveryNote.DeliveryNoteNumber = "DN " + invoice.Id;
-            deliveryNote.DeliveryNoteInformations = invoice.InvoiceInformations;
-            Update(deliveryNote);
+            deliveryNote.DocumentInformationsId = invoice.DocumentInformationId;
+            await Update(deliveryNote);
             return deliveryNote;
         }
 

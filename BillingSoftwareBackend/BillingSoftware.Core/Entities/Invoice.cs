@@ -16,8 +16,12 @@ namespace BillingSoftware.Core.Entities
         public DateTime InvoiceDate { get; set; }
         public DateTime PaymentTerm { get; set; }
         [Required]
-        public virtual DocumentInformations InvoiceInformations { get; set; }
+        public Guid DocumentInformationId { get; set; }
         public Status Status { get; set; } = Status.OPEN;
         public Guid CompanyId { get; set; }
+
+        //Navigation Properties
+        public DocumentInformations DocumentInformation { get; set; }
+        public Company Company { get; set; }
     }
 }

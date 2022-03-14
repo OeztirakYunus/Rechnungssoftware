@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,15 +12,13 @@ namespace BillingSoftware.Core.Entities
     public class DocumentInformations : EntityObject
     {
         [Required]
-        public virtual Contact Client { get; set; }
+        public Guid? ClientId { get; set; }
         [Required]
         public string Subject { get; set; }
         public string HeaderText { get; set; }
-        [Required]
-        public virtual List<Position> Positions { get; set; } = new();
         public string FlowText { get; set; }
         [Required]
-        public virtual User ContactPerson { get; set; }
+        public string? ContactPersonId { get; set; }
         public double TotalDiscount { get; set; } = 0;
         public TypeOfDiscount TypeOfDiscount { get; set; } = TypeOfDiscount.Percent;
         public double TotalPriceNet
@@ -60,5 +59,10 @@ namespace BillingSoftware.Core.Entities
                 }
             }
         }
+
+        //Navigation Properties
+        public List<Position> Positions { get; set; } = new();
+        public User? ContactPerson { get; set; }
+        public Contact? Client { get; set; }
     }
 }

@@ -12,7 +12,10 @@ namespace BillingSoftware.Core.Entities
         [Required]
         public string FirstName { get; set; }
         [Required]
-        public string LastName { get; set; }  
-        public virtual Company Company { get; set; }
+        public string LastName { get; set; }
+        public Guid CompanyId { get; set; }
+
+        //Navigation Properties
+        public Company Company { get; set; }
     }
 }

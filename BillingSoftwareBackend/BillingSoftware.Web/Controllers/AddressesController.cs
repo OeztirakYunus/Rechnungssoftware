@@ -71,7 +71,7 @@ namespace BillingSoftware.Web.Controllers
                 }
                 var entity = await _uow.AddressRepository.GetByIdAsync(address.Id);
                 address.CopyProperties(entity);
-                _uow.AddressRepository.Update(entity);
+                await _uow.AddressRepository.Update(entity);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }

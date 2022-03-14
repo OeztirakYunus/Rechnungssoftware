@@ -25,5 +25,8 @@ namespace BillingSoftware.Core.Entities
         public Unit Unit { get; set; }
         public string Description { get; set; }
         public Guid CompanyId { get; set; }
+
+        //Navigation Properties
+        public Company Company { get; set; }
     }
 }

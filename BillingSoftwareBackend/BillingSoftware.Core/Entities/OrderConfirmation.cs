@@ -15,8 +15,12 @@ namespace BillingSoftware.Core.Entities
         [Required]
         public DateTime OrderConfirmationDate { get; set; }
         [Required]
-        public virtual DocumentInformations OrderConfirmationInformations { get; set; }
+        public Guid DocumentInformationId { get; set; }
         public Status Status { get; set; } = Status.OPEN;
         public Guid CompanyId { get; set; }
+
+        //Navigation Properties
+        public DocumentInformations DocumentInformation { get; set; }
+        public Company Company { get; set; }
     }
 }

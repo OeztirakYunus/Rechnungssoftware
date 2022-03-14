@@ -83,20 +83,19 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteCompany(string id)
+        public async Task<IActionResult> DeleteCompany()
         {
             try
             {
-                var guid = Guid.Parse(id);
                 var companyId = await GetCompanyIdForUser();
-                if (!companyId.Equals(guid))
+                if (companyId.Equals(Guid.Empty))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this company!" });
                 }
 
-                await _uow.CompanyRepository.Remove(guid);
+                await _uow.CompanyRepository.Remove(companyId);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -127,19 +126,18 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut("add-contact/{companyId}")]
-        public async Task<IActionResult> AddContactToCompany(string companyId, Contact contact)
+        [HttpPut("add-contact")]
+        public async Task<IActionResult> AddContactToCompany(Contact contact)
         {
             try
             {
-                var guid = Guid.Parse(companyId);
                 var compId = await GetCompanyIdForUser();
-                if (!compId.Equals(guid))
+                if (compId.Equals(Guid.Empty))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add a contact to this company!" });
                 }
 
-                await _uow.CompanyRepository.AddContact(guid, contact);
+                await _uow.CompanyRepository.AddContact(compId, contact);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -149,19 +147,18 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut("add-delivery-note/{companyId}")]
-        public async Task<IActionResult> AddDeliveryNoteToCompany(string companyId, DeliveryNote deliveryNote)
+        [HttpPut("add-delivery-note")]
+        public async Task<IActionResult> AddDeliveryNoteToCompany(DeliveryNote deliveryNote)
         {
             try
             {
-                var guid = Guid.Parse(companyId);
                 var compId = await GetCompanyIdForUser();
-                if (!compId.Equals(guid))
+                if (compId.Equals(Guid.Empty))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add a delivery note to this company!" });
                 }
 
-                await _uow.CompanyRepository.AddDeliveryNote(guid, deliveryNote);
+                await _uow.CompanyRepository.AddDeliveryNote(compId, deliveryNote);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -171,19 +168,18 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut("add-invoice/{companyId}")]
-        public async Task<IActionResult> AddInvoiceToCompany(string companyId, Invoice invoice)
+        [HttpPut("add-invoice")]
+        public async Task<IActionResult> AddInvoiceToCompany(Invoice invoice)
         {
             try
             {
-                var guid = Guid.Parse(companyId);
                 var compId = await GetCompanyIdForUser();
-                if (!compId.Equals(guid))
+                if (compId.Equals(Guid.Empty))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add an invoice to this company!" });
                 }
 
-                await _uow.CompanyRepository.AddInvoice(guid, invoice);
+                await _uow.CompanyRepository.AddInvoice(compId, invoice);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -193,19 +189,18 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut("add-offer/{companyId}")]
-        public async Task<IActionResult> AddOfferToCompany(string companyId, Offer offer)
+        [HttpPut("add-offer")]
+        public async Task<IActionResult> AddOfferToCompany(Offer offer)
         {
             try
             {
-                var guid = Guid.Parse(companyId);
                 var compId = await GetCompanyIdForUser();
-                if (!compId.Equals(guid))
+                if (compId.Equals(Guid.Empty))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add an offer to this company!" });
                 }
 
-                await _uow.CompanyRepository.AddOffer(guid, offer);
+                await _uow.CompanyRepository.AddOffer(compId, offer);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -215,19 +210,18 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut("add-order-confirmation/{companyId}")]
-        public async Task<IActionResult> AddOrderConfirmationToCompany(string companyId, OrderConfirmation orderConfirmation)
+        [HttpPut("add-order-confirmation")]
+        public async Task<IActionResult> AddOrderConfirmationToCompany(OrderConfirmation orderConfirmation)
         {
             try
             {
-                var guid = Guid.Parse(companyId);
                 var compId = await GetCompanyIdForUser();
-                if (!compId.Equals(guid))
+                if (compId.Equals(Guid.Empty))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add an order confirmation to this company!" });
                 }
 
-                await _uow.CompanyRepository.AddOrderConfirmation(guid, orderConfirmation);
+                await _uow.CompanyRepository.AddOrderConfirmation(compId, orderConfirmation);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -237,19 +231,18 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut("add-product/{companyId}")]
-        public async Task<IActionResult> AddProductToCompany(string companyId, Product product)
+        [HttpPut("add-product")]
+        public async Task<IActionResult> AddProductToCompany(Product product)
         {
             try
             {
-                var guid = Guid.Parse(companyId);
                 var compId = await GetCompanyIdForUser();
-                if (!compId.Equals(guid))
+                if (compId.Equals(Guid.Empty))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add a product to this company!" });
                 }
 
-                await _uow.CompanyRepository.AddProduct(guid, product);
+                await _uow.CompanyRepository.AddProduct(compId, product);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -259,20 +252,19 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut("add-user/{companyId}")]
+        [HttpPut("add-user")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddUserToCompany(string companyId, UserAddDto user)
+        public async Task<IActionResult> AddUserToCompany(UserAddDto user)
         {
             try
             {
-                var guid = Guid.Parse(companyId);
                 var compId = await GetCompanyIdForUser();
-                if (!compId.Equals(guid))
+                if (compId.Equals(Guid.Empty))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add an user to this company!" });
                 }
 
-                await _uow.CompanyRepository.AddUser(guid, user);
+                await _uow.CompanyRepository.AddUser(compId, user);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -282,20 +274,19 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut("delete-address/{companyId}/{addressId}")]
-        public async Task<IActionResult> DeleteAddressFromCompany(string companyId, string addressId)
+        [HttpPut("delete-address/{addressId}")]
+        public async Task<IActionResult> DeleteAddressFromCompany(string addressId)
         {
             try
             {
-                var compGuid = Guid.Parse(companyId);
                 var toDeleteId = Guid.Parse(addressId);
                 var compId = await GetCompanyIdForUser();
-                if (!compId.Equals(compGuid))
+                if (compId.Equals(Guid.Empty))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this address" });
                 }
 
-                await _uow.CompanyRepository.DeleteAddress(compGuid, toDeleteId);
+                await _uow.CompanyRepository.DeleteAddress(compId, toDeleteId);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -305,20 +296,19 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut("delete-contact/{companyId}/{contactId}")]
-        public async Task<IActionResult> DeleteContactFromCompany(string companyId, string contactId)
+        [HttpPut("delete-contact/{contactId}")]
+        public async Task<IActionResult> DeleteContactFromCompany(string contactId)
         {
             try
             {
-                var compGuid = Guid.Parse(companyId);
                 var toDeleteId = Guid.Parse(contactId);
                 var compId = await GetCompanyIdForUser();
-                if (!compId.Equals(compGuid))
+                if (compId.Equals(Guid.Empty))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this contact!" });
                 }
 
-                await _uow.CompanyRepository.DeleteContact(compGuid, toDeleteId);
+                await _uow.CompanyRepository.DeleteContact(compId, toDeleteId);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -328,20 +318,19 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut("delete-delivery-note/{companyId}/{deliveryNoteId}")]
-        public async Task<IActionResult> DeleteDeliveryNoteFromCompany(string companyId, string deliveryNoteId)
+        [HttpPut("delete-delivery-note/{deliveryNoteId}")]
+        public async Task<IActionResult> DeleteDeliveryNoteFromCompany(string deliveryNoteId)
         {
             try
             {
-                var compGuid = Guid.Parse(companyId);
                 var toDeleteId = Guid.Parse(deliveryNoteId);
                 var compId = await GetCompanyIdForUser();
-                if (!compId.Equals(compGuid))
+                if (compId.Equals(Guid.Empty))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this delivery note!" });
                 }
 
-                await _uow.CompanyRepository.DeleteDeliveryNote(compGuid, toDeleteId);
+                await _uow.CompanyRepository.DeleteDeliveryNote(compId, toDeleteId);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -351,20 +340,19 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut("delete-invoice/{companyId}/{invoiceId}")]
-        public async Task<IActionResult> DeleteInvoiceFromCompany(string companyId, string invoiceId)
+        [HttpPut("delete-invoice/{invoiceId}")]
+        public async Task<IActionResult> DeleteInvoiceFromCompany(string invoiceId)
         {
             try
             {
-                var compGuid = Guid.Parse(companyId);
                 var toDeleteId = Guid.Parse(invoiceId);
                 var compId = await GetCompanyIdForUser();
-                if (!compId.Equals(compGuid))
+                if (compId.Equals(Guid.Empty))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this invoice!" });
                 }
 
-                await _uow.CompanyRepository.DeleteInvoice(compGuid, toDeleteId);
+                await _uow.CompanyRepository.DeleteInvoice(compId, toDeleteId);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -374,20 +362,19 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut("delete-offer/{companyId}/{offerId}")]
-        public async Task<IActionResult> DeleteOfferFromCompany(string companyId, string offerId)
+        [HttpPut("delete-offer/{offerId}")]
+        public async Task<IActionResult> DeleteOfferFromCompany(string offerId)
         {
             try
             {
-                var compGuid = Guid.Parse(companyId);
                 var toDeleteId = Guid.Parse(offerId);
                 var compId = await GetCompanyIdForUser();
-                if (!compId.Equals(compGuid))
+                if (compId.Equals(Guid.Empty))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this offer!" });
                 }
 
-                await _uow.CompanyRepository.DeleteOffer(compGuid, toDeleteId);
+                await _uow.CompanyRepository.DeleteOffer(compId, toDeleteId);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -397,20 +384,19 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut("delete-order-confirmation/{companyId}/{orderConfirmationId}")]
-        public async Task<IActionResult> DeleteOrderConfirmationFromCompany(string companyId, string orderConfirmationId)
+        [HttpPut("delete-order-confirmation/{orderConfirmationId}")]
+        public async Task<IActionResult> DeleteOrderConfirmationFromCompany(string orderConfirmationId)
         {
             try
             {
-                var compGuid = Guid.Parse(companyId);
                 var toDeleteId = Guid.Parse(orderConfirmationId);
                 var compId = await GetCompanyIdForUser();
-                if (!compId.Equals(compGuid))
+                if (compId.Equals(Guid.Empty))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this order confirmation!" });
                 }
 
-                await _uow.CompanyRepository.DeleteOrderConfirmation(compGuid, toDeleteId);
+                await _uow.CompanyRepository.DeleteOrderConfirmation(compId, toDeleteId);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -420,20 +406,19 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut("delete-product/{companyId}/{productId}")]
-        public async Task<IActionResult> DeleteProductFromCompany(string companyId, string productId)
+        [HttpPut("delete-product/{productId}")]
+        public async Task<IActionResult> DeleteProductFromCompany(string productId)
         {
             try
             {
-                var compGuid = Guid.Parse(companyId);
                 var toDeleteId = Guid.Parse(productId);
                 var compId = await GetCompanyIdForUser();
-                if (!compId.Equals(compGuid))
+                if (compId.Equals(Guid.Empty))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this product!" });
                 }
 
-                await _uow.CompanyRepository.DeleteProduct(compGuid, toDeleteId);
+                await _uow.CompanyRepository.DeleteProduct(compId, toDeleteId);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -443,20 +428,19 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut("delete-user/{companyId}/{userId}")]
+        [HttpPut("delete-user/{userId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteUserFromCompany(string companyId, string userId)
+        public async Task<IActionResult> DeleteUserFromCompany(string userId)
         {
             try
             {
-                var compGuid = Guid.Parse(companyId);
                 var compId = await GetCompanyIdForUser();
-                if (!compId.Equals(compGuid))
+                if (compId.Equals(Guid.Empty))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this user!" });
                 }
 
-                await _uow.CompanyRepository.DeleteUser(compGuid, userId);
+                await _uow.CompanyRepository.DeleteUser(compId, userId);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }

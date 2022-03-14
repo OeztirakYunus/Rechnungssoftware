@@ -15,8 +15,12 @@ namespace BillingSoftware.Core.Entities
         [Required]
         public DateTime DeliveryNoteDate { get; set; }
         [Required]
-        public virtual DocumentInformations DeliveryNoteInformations { get; set; }
+        public Guid DocumentInformationsId { get; set; }
         public Status Status { get; set; } = Status.OPEN;
         public Guid CompanyId { get; set; }
+
+        //Navigation Properties
+        public DocumentInformations DocumentInformations { get; set; }
+        public Company Company { get; set; }
     }
 }

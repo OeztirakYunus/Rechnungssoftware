@@ -14,27 +14,27 @@ namespace BillingSoftware.Persistence.Repository
         {
         }
      
-        public Invoice OrderConfirmationToInvoice(OrderConfirmation orderConfirmation)
+        public async Task<Invoice> OrderConfirmationToInvoice(OrderConfirmation orderConfirmation)
         {
             Invoice invoice = new Invoice();
             invoice.InvoiceDate = System.DateTime.Now;
             invoice.InvoiceNumber = "I " + orderConfirmation.Id;
-            invoice.InvoiceInformations = invoice.InvoiceInformations;
+            invoice.DocumentInformationId = invoice.DocumentInformationId;
             invoice.Status = Status.CLOSED;
-            Update(invoice);
-            Update(orderConfirmation);
+            await Update(invoice);
+            await Update(orderConfirmation);
             return invoice;
         }
 
-        public DeliveryNote OrderConfirmationToDeliveryNote(OrderConfirmation orderConfirmation)
+        public async Task<DeliveryNote> OrderConfirmationToDeliveryNote(OrderConfirmation orderConfirmation)
         {
             DeliveryNote deliveryNote = new DeliveryNote();
             deliveryNote.DeliveryNoteDate = System.DateTime.Now;
             deliveryNote.DeliveryNoteNumber = "DN " + orderConfirmation.Id;
-            deliveryNote.DeliveryNoteInformations = deliveryNote.DeliveryNoteInformations;
+            deliveryNote.DocumentInformationsId = orderConfirmation.DocumentInformationId;
             deliveryNote.Status = Status.CLOSED;
-            Update(deliveryNote);
-            Update(orderConfirmation);
+            await Update(deliveryNote);
+            await Update(orderConfirmation);
             return deliveryNote;
         }
 

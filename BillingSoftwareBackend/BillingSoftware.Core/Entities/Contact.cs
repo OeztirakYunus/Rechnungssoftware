@@ -19,7 +19,11 @@ namespace BillingSoftware.Core.Entities
         public string PhoneNumber { get; set; }
         [EmailAddress]
         public string Email { get; set; }
-        public virtual List<Address> Addresses { get; set; } = new();
         public Guid CompanyId { get; set; }
+
+        //Navigation Properties
+        public List<Address> Addresses { get; set; } = new();
+        public Company Company { get; set; }
+
     }
 }

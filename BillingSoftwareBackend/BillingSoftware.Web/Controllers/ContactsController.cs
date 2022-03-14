@@ -74,7 +74,7 @@ namespace BillingSoftware.Web.Controllers
 
                 var entity = await _uow.ContactRepository.GetByIdAsync(contact.Id);
                 contact.CopyProperties(entity);
-                _uow.ContactRepository.Update(entity);
+                await _uow.ContactRepository.Update(entity);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
