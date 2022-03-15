@@ -16,25 +16,38 @@ namespace BillingSoftware.Persistence.Repository
      
         public async Task<Invoice> OrderConfirmationToInvoice(OrderConfirmation orderConfirmation)
         {
+            var company = await _context.Companies.FindAsync(orderConfirmation.CompanyId);
+
             Invoice invoice = new Invoice();
             invoice.InvoiceDate = System.DateTime.Now;
-            invoice.InvoiceNumber = "I " + orderConfirmation.Id;
+            invoice.InvoiceNumber = "I" + DateTime.Now.ToString("yy") + company.InvoiceCounter.ToString().PadLeft(5, '0');
             invoice.DocumentInformationId = invoice.DocumentInformationId;
-            invoice.Status = Status.CLOSED;
-            await Update(invoice);
+            invoice.CompanyId = orderConfirmation.CompanyId;
+            invoice.PaymentTerm = System.DateTime.Now.AddDays(14);
+
+            company.InvoiceCounter++;
+            orderConfirmation.Status = Status.CLOSED;
+
+            await AddAsync(invoice);
             await Update(orderConfirmation);
+            await Update(company);
             return invoice;
         }
 
         public async Task<DeliveryNote> OrderConfirmationToDeliveryNote(OrderConfirmation orderConfirmation)
         {
+            var company = await _context.Companies.FindAsync(orderConfirmation.CompanyId);
+
             DeliveryNote deliveryNote = new DeliveryNote();
             deliveryNote.DeliveryNoteDate = System.DateTime.Now;
-            deliveryNote.DeliveryNoteNumber = "DN " + orderConfirmation.Id;
+            deliveryNote.DeliveryNoteNumber = "DN" + DateTime.Now.ToString("yy") + company.DeliveryNoteCounter.ToString().PadLeft(5, '0');
             deliveryNote.DocumentInformationsId = orderConfirmation.DocumentInformationId;
-            deliveryNote.Status = Status.CLOSED;
-            await Update(deliveryNote);
-            await Update(orderConfirmation);
+            deliveryNote.CompanyId = orderConfirmation.CompanyId;
+
+            company.DeliveryNoteCounter++;
+
+            await AddAsync(deliveryNote);
+            await Update(company);
             return deliveryNote;
         }
 

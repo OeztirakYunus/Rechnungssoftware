@@ -32,10 +32,8 @@ namespace BillingSoftware.Persistence.Repository
             if(tempAddress == null)
             {
                 address.CompanyId = companyId;
-                var res = await _context.Addresses.AddAsync(address);
-                tempAddress = res.Entity;
+                await _context.Addresses.AddAsync(address);
             }
-            company.Addresses.Add(tempAddress);
         }
 
         public async Task AddContact(Guid companyId, Contact contact)
@@ -50,11 +48,8 @@ namespace BillingSoftware.Persistence.Repository
             if (tempContact == null)
             {
                 contact.CompanyId = companyId;
-                var res = await _context.Contacts.AddAsync(contact);
-                tempContact = res.Entity;
+                await _context.Contacts.AddAsync(contact);
             }
-
-            company.Contacts.Add(tempContact);
         }
 
         public async Task AddDeliveryNote(Guid companyId, DeliveryNote deliveryNote)
@@ -69,11 +64,8 @@ namespace BillingSoftware.Persistence.Repository
             if (tempDeliveryNote == null)
             {
                 deliveryNote.CompanyId = companyId;
-                var res = await _context.DeliveryNotes.AddAsync(deliveryNote);
-                tempDeliveryNote = res.Entity;
+                await _context.DeliveryNotes.AddAsync(deliveryNote);
             }
-
-            company.DeliveryNotes.Add(tempDeliveryNote);
         }
 
         public async Task AddInvoice(Guid companyId, Invoice invoice)
@@ -88,11 +80,8 @@ namespace BillingSoftware.Persistence.Repository
             if (tempInvoice == null)
             {
                 invoice.CompanyId = companyId;
-                var res = await _context.Invoices.AddAsync(invoice);
-                tempInvoice = res.Entity;
+                await _context.Invoices.AddAsync(invoice);
             }
-
-            company.Invoices.Add(tempInvoice);
         }
 
         public async Task AddOffer(Guid companyId, Offer offer)
@@ -107,11 +96,8 @@ namespace BillingSoftware.Persistence.Repository
             if (tempOffer == null)
             {
                 offer.CompanyId = companyId;
-                var res = await _context.Offers.AddAsync(offer);
-                tempOffer = res.Entity;
+                await _context.Offers.AddAsync(offer);
             }
-
-            company.Offers.Add(tempOffer);
         }
 
         public async Task AddOrderConfirmation(Guid companyId, OrderConfirmation orderConfirmation)
@@ -126,11 +112,8 @@ namespace BillingSoftware.Persistence.Repository
             if (tempOrderConfirmation == null)
             {
                 orderConfirmation.CompanyId = companyId;
-                var res = await _context.OrderConfirmations.AddAsync(orderConfirmation);
-                tempOrderConfirmation = res.Entity;
+                await _context.OrderConfirmations.AddAsync(orderConfirmation);
             }
-
-            company.OrderConfirmations.Add(tempOrderConfirmation);
         }
 
         public async Task AddProduct(Guid companyId, Product product)
@@ -145,11 +128,8 @@ namespace BillingSoftware.Persistence.Repository
             if (tempProduct == null)
             {
                 product.CompanyId = companyId;
-                var res = await _context.Products.AddAsync(product);
-                tempProduct = res.Entity;
+                await _context.Products.AddAsync(product);
             }
-
-            company.Products.Add(tempProduct);
         }
 
         public async Task AddUser(Guid companyId, UserAddDto user)
@@ -171,7 +151,7 @@ namespace BillingSoftware.Persistence.Repository
                 Email = user.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = user.Email,
-                Company = company,
+                CompanyId = companyId,
                 FirstName = user.FirstName,
                 LastName = user.LastName
             };
@@ -186,8 +166,6 @@ namespace BillingSoftware.Persistence.Repository
             {
                 throw new Exception("Error while adding role!");
             }
-
-            company.Users.Add(userToAdd as User);
         }
 
         public async Task DeleteAddress(Guid companyId, Guid addressId)
@@ -377,19 +355,5 @@ namespace BillingSoftware.Persistence.Repository
                     .IncludeAllRecursively()
                     .SingleOrDefaultAsync(x => x.Id == id);
         }
-
-        //public override async Task Update(Company entity)
-        //{
-        //    entity.Addresses.ForEach(async i => {
-        //        var address = await _context.Addresses.FindAsync(i.Id);
-        //        if(address == null)
-        //        {
-        //            address = i;
-        //        }
-        //        await Update(address);
-        //    });
-           
-        //    await base.Update(entity);
-        //}
     }
 }

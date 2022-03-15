@@ -11,13 +11,11 @@ namespace BillingSoftware.Core.Entities
 {
     public class DocumentInformations : EntityObject
     {
-        [Required]
         public Guid? ClientId { get; set; }
         [Required]
         public string Subject { get; set; }
         public string HeaderText { get; set; }
         public string FlowText { get; set; }
-        [Required]
         public string? ContactPersonId { get; set; }
         public double TotalDiscount { get; set; } = 0;
         public TypeOfDiscount TypeOfDiscount { get; set; } = TypeOfDiscount.Percent;
@@ -61,8 +59,8 @@ namespace BillingSoftware.Core.Entities
         }
 
         //Navigation Properties
-        public List<Position> Positions { get; set; } = new();
-        public User? ContactPerson { get; set; }
-        public Contact? Client { get; set; }
+        public virtual List<Position> Positions { get; set; } = new();
+        public virtual User ContactPerson { get; set; }
+        public virtual Contact Client { get; set; }
     }
 }

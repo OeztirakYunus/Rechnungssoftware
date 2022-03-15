@@ -22,8 +22,8 @@ namespace BillingSoftware.Core.Entities
         public Guid CompanyId { get; set; }
 
         //Navigation Properties
-        public List<Address> Addresses { get; set; } = new();
-        public Company Company { get; set; }
+        public virtual List<Address> Addresses { get; set; } = new();
+        public virtual Company Company { get; set; }
 
     }
 }

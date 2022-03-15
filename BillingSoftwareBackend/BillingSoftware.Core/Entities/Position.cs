@@ -46,7 +46,7 @@ namespace BillingSoftware.Core.Entities
         public Guid DocumentInformationId { get; set; }
 
         //Navigation Properties
-        public Product Product { get; set; }
-        public DocumentInformations DocumentInformation { get; set; }
+        public virtual Product Product { get; set; }
+        public virtual DocumentInformations DocumentInformation { get; set; }
     }
 }

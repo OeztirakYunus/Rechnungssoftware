@@ -14,13 +14,12 @@ namespace BillingSoftware.Core.Entities
         public string OfferNumber { get; set; }
         [Required]
         public DateTime OfferDate { get; set; }
-        [Required]
         public Guid DocumentInformationId { get; set; }
         public Status Status { get; set; } = Status.OPEN;
         public Guid CompanyId { get; set; }
 
         //Navigation Properties
-        public DocumentInformations DocumentInformation { get; set; }
-        public Company Company { get; set; }
+        public virtual DocumentInformations DocumentInformation { get; set; }
+        public virtual Company Company { get; set; }
     }
 }

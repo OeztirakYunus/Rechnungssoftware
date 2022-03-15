@@ -15,13 +15,19 @@ namespace BillingSoftware.Core.Entities
         public string Email { get; set; }
         [Required]
         public string PhoneNumber { get; set; }
-        public List<Address> Addresses { get; set; } = new();
-        public List<User> Users { get; set; } = new();
-        public List<Contact> Contacts { get; set; } = new();
-        public List<Offer> Offers { get; set; } = new();
-        public List<OrderConfirmation> OrderConfirmations { get; set; } = new();
-        public List<DeliveryNote> DeliveryNotes { get; set; } = new();
-        public List<Invoice> Invoices { get; set; } = new();
-        public List<Product> Products { get; set; } = new();
+        public int InvoiceCounter { get; set; } = 1;
+        public int OfferCounter { get; set; } = 1;
+        public int DeliveryNoteCounter { get; set; } = 1;
+        public int OrderConfirmationCounter { get; set; } = 1;
+
+        //Navigation Properties
+        public virtual List<Address> Addresses { get; set; } = new();
+        public virtual List<User> Users { get; set; } = new();
+        public virtual List<Contact> Contacts { get; set; } = new();
+        public virtual List<Offer> Offers { get; set; } = new();
+        public virtual List<OrderConfirmation> OrderConfirmations { get; set; } = new();
+        public virtual List<DeliveryNote> DeliveryNotes { get; set; } = new();
+        public virtual List<Invoice> Invoices { get; set; } = new();
+        public virtual List<Product> Products { get; set; } = new();
     }
 }

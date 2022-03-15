@@ -1,112 +1,156 @@
-﻿//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading.Tasks;
-//using BillingSoftware.Core.Contracts;
-//using BillingSoftware.Core.Entities;
-//using BillingSoftware.Persistence;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using BillingSoftware.Core.Contracts;
+using BillingSoftware.Core.Entities;
+using BillingSoftware.Persistence;
+using CommonBase.Extensions;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-//namespace BillingSoftware.Web.Controllers
-//{
-//    [Route("api/[controller]")]
-//    [ApiController]
-//    public class InvoicesController : ControllerBase
-//    {
-//        private readonly IUnitOfWork _uow;
+namespace BillingSoftware.Web.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    [Authorize]
+    public class InvoicesController : ControllerBase
+    {
+        private readonly IUnitOfWork _uow;
 
-//        public InvoicesController(IUnitOfWork uow)
-//        {
-//            _uow = uow;
-//        }
+        public InvoicesController(IUnitOfWork uow)
+        {
+            _uow = uow;
+        }
 
-//        [HttpGet]
-//        public async Task<ActionResult<IEnumerable<Invoice>>> GetInvoices()
-//        {
-//            try
-//            {
-//                return Ok(await _uow.InvoiceRepository.GetAllAsync());
-//            }
-//            catch (System.Exception ex)
-//            {
-//                return BadRequest(ex.Message);
-//            }
-//        }
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Invoice>>> GetInvoices()
+        {
+            try
+            {
+                var email = HttpContext.User.Identity.Name;
+                var user = await _uow.UserRepository.GetUserByEmail(email);
+                var invoices = await _uow.InvoiceRepository.GetAllAsync();
+                invoices = invoices.Where(i => user.Company.Invoices.Any(a => a.Id.Equals(i.Id))).ToArray();
+                return Ok(invoices);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-//        [HttpGet("{id}")]
-//        public async Task<ActionResult<Invoice>> GetInvoice(int id)
-//        {
-//            try
-//            {
-//                var invoice = await _uow.InvoiceRepository.GetByIdAsync(id);
-//                return invoice;
-//            }
-//            catch (System.Exception ex)
-//            {
-//                return BadRequest(ex.Message);
-//            }
-//        }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Invoice>> GetInvoice(string id)
+        {
+            try
+            {
+                var guid = Guid.Parse(id);
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this invoice!" });
+                }
 
-//        [HttpPut]
-//        public async Task<IActionResult> PutInvoice(Invoice invoice)
-//        {
-//            try
-//            {
-//                var entity = await _uow.InvoiceRepository.GetByIdAsync(invoice.Id);
-//                entity.CopyProperties(invoice);
-//                _uow.InvoiceRepository.Update(entity);
-//                await _uow.SaveChangesAsync();
-//                return Ok();
-//            }
-//            catch (System.Exception ex)
-//            {
-//                return BadRequest(ex.Message);
-//            }
-//        }
+                var invoice = await _uow.InvoiceRepository.GetByIdAsync(guid);
+                return invoice;
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-//        [HttpPost]
-//        public async Task<IActionResult> PostInvoice(Invoice invoice)
-//        {
-//            try
-//            {
-//                await _uow.InvoiceRepository.AddAsync(invoice);
-//                await _uow.SaveChangesAsync();
-//                return Ok();
-//            }
-//            catch (System.Exception ex)
-//            {
-//                return BadRequest(ex.Message);
-//            }
-//        }
+        [HttpPut]
+        public async Task<IActionResult> PutInvoice(Invoice invoice)
+        {
+            try
+            {
+                if (!await CheckAuthorization(invoice.Id))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to update this invoice!" });
+                }
 
-//        [HttpDelete("{id}")]
-//        public async Task<IActionResult> DeleteInvoice(int id)
-//        {
-//            try
-//            {
-//                await _uow.InvoiceRepository.Remove(id);
-//                await _uow.SaveChangesAsync();
-//                return Ok();
-//            }
-//            catch (System.Exception ex)
-//            {
-//                return BadRequest(ex.Message);
-//            }
-//        }
+                var entity = await _uow.InvoiceRepository.GetByIdAsync(invoice.Id);
+                invoice.CopyProperties(entity);
+                await _uow.InvoiceRepository.Update(entity);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-//        [HttpPost("invoice-to-delivery-note")]
-//        public async Task<IActionResult> InvoiceToDeliveryNote(Invoice invoice)
-//        {
-//            try
-//            {
-//                var deliveryNote = _uow.InvoiceRepository.InvoiceToDeliveryNote(invoice);
-//                await _uow.SaveChangesAsync();
-//                return Ok(deliveryNote);
-//            }
-//            catch (System.Exception ex)
-//            {
-//                return BadRequest(ex.Message + "\n" + ex.InnerException.Message);
-//            }
-//        }
-//    }
-//}
+        [HttpPost]
+        public async Task<IActionResult> PostInvoice(Invoice invoice)
+        {
+            try
+            {
+                if (!await CheckAuthorization(invoice.Id))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this invoice!" });
+                }
+
+                await _uow.InvoiceRepository.AddAsync(invoice);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteInvoice(string id)
+        {
+            try
+            {
+                var guid = Guid.Parse(id);
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this invoice!" });
+                }
+
+                await _uow.InvoiceRepository.Remove(guid);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("invoice-to-delivery-note/{invoiceId}")]
+        public async Task<IActionResult> InvoiceToDeliveryNote(string invoiceId)
+        {
+            try
+            {
+                var guid = Guid.Parse(invoiceId);
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to transform this invoice!" });
+                }
+
+                var invoice = await _uow.InvoiceRepository.GetByIdAsync(guid);
+                var deliveryNote = await _uow.InvoiceRepository.InvoiceToDeliveryNote(invoice);
+                await _uow.SaveChangesAsync();
+                return Ok(deliveryNote);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message + "\n" + ex.InnerException.Message);
+            }
+        }
+
+        private async Task<bool> CheckAuthorization(Guid invoiceId)
+        {
+            var email = HttpContext.User.Identity.Name;
+            var user = await _uow.UserRepository.GetUserByEmail(email);
+            return user.Company.Invoices.Any(i => i.Id.Equals(invoiceId));
+        }
+    }
+}

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BillingSoftware.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220314113133_InitDb")]
+    [Migration("20220315135243_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,9 +76,21 @@ namespace BillingSoftware.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("DeliveryNoteCounter")
+                        .HasColumnType("int");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("InvoiceCounter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OfferCounter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderConfirmationCounter")
+                        .HasColumnType("int");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -183,11 +195,9 @@ namespace BillingSoftware.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ClientId")
-                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ContactPersonId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FlowText")
@@ -686,15 +696,11 @@ namespace BillingSoftware.Persistence.Migrations
                 {
                     b.HasOne("BillingSoftware.Core.Entities.Contact", "Client")
                         .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ClientId");
 
                     b.HasOne("BillingSoftware.Core.Entities.User", "ContactPerson")
                         .WithMany()
-                        .HasForeignKey("ContactPersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ContactPersonId");
 
                     b.Navigation("Client");
 

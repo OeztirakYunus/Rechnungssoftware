@@ -31,6 +31,10 @@ namespace BillingSoftware.Persistence.Migrations
                     CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    InvoiceCounter = table.Column<int>(type: "int", nullable: false),
+                    OfferCounter = table.Column<int>(type: "int", nullable: false),
+                    DeliveryNoteCounter = table.Column<int>(type: "int", nullable: false),
+                    OrderConfirmationCounter = table.Column<int>(type: "int", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -266,11 +270,11 @@ namespace BillingSoftware.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Subject = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     HeaderText = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FlowText = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ContactPersonId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ContactPersonId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     TotalDiscount = table.Column<double>(type: "float", nullable: false),
                     TypeOfDiscount = table.Column<int>(type: "int", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
@@ -282,14 +286,12 @@ namespace BillingSoftware.Persistence.Migrations
                         name: "FK_DocumentInformations_AspNetUsers_ContactPersonId",
                         column: x => x.ContactPersonId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_DocumentInformations_Contacts_ClientId",
                         column: x => x.ClientId,
                         principalTable: "Contacts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(

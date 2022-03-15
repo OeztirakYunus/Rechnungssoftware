@@ -6,6 +6,7 @@ using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
 using BillingSoftware.Persistence;
 using CommonBase.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,7 @@ namespace BillingSoftware.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DeliveryNotesController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
@@ -45,7 +47,6 @@ namespace BillingSoftware.Web.Controllers
             try
             {
                 var guid = Guid.Parse(id);
-
                 if (!await CheckAuthorization(guid))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this delivery note!" });

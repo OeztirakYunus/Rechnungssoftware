@@ -16,6 +16,6 @@ namespace BillingSoftware.Core.Entities
         public Guid CompanyId { get; set; }
 
         //Navigation Properties
-        public Company Company { get; set; }
+        public virtual Company Company { get; set; }
     }
 }

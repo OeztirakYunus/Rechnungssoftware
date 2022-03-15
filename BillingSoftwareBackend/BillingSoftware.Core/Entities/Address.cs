@@ -19,7 +19,7 @@ namespace BillingSoftware.Core.Entities
         public Guid? ContactId { get; set; }
 
         //Navigation Properties
-        public Company Company { get; set; }
-        public Contact Contact { get; set; }
+        public virtual Company Company { get; set; }
+        public virtual Contact Contact { get; set; }
     }
 }

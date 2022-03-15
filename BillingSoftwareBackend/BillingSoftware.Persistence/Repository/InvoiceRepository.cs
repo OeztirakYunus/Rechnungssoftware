@@ -15,11 +15,17 @@ namespace BillingSoftware.Persistence.Repository
       
         public async Task<DeliveryNote> InvoiceToDeliveryNote(Invoice invoice)
         {
+            var company = await _context.Companies.FindAsync(invoice.CompanyId);
+
             DeliveryNote deliveryNote = new DeliveryNote();
             deliveryNote.DeliveryNoteDate = System.DateTime.Now;
-            deliveryNote.DeliveryNoteNumber = "DN " + invoice.Id;
+            deliveryNote.DeliveryNoteNumber = "DN" + DateTime.Now.ToString("yy") + company.DeliveryNoteCounter.ToString().PadLeft(5, '0');
             deliveryNote.DocumentInformationsId = invoice.DocumentInformationId;
-            await Update(deliveryNote);
+            deliveryNote.CompanyId = invoice.CompanyId;
+
+            await AddAsync(deliveryNote);
+            await Update(company);
+
             return deliveryNote;
         }
 

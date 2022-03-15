@@ -16,13 +16,20 @@ namespace BillingSoftware.Persistence.Repository
 
         public async Task<OrderConfirmation> OfferToOrderConfirmation(Offer offer)
         {
+            var company = await _context.Companies.FindAsync(offer.CompanyId);
+            
             OrderConfirmation orderConfirmation = new OrderConfirmation();
             orderConfirmation.OrderConfirmationDate = System.DateTime.Now;
-            orderConfirmation.OrderConfirmationNumber = "OC " + offer.Id;
+            orderConfirmation.OrderConfirmationNumber = "OC" + DateTime.Now.ToString("yy") + company.OrderConfirmationCounter.ToString().PadLeft(5, '0');
             orderConfirmation.DocumentInformationId = offer.DocumentInformationId;
+            orderConfirmation.CompanyId = offer.CompanyId;
+            
             offer.Status = Status.CLOSED;
-            await Update(orderConfirmation);
+            company.OrderConfirmationCounter++;
+            
+            await AddAsync(orderConfirmation);
             await Update(offer);
+            await Update(company);
             return orderConfirmation;
         }
 
