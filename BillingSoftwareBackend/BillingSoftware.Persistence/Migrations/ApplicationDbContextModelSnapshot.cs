@@ -320,6 +320,9 @@ namespace BillingSoftware.Persistence.Migrations
                     b.Property<string>("Subject")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("ValidUntil")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");

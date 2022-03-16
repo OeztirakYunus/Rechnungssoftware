@@ -13,6 +13,7 @@ namespace BillingSoftware.Core.Entities
         public string OfferNumber { get; set; }
         [Required]
         public DateTime OfferDate { get; set; }
+        public DateTime ValidUntil { get; set; }
         public Guid DocumentInformationId { get; set; }
         public Status Status { get; set; } = Status.OPEN;
         public Guid CompanyId { get; set; }
