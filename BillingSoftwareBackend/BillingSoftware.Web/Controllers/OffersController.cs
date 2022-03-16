@@ -7,11 +7,13 @@ using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
 using BillingSoftware.Persistence;
 using CommonBase.Extensions;
-using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace BillingSoftware.Web.Controllers
 {
@@ -153,8 +155,13 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpGet("getAsPdf/{offerId}")]
+        [HttpGet("get-as-word/{offerId}")]
         public async Task GetOfferAsWord(string offerId)
+        {
+            await GetAsWord(offerId);
+        }
+
+        private async Task GetAsWord(string offerId)
         {
             var guid = Guid.Parse(offerId);
             var offer = await _uow.OfferRepository.GetByIdAsync(guid);
@@ -189,7 +196,7 @@ namespace BillingSoftware.Web.Controllers
                 wordDoc.Save();
             }
 
-            //Footer
+            //Header
             using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(newFile, true))
             {
                 string docText = null;
@@ -231,6 +238,9 @@ namespace BillingSoftware.Web.Controllers
                 docText = docText.Replace("offer.flowText", offer.FlowText);
                 docText = docText.Replace("offer.headerText", offer.HeaderText);
                 docText = docText.Replace("contact.name", offer.DocumentInformation.ContactPerson.LastName + " " + offer.DocumentInformation.ContactPerson.FirstName);
+                docText = docText.Replace("offer.priceNet", offer.DocumentInformation.TotalPriceNet.ToString());
+                docText = docText.Replace("offer.ustPrice", (offer.DocumentInformation.TotalPriceNet * 0.2).ToString());
+                docText = docText.Replace("offer.total", offer.DocumentInformation.TotalPriceGross.ToString());
 
                 var nameOfOrganisation = "";
                 if (!string.IsNullOrEmpty(offer.DocumentInformation.Client.NameOfOrganisation))
@@ -241,12 +251,12 @@ namespace BillingSoftware.Web.Controllers
 
                 var clientName = "";
                 var greeting = "geehrte Damen und Herren,";
-                if(!string.IsNullOrEmpty(offer.DocumentInformation.Client.FirstName) && !string.IsNullOrEmpty(offer.DocumentInformation.Client.LastName))
+                if (!string.IsNullOrEmpty(offer.DocumentInformation.Client.FirstName) && !string.IsNullOrEmpty(offer.DocumentInformation.Client.LastName))
                 {
                     clientName = offer.DocumentInformation.Client.LastName + " " + offer.DocumentInformation.Client.FirstName;
                     if (offer.DocumentInformation.Client.Gender == Core.Enums.Gender.Male)
                     {
-                        greeting = "geehrter Herr " + clientName +",";
+                        greeting = "geehrter Herr " + clientName + ",";
                     }
                     else if (offer.DocumentInformation.Client.Gender == Core.Enums.Gender.Female)
                     {
@@ -263,76 +273,7 @@ namespace BillingSoftware.Web.Controllers
 
                 wordDoc.Save();
             }
-
-            //using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(newFile, false))
-            //{
-
-            //    string docText = null;
-            //    using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
-            //    {
-            //        docText = sr.ReadToEnd();
-            //    }
-
-            //    docText = docText.Replace("<company.name>", "Öztirak GmbH");
-            //    using (WordprocessingDocument newDoc =
-            //        WordprocessingDocument.Create(SAVE_DIRECTORY + @"\offer1.docx", DocumentFormat.OpenXml.WordprocessingDocumentType.Document))
-            //    {
-            //        using (StreamWriter sw = new StreamWriter(newDoc.MainDocumentPart.GetStream()))
-            //        {
-            //            sw.Write(docText);
-            //        }
-            //    }
-            //}
-
-
-
-            //Document document = new Document();
-            //document.LoadFromFile(TEMPLATE);
-            //document.Replace("<company.name>", "Öztirak GmbH", false, true);
-            //document.SaveToFile("Replace.pdf", FileFormat.PDF);
-            //document.Close();
-
-
-
-
         }
-
-        //void VerySimpleReplaceText(string OrigFile, string ResultFile, string origText, string replaceText, string path)
-        //{
-        //     var pdf = PdfReader.Open(path, PdfDocumentOpenMode.Modify);
-
-
-        //        string contentString = PdfEncodings.ConvertToString(contentBytes, PdfObject.TEXT_PDFDOCENCODING);
-        //        contentString = contentString.Replace(origText, replaceText);
-        //        reader.SetPageContent(1, PdfEncodings.ConvertToBytes(contentString, PdfObject.TEXT_PDFDOCENCODING));
-
-        //        new PdfStamper(reader, new FileStream(ResultFile, FileMode.Create, FileAccess.Write)).Close();
-
-        //}
-
-        //private void FindAndReplace(Microsoft.Office.Interop.Word.Application doc, object findText, object replaceWithText)
-        //{
-        //    //options
-        //    object matchCase = false;
-        //    object matchWholeWord = true;
-        //    object matchWildCards = false;
-        //    object matchSoundsLike = false;
-        //    object matchAllWordForms = false;
-        //    object forward = true;
-        //    object format = false;
-        //    object matchKashida = false;
-        //    object matchDiacritics = false;
-        //    object matchAlefHamza = false;
-        //    object matchControl = false;
-        //    object read_only = false;
-        //    object visible = false;
-        //    object replace = 2;
-        //    object wrap = 1;
-        //    //execute find and replace
-        //    doc.Selection.Find.Execute(ref findText, ref matchCase, ref matchWholeWord,
-        //        ref matchWildCards, ref matchSoundsLike, ref matchAllWordForms, ref forward, ref wrap, ref format, ref replaceWithText, ref replace,
-        //        ref matchKashida, ref matchDiacritics, ref matchAlefHamza, ref matchControl);
-        //}
 
         private async Task<bool> CheckAuthorization(Guid offerId)
         {
