@@ -21,6 +21,9 @@ namespace BillingSoftware.Persistence.Repository
             Invoice invoice = new Invoice();
             invoice.InvoiceDate = System.DateTime.Now;
             invoice.InvoiceNumber = "I" + DateTime.Now.ToString("yy") + company.InvoiceCounter.ToString().PadLeft(5, '0');
+            invoice.Subject = "Rechnung " + invoice.InvoiceNumber;
+            invoice.HeaderText = "Vielen Dank für Ihren Auftrag. Wir berechnen Ihnen folgende Leistung:";
+            invoice.FlowText = "Zahlbar sofort ohne Abzug. Für Rückfragen zu dieser Rechnung stehen wir gerne jederzeit zur Verfügung.";
             invoice.DocumentInformationId = invoice.DocumentInformationId;
             invoice.CompanyId = orderConfirmation.CompanyId;
             invoice.PaymentTerm = System.DateTime.Now.AddDays(14);
@@ -41,6 +44,9 @@ namespace BillingSoftware.Persistence.Repository
             DeliveryNote deliveryNote = new DeliveryNote();
             deliveryNote.DeliveryNoteDate = System.DateTime.Now;
             deliveryNote.DeliveryNoteNumber = "DN" + DateTime.Now.ToString("yy") + company.DeliveryNoteCounter.ToString().PadLeft(5, '0');
+            deliveryNote.Subject = "Lieferschein " + deliveryNote.DeliveryNoteNumber;
+            deliveryNote.HeaderText = "Vielen Dank für die Zusammenarbeit. Vereinbarungsgemäß liefern wir Ihnen folgende Waren:";
+            deliveryNote.FlowText = "Die gelieferte Ware bleibt bis zu vollständigen Bezahlung unser Eigentum.";
             deliveryNote.DocumentInformationsId = orderConfirmation.DocumentInformationId;
             deliveryNote.CompanyId = orderConfirmation.CompanyId;
 

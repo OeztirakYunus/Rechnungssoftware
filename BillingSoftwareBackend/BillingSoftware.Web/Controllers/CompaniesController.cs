@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
-using BillingSoftware.Core.DataTransferObjects;
+using BillingSoftware.Core.DataTransferObjects.UserDtos;
 using BillingSoftware.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

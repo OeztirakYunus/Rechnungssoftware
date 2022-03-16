@@ -70,6 +70,12 @@ namespace BillingSoftware.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("BankName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Bic")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CompanyName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -79,6 +85,9 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Iban")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("InvoiceCounter")
@@ -98,6 +107,9 @@ namespace BillingSoftware.Persistence.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
+
+                    b.Property<string>("UstNumber")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -163,11 +175,16 @@ namespace BillingSoftware.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DeliveryNoteNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("DocumentInformationsId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FlowText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HeaderText")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
@@ -176,6 +193,9 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -198,20 +218,10 @@ namespace BillingSoftware.Persistence.Migrations
                     b.Property<string>("ContactPersonId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("FlowText")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("HeaderText")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
-
-                    b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("TotalDiscount")
                         .HasColumnType("float");
@@ -240,11 +250,16 @@ namespace BillingSoftware.Persistence.Migrations
                     b.Property<Guid>("DocumentInformationId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("FlowText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HeaderText")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("InvoiceDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("InvoiceNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("PaymentTerm")
@@ -257,6 +272,9 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -279,11 +297,16 @@ namespace BillingSoftware.Persistence.Migrations
                     b.Property<Guid>("DocumentInformationId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("FlowText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HeaderText")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("OfferDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OfferNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("RowVersion")
@@ -293,6 +316,9 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -315,11 +341,16 @@ namespace BillingSoftware.Persistence.Migrations
                     b.Property<Guid>("DocumentInformationId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("FlowText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HeaderText")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("OrderConfirmationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OrderConfirmationNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("RowVersion")
@@ -329,6 +360,9 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

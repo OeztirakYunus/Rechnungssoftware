@@ -18,7 +18,11 @@ namespace BillingSoftware.Core.Entities
         {
             get
             {
-                if(TypeOfDiscount == TypeOfDiscount.Percent)
+                if(Product == null)
+                {
+                    return 0;
+                }
+                else if(TypeOfDiscount == TypeOfDiscount.Percent)
                 {
                     return Product.SellingPriceNet * (1 - (Discount / 100)) * Quantity;
                 }
@@ -33,7 +37,11 @@ namespace BillingSoftware.Core.Entities
         {
             get
             {
-                if (TypeOfDiscount == TypeOfDiscount.Percent)
+                if (Product == null)
+                {
+                    return 0;
+                }
+                else if (TypeOfDiscount == TypeOfDiscount.Percent)
                 {
                     return Product.SellingPriceGross * (1 - (Discount / 100)) * Quantity;
                 }

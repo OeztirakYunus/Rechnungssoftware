@@ -35,6 +35,10 @@ namespace BillingSoftware.Persistence.Migrations
                     OfferCounter = table.Column<int>(type: "int", nullable: false),
                     DeliveryNoteCounter = table.Column<int>(type: "int", nullable: false),
                     OrderConfirmationCounter = table.Column<int>(type: "int", nullable: false),
+                    BankName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Iban = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Bic = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UstNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -271,9 +275,6 @@ namespace BillingSoftware.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    HeaderText = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FlowText = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ContactPersonId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     TotalDiscount = table.Column<double>(type: "float", nullable: false),
                     TypeOfDiscount = table.Column<int>(type: "int", nullable: false),
@@ -299,11 +300,14 @@ namespace BillingSoftware.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DeliveryNoteNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DeliveryNoteNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeliveryNoteDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DocumentInformationsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HeaderText = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FlowText = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -328,12 +332,15 @@ namespace BillingSoftware.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    InvoiceNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    InvoiceNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     InvoiceDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PaymentTerm = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DocumentInformationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HeaderText = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FlowText = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -358,11 +365,14 @@ namespace BillingSoftware.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OfferNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OfferNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OfferDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DocumentInformationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HeaderText = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FlowText = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -387,11 +397,14 @@ namespace BillingSoftware.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderConfirmationNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrderConfirmationNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OrderConfirmationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DocumentInformationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HeaderText = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FlowText = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>

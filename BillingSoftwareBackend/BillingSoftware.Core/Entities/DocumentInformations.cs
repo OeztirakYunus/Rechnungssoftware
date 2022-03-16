@@ -12,10 +12,6 @@ namespace BillingSoftware.Core.Entities
     public class DocumentInformations : EntityObject
     {
         public Guid? ClientId { get; set; }
-        [Required]
-        public string Subject { get; set; }
-        public string HeaderText { get; set; }
-        public string FlowText { get; set; }
         public string? ContactPersonId { get; set; }
         public double TotalDiscount { get; set; } = 0;
         public TypeOfDiscount TypeOfDiscount { get; set; } = TypeOfDiscount.Percent;

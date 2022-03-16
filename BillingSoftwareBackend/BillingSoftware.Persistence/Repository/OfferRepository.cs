@@ -21,6 +21,9 @@ namespace BillingSoftware.Persistence.Repository
             OrderConfirmation orderConfirmation = new OrderConfirmation();
             orderConfirmation.OrderConfirmationDate = System.DateTime.Now;
             orderConfirmation.OrderConfirmationNumber = "OC" + DateTime.Now.ToString("yy") + company.OrderConfirmationCounter.ToString().PadLeft(5, '0');
+            orderConfirmation.Subject = "Auftragsbestätigung " + orderConfirmation.OrderConfirmationNumber;
+            orderConfirmation.HeaderText = "Vielen Dank für Ihr Vertrauen und den Auftrag. Gemäß unserem Angebot erbringen wir folgende Leistungen:";
+            orderConfirmation.FlowText = "Bei Rückfragen stehen wir selbstverständlich jeder Zeit gerne zur Verfügung.";
             orderConfirmation.DocumentInformationId = offer.DocumentInformationId;
             orderConfirmation.CompanyId = offer.CompanyId;
             

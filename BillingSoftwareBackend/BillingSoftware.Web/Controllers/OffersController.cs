@@ -147,6 +147,12 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
+        [HttpGet("getAsPdf/{offerId}")]
+        public async Task GetOfferAsPdf()
+        {
+
+        }
+
         private async Task<bool> CheckAuthorization(Guid offerId)
         {
             var email = HttpContext.User.Identity.Name;

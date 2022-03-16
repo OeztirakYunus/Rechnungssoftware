@@ -1,4 +1,4 @@
-﻿using BillingSoftware.Core.DataTransferObjects;
+﻿using BillingSoftware.Core.DataTransferObjects.UserDtos;
 using BillingSoftware.Core.Entities;
 using System;
 using System.Collections.Generic;

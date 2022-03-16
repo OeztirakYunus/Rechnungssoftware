@@ -19,6 +19,10 @@ namespace BillingSoftware.Core.Entities
         public int OfferCounter { get; set; } = 1;
         public int DeliveryNoteCounter { get; set; } = 1;
         public int OrderConfirmationCounter { get; set; } = 1;
+        public string BankName { get; set; }
+        public string Iban { get; set; }
+        public string Bic { get; set; }
+        public string UstNumber { get; set; }
 
         //Navigation Properties
         public virtual List<Address> Addresses { get; set; } = new();

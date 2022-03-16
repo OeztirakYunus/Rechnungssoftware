@@ -1,5 +1,5 @@
 ﻿using BillingSoftware.Core.Contracts.Repository;
-using BillingSoftware.Core.DataTransferObjects;
+using BillingSoftware.Core.DataTransferObjects.UserDtos;
 using BillingSoftware.Core.Entities;
 using CommonBase.Exceptions;
 using CommonBase.Extensions;
@@ -64,6 +64,24 @@ namespace BillingSoftware.Persistence.Repository
             if (tempDeliveryNote == null)
             {
                 deliveryNote.CompanyId = companyId;
+                if(string.IsNullOrEmpty(deliveryNote.DeliveryNoteNumber))
+                {
+                    deliveryNote.DeliveryNoteNumber = "DN" + DateTime.Now.ToString("yy") + company.DeliveryNoteCounter.ToString().PadLeft(5, '0');
+                    company.DeliveryNoteCounter++;
+                    await Update(company);
+                }
+                if (string.IsNullOrEmpty(deliveryNote.Subject))
+                {
+                    deliveryNote.Subject = "Lieferschein " + deliveryNote.DeliveryNoteNumber;
+                }
+                if (string.IsNullOrEmpty(deliveryNote.HeaderText))
+                {
+                    deliveryNote.HeaderText = "Vielen Dank für die Zusammenarbeit. Vereinbarungsgemäß liefern wir Ihnen folgende Waren:";
+                }
+                if (string.IsNullOrEmpty(deliveryNote.FlowText))
+                {
+                    deliveryNote.FlowText = "Die gelieferte Ware bleibt bis zu vollständigen Bezahlung unser Eigentum.";
+                }
                 await _context.DeliveryNotes.AddAsync(deliveryNote);
             }
         }
@@ -80,6 +98,24 @@ namespace BillingSoftware.Persistence.Repository
             if (tempInvoice == null)
             {
                 invoice.CompanyId = companyId;
+                if (string.IsNullOrEmpty(invoice.InvoiceNumber))
+                {
+                    invoice.InvoiceNumber = "I" + DateTime.Now.ToString("yy") + company.InvoiceCounter.ToString().PadLeft(5, '0');
+                    company.InvoiceCounter++;
+                    await Update(company);
+                }
+                if (string.IsNullOrEmpty(invoice.Subject))
+                {
+                    invoice.Subject = "Rechnung " + invoice.InvoiceNumber;
+                }
+                if (string.IsNullOrEmpty(invoice.HeaderText))
+                {
+                    invoice.HeaderText = "Vielen Dank für Ihren Auftrag. Wir berechnen Ihnen folgende Leistung:";
+                }
+                if (string.IsNullOrEmpty(invoice.FlowText))
+                {
+                    invoice.FlowText = "Zahlbar sofort ohne Abzug. Für Rückfragen zu dieser Rechnung stehen wir gerne jederzeit zur Verfügung.";
+                }
                 await _context.Invoices.AddAsync(invoice);
             }
         }
@@ -96,6 +132,24 @@ namespace BillingSoftware.Persistence.Repository
             if (tempOffer == null)
             {
                 offer.CompanyId = companyId;
+                if (string.IsNullOrEmpty(offer.OfferNumber))
+                {
+                    offer.OfferNumber = "O" + DateTime.Now.ToString("yy") + company.OfferCounter.ToString().PadLeft(5, '0');
+                    company.OfferCounter++;
+                    await Update(company);
+                }
+                if (string.IsNullOrEmpty(offer.Subject))
+                {
+                    offer.Subject = "Angebot " + offer.OfferNumber;
+                }
+                if (string.IsNullOrEmpty(offer.HeaderText))
+                {
+                    offer.HeaderText = "Vielen Dank für Ihre Anfrage und das damit verbundene Interesse an einer Zusammenarbeit.\nGerne unterbreiten wir Ihnen folgendes Angebot:";
+                }
+                if (string.IsNullOrEmpty(offer.FlowText))
+                {
+                    offer.FlowText = "Wir hoffen, dass das Angebot Ihren Anforderungen entspricht und würden uns über eine zukünftige Zusammenarbeit sehr freuen. Für Rückfragen und weitere Informationen stehen wir gerne jederzeit zur Verfügung.";
+                }
                 await _context.Offers.AddAsync(offer);
             }
         }
@@ -112,6 +166,24 @@ namespace BillingSoftware.Persistence.Repository
             if (tempOrderConfirmation == null)
             {
                 orderConfirmation.CompanyId = companyId;
+                if (string.IsNullOrEmpty(orderConfirmation.OrderConfirmationNumber))
+                {
+                    orderConfirmation.OrderConfirmationNumber = "OC" + DateTime.Now.ToString("yy") + company.OrderConfirmationCounter.ToString().PadLeft(5, '0');
+                    company.OrderConfirmationCounter++;
+                    await Update(company);
+                }
+                if (string.IsNullOrEmpty(orderConfirmation.Subject))
+                {
+                    orderConfirmation.Subject = "Auftragsbestätigung " + orderConfirmation.OrderConfirmationNumber;
+                }
+                if (string.IsNullOrEmpty(orderConfirmation.HeaderText))
+                {
+                    orderConfirmation.HeaderText = "Vielen Dank für Ihr Vertrauen und den Auftrag. Gemäß unserem Angebot erbringen wir folgende Leistungen:";
+                }
+                if (string.IsNullOrEmpty(orderConfirmation.FlowText))
+                {
+                    orderConfirmation.FlowText = "Bei Rückfragen stehen wir selbstverständlich jeder Zeit gerne zur Verfügung.";
+                }
                 await _context.OrderConfirmations.AddAsync(orderConfirmation);
             }
         }
