@@ -1,26 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
-using BillingSoftware.Persistence;
 using CommonBase;
 using CommonBase.Extensions;
 using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
 
 namespace BillingSoftware.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class OffersController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
@@ -159,10 +153,10 @@ namespace BillingSoftware.Web.Controllers
             try
             {
                 var guid = Guid.Parse(offerId);
-                //if (!await CheckAuthorization(guid))
-                //{
-                //    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this offer as word!" });
-                //}
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this offer as word!" });
+                }
                 var offer = await _uow.OfferRepository.GetByIdAsync(guid);          
                 var (bytes, fileName) = await DocxCreator.CreateWordForOffer(offer);          
                 return File(bytes, "application/docx", fileName);

@@ -60,6 +60,50 @@ namespace CommonBase
             return (bytes, Path.GetFileName(filePath));
         }
 
+        public async static Task<(byte[], string)> CreateWordForInvoice(Invoice invoice)
+        {
+            var templateFile = TEMPLATE_DIRECTORY + "invoice_template.docx";
+            var path = SAVE_DIRECTORY + @$"invoices\{invoice.CompanyId}\";
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            var filePath = path + $"Rechnung_{ invoice.InvoiceNumber}.docx";
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+            System.IO.File.Copy(templateFile, filePath);
+
+            CreateBasics(filePath, invoice.Company, invoice.DocumentInformation);
+            CreateBodyForInvoice(filePath, invoice);
+            var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
+            return (bytes, Path.GetFileName(filePath));
+        }
+
+        public async static Task<(byte[], string)> CreateWordForDeliveryNote(DeliveryNote deliveryNote)
+        {
+            var templateFile = TEMPLATE_DIRECTORY + "delivery_note_template.docx";
+            var path = SAVE_DIRECTORY + @$"deliveryNotes\{deliveryNote.CompanyId}\";
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            var filePath = path + $"Lieferschein_{ deliveryNote.DeliveryNoteNumber}.docx";
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+            System.IO.File.Copy(templateFile, filePath);
+
+            CreateBasics(filePath, deliveryNote.Company, deliveryNote.DocumentInformations);
+            CreateBodyForDeliveryNote(filePath, deliveryNote);
+            var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
+            return (bytes, Path.GetFileName(filePath));
+        }
+
         private static void CreateBasics(string path,Company company, DocumentInformations documentInformations)
         {
             CreateFooter(path, company);
@@ -194,6 +238,57 @@ namespace CommonBase
                 docText = docText.Replace("oc.subject", orderConfirmation.Subject);
                 docText = docText.Replace("oc.flowText", orderConfirmation.FlowText);
                 docText = docText.Replace("oc.headerText", orderConfirmation.HeaderText);
+
+                using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
+                {
+                    sw.Write(docText);
+                }
+
+                wordDoc.Save();
+            }
+        }
+
+        //Body For Invoice
+        private static void CreateBodyForInvoice(string path, Invoice invoice)
+        {
+            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(path, true))
+            {
+                string docText = null;
+                using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
+                {
+                    docText = sr.ReadToEnd();
+                }
+
+                docText = docText.Replace("invoice.date", invoice.InvoiceDate.ToString("dd.MM.yyyy"));
+                docText = docText.Replace("invoice.paymentTerm", invoice.PaymentTerm.ToString("dd.MM.yyyy"));
+                docText = docText.Replace("invoice.subject", invoice.Subject);
+                docText = docText.Replace("invoice.flowText", invoice.FlowText);
+                docText = docText.Replace("invoice.headerText", invoice.HeaderText);
+
+                using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
+                {
+                    sw.Write(docText);
+                }
+
+                wordDoc.Save();
+            }
+        }
+
+        //Body For DeliveryNote
+        private static void CreateBodyForDeliveryNote(string path, DeliveryNote deliveryNote)
+        {
+            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(path, true))
+            {
+                string docText = null;
+                using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
+                {
+                    docText = sr.ReadToEnd();
+                }
+
+                docText = docText.Replace("dn.date", deliveryNote.DeliveryNoteDate.ToString("dd.MM.yyyy"));
+                docText = docText.Replace("dn.subject", deliveryNote.Subject);
+                docText = docText.Replace("dn.flowText", deliveryNote.FlowText);
+                docText = docText.Replace("dn.headerText", deliveryNote.HeaderText);
 
                 using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
                 {

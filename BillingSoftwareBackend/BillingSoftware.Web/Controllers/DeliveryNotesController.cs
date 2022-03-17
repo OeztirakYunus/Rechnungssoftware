@@ -4,11 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
-using BillingSoftware.Persistence;
+using CommonBase;
 using CommonBase.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BillingSoftware.Web.Controllers
 {
@@ -119,6 +118,26 @@ namespace BillingSoftware.Web.Controllers
                 return Ok();
             }
             catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("get-as-word/{deliveryNoteId}")]
+        public async Task<IActionResult> GetDeliveryNoteAsWord(string deliveryNoteId)
+        {
+            try
+            {
+                var guid = Guid.Parse(deliveryNoteId);
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this delivery note as word!" });
+                }
+                var deliveryNote = await _uow.DeliveryNoteRepository.GetByIdAsync(guid);
+                var (bytes, fileName) = await DocxCreator.CreateWordForDeliveryNote(deliveryNote);
+                return File(bytes, "application/docx", fileName);
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

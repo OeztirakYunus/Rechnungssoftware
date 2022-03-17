@@ -4,18 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
-using BillingSoftware.Persistence;
 using CommonBase;
 using CommonBase.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BillingSoftware.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   // [Authorize]
+    [Authorize]
     public class OrderConfirmationsController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
@@ -171,15 +169,15 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpGet("get-as-word/{orderConfirmationId}")]
-        public async Task<IActionResult> GetOfferAsWord(string orderConfirmationId)
+        public async Task<IActionResult> GetOrderConfirmationAsWord(string orderConfirmationId)
         {
             try
             {
                 var guid = Guid.Parse(orderConfirmationId);
-                //if (!await CheckAuthorization(guid))
-                //{
-                //    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this offer as word!" });
-                //}
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this order confirmation as word!" });
+                }
                 var orderConfirmation = await _uow.OrderConfirmationRepository.GetByIdAsync(guid);
                 var (bytes, fileName) = await DocxCreator.CreateWordForOrderConfirmation(orderConfirmation);
                 return File(bytes, "application/docx", fileName);

@@ -4,11 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
-using BillingSoftware.Persistence;
+using CommonBase;
 using CommonBase.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BillingSoftware.Web.Controllers
 {
@@ -143,6 +142,26 @@ namespace BillingSoftware.Web.Controllers
             catch (System.Exception ex)
             {
                 return BadRequest(ex.Message + "\n" + ex.InnerException.Message);
+            }
+        }
+
+        [HttpGet("get-as-word/{invoiceId}")]
+        public async Task<IActionResult> GetInvoiceAsWord(string invoiceId)
+        {
+            try
+            {
+                var guid = Guid.Parse(invoiceId);
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this invoice as word!" });
+                }
+                var invoice = await _uow.InvoiceRepository.GetByIdAsync(guid);
+                var (bytes, fileName) = await DocxCreator.CreateWordForInvoice(invoice);
+                return File(bytes, "application/docx", fileName);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 

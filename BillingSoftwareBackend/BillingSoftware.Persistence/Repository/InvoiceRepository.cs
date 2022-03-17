@@ -22,7 +22,7 @@ namespace BillingSoftware.Persistence.Repository
             deliveryNote.DeliveryNoteNumber = "DN" + DateTime.Now.ToString("yy") + company.DeliveryNoteCounter.ToString().PadLeft(5, '0');
             deliveryNote.Subject = "Lieferschein " + deliveryNote.DeliveryNoteNumber;
             deliveryNote.HeaderText = "Vielen Dank für die Zusammenarbeit. Vereinbarungsgemäß liefern wir Ihnen folgende Waren:";
-            deliveryNote.FlowText = "Die gelieferte Ware bleibt bis zu vollständigen Bezahlung unser Eigentum.";
+            deliveryNote.FlowText = "Die gelieferte Ware bleibt bis zu vollständiger Bezahlung unser Eigentum.";
             deliveryNote.DocumentInformationsId = invoice.DocumentInformationId;
             deliveryNote.CompanyId = invoice.CompanyId;
 
