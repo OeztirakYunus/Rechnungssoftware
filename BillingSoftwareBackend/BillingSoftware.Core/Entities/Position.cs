@@ -33,24 +33,6 @@ namespace BillingSoftware.Core.Entities
             }
         }
 
-        public double TotalPriceGross
-        {
-            get
-            {
-                if (Product == null)
-                {
-                    return 0;
-                }
-                else if (TypeOfDiscount == TypeOfDiscount.Percent)
-                {
-                    return Product.SellingPriceGross * (1 - (Discount / 100)) * Quantity;
-                }
-                else
-                {
-                    return (Product.SellingPriceGross - Discount) * Quantity;
-                }
-            }
-        }
         public Guid DocumentInformationId { get; set; }
 
         //Navigation Properties

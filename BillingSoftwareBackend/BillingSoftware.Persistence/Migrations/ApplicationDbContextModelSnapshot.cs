@@ -223,6 +223,9 @@ namespace BillingSoftware.Persistence.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
+                    b.Property<double>("Tax")
+                        .HasColumnType("float");
+
                     b.Property<double>("TotalDiscount")
                         .HasColumnType("float");
 
@@ -434,9 +437,6 @@ namespace BillingSoftware.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("PurchasingPriceNet")
-                        .HasColumnType("float");
-
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
@@ -447,9 +447,6 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.Property<int>("Unit")
                         .HasColumnType("int");
-
-                    b.Property<double>("ValueAddedTax")
-                        .HasColumnType("float");
 
                     b.HasKey("Id");
 

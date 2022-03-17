@@ -13,12 +13,7 @@ namespace BillingSoftware.Core.Entities
         [Required]
         public string ProductName { get; set; }
         [Required]
-        public double ValueAddedTax { get; set; }
-        [Required]
         public double SellingPriceNet { get; set; }
-        public double SellingPriceGross => SellingPriceNet * ((ValueAddedTax / 100) + 1);
-        public double PurchasingPriceNet { get; set; }
-        public double PurchasingPriceGross => PurchasingPriceNet * ((ValueAddedTax / 100) + 1);
         [Required]
         public ProductCategory Category { get; set; }
         [Required]

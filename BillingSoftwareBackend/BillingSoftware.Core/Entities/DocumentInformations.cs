@@ -15,6 +15,8 @@ namespace BillingSoftware.Core.Entities
         public string? ContactPersonId { get; set; }
         public double TotalDiscount { get; set; } = 0;
         public TypeOfDiscount TypeOfDiscount { get; set; } = TypeOfDiscount.Percent;
+        [Required]
+        public double Tax { get; set; }
         public double TotalPriceNet
         {
             get
@@ -41,8 +43,9 @@ namespace BillingSoftware.Core.Entities
                 double totalPriceGross = 0;
                 foreach (var item in Positions)
                 {
-                    totalPriceGross += item.TotalPriceGross;
+                    totalPriceGross += item.TotalPriceNet;
                 }
+                totalPriceGross = totalPriceGross * (1 + (Tax / 100));
                 if (TypeOfDiscount == TypeOfDiscount.Percent)
                 {
                     return totalPriceGross * (1 - (TotalDiscount / 100));

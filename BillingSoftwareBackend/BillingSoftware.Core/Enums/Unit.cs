@@ -6,17 +6,17 @@ namespace BillingSoftware.Core.Enums
 {
     public enum Unit
     {
-        Piece,
-        SquareMeters,
+        Stück,
+        Quadratmeter,
         Meter,
-        Kilogram,
-        Ton,
-        FlatRate,
-        CubicMeter,
-        Hours,
-        Kilometre,
-        Percent,
-        Days,
+        Kilogramm,
+        Tonnen,
+        Pauschal,
+        Kubikmeter,
+        Stunden,
+        Kilometer,
+        Prozent,
+        Tage,
         Liter
     }
 }

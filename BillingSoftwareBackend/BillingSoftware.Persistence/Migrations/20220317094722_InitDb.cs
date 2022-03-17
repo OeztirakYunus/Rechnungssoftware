@@ -136,9 +136,7 @@ namespace BillingSoftware.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ArticleNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ValueAddedTax = table.Column<double>(type: "float", nullable: false),
                     SellingPriceNet = table.Column<double>(type: "float", nullable: false),
-                    PurchasingPriceNet = table.Column<double>(type: "float", nullable: false),
                     Category = table.Column<int>(type: "int", nullable: false),
                     Unit = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -278,6 +276,7 @@ namespace BillingSoftware.Persistence.Migrations
                     ContactPersonId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     TotalDiscount = table.Column<double>(type: "float", nullable: false),
                     TypeOfDiscount = table.Column<int>(type: "int", nullable: false),
+                    Tax = table.Column<double>(type: "float", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>

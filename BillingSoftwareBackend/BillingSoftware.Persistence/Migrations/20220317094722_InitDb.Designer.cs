@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BillingSoftware.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220316192122_InitDb")]
+    [Migration("20220317094722_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -225,6 +225,9 @@ namespace BillingSoftware.Persistence.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
+                    b.Property<double>("Tax")
+                        .HasColumnType("float");
+
                     b.Property<double>("TotalDiscount")
                         .HasColumnType("float");
 
@@ -436,9 +439,6 @@ namespace BillingSoftware.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("PurchasingPriceNet")
-                        .HasColumnType("float");
-
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
@@ -449,9 +449,6 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.Property<int>("Unit")
                         .HasColumnType("int");
-
-                    b.Property<double>("ValueAddedTax")
-                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
