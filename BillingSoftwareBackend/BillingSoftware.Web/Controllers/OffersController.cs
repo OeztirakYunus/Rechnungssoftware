@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
@@ -14,7 +15,7 @@ namespace BillingSoftware.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class OffersController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
@@ -158,8 +159,8 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this offer as word!" });
                 }
                 var offer = await _uow.OfferRepository.GetByIdAsync(guid);          
-                var (bytes, fileName) = await DocxCreator.CreateWordForOffer(offer);          
-                return File(bytes, "application/docx", fileName);
+                var (bytes, path) = await DocxCreator.CreateWordForOffer(offer);          
+                return File(bytes, "application/docx", Path.GetFileName(path));
             }
             catch (Exception ex)
             {
@@ -167,10 +168,25 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        //public async Task/*<IActionResult>*/ GetOfferAsPdf()
-        //{
-        //    DocToPDF
-        //}
+        [HttpGet("get-as-pdf/{offerId}")]
+        public async Task<IActionResult> GetOfferAsPdf(string offerId)
+        {
+            try
+            {
+                var guid = Guid.Parse(offerId);
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this offer as word!" });
+                }
+                var offer = await _uow.OfferRepository.GetByIdAsync(guid);
+                var (bytes, path) = await PdfCreator.CreatePdfForOffer(offer);
+                return File(bytes, "application/pdf", Path.GetFileName(path));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         private async Task<bool> CheckAuthorization(Guid offerId)
         {

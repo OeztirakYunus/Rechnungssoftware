@@ -35,7 +35,7 @@ namespace CommonBase
             CreateBasics(filePath, offer.Company, offer.DocumentInformation);
             CreateBodyForOffer(filePath, offer);
             var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
-            return (bytes, Path.GetFileName(filePath));
+            return (bytes, filePath);
         }
 
         public async static Task<(byte[], string)> CreateWordForOrderConfirmation(OrderConfirmation orderConfirmation)

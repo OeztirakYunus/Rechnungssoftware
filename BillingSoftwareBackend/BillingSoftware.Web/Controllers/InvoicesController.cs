@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
@@ -156,8 +157,8 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this invoice as word!" });
                 }
                 var invoice = await _uow.InvoiceRepository.GetByIdAsync(guid);
-                var (bytes, fileName) = await DocxCreator.CreateWordForInvoice(invoice);
-                return File(bytes, "application/docx", fileName);
+                var (bytes, path) = await DocxCreator.CreateWordForInvoice(invoice);
+                return File(bytes, "application/docx", Path.GetFileName(path));
             }
             catch (Exception ex)
             {
