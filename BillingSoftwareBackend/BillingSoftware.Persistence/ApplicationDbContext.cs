@@ -16,6 +16,7 @@ namespace BillingSoftware.Persistence
         public DbSet<Company> Companies { get; set; }
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<DocumentInformations> DocumentInformations { get; set; }
+        public DbSet<CompanyDocumentCounter> CompanyDocumentCounters { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

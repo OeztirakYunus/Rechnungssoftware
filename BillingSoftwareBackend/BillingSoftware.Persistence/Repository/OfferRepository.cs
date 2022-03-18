@@ -4,6 +4,7 @@ using BillingSoftware.Core.Enums;
 using CommonBase.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BillingSoftware.Persistence.Repository
@@ -16,11 +17,12 @@ namespace BillingSoftware.Persistence.Repository
 
         public async Task<OrderConfirmation> OfferToOrderConfirmation(Offer offer)
         {
-            var company = await _context.Companies.FindAsync(offer.CompanyId);
-            
+            var cDocumentCounters = await _context.CompanyDocumentCounters.ToArrayAsync();
+            var cDocumentCounter = cDocumentCounters.Where(i => i.CompanyId.Equals(offer.CompanyId)).SingleOrDefault();
+
             OrderConfirmation orderConfirmation = new OrderConfirmation();
             orderConfirmation.OrderConfirmationDate = System.DateTime.Now;
-            orderConfirmation.OrderConfirmationNumber = "OC" + DateTime.Now.ToString("yy") + company.OrderConfirmationCounter.ToString().PadLeft(5, '0');
+            orderConfirmation.OrderConfirmationNumber = "OC" + DateTime.Now.ToString("yy") + cDocumentCounter.OrderConfirmationCounter.ToString().PadLeft(5, '0');
             orderConfirmation.Subject = "Auftragsbestätigung " + orderConfirmation.OrderConfirmationNumber;
             orderConfirmation.HeaderText = "Vielen Dank für Ihr Vertrauen und den Auftrag. Gemäß unserem Angebot erbringen wir folgende Leistungen:";
             orderConfirmation.FlowText = "Bei Rückfragen stehen wir selbstverständlich jeder Zeit gerne zur Verfügung.";
@@ -28,11 +30,11 @@ namespace BillingSoftware.Persistence.Repository
             orderConfirmation.CompanyId = offer.CompanyId;
             
             offer.Status = Status.CLOSED;
-            company.OrderConfirmationCounter++;
+            cDocumentCounter.OrderConfirmationCounter++;
             
             await AddAsync(orderConfirmation);
             await Update(offer);
-            await Update(company);
+            await Update(cDocumentCounter);
             return orderConfirmation;
         }
 

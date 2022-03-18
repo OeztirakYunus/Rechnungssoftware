@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BillingSoftware.Persistence.Repository
@@ -18,22 +19,6 @@ namespace BillingSoftware.Persistence.Repository
         public CompanyRepository(ApplicationDbContext context, UserManager<User> userManager) : base(context)
         {
             _userManager = userManager;
-        }
-
-        public async Task AddAddress(Guid companyId, Address address)
-        {
-            var company = await _context.Companies.FindAsync(companyId);
-            if(company == null)
-            {
-                throw new EntityNotFoundException("Company does not exist.");
-            }
-
-            var tempAddress = await _context.Addresses.FindAsync(address.Id);
-            if(tempAddress == null)
-            {
-                address.CompanyId = companyId;
-                await _context.Addresses.AddAsync(address);
-            }
         }
 
         public async Task AddContact(Guid companyId, Contact contact)
@@ -55,6 +40,8 @@ namespace BillingSoftware.Persistence.Repository
         public async Task AddDeliveryNote(Guid companyId, DeliveryNote deliveryNote)
         {
             var company = await _context.Companies.FindAsync(companyId);
+            var cDocumentCounters = await _context.CompanyDocumentCounters.ToArrayAsync();
+            var cDocumentCounter = cDocumentCounters.Where(i => i.CompanyId.Equals(companyId)).SingleOrDefault();
             if (company == null)
             {
                 throw new EntityNotFoundException("Company does not exist.");
@@ -66,8 +53,8 @@ namespace BillingSoftware.Persistence.Repository
                 deliveryNote.CompanyId = companyId;
                 if(string.IsNullOrEmpty(deliveryNote.DeliveryNoteNumber))
                 {
-                    deliveryNote.DeliveryNoteNumber = "DN" + DateTime.Now.ToString("yy") + company.DeliveryNoteCounter.ToString().PadLeft(5, '0');
-                    company.DeliveryNoteCounter++;
+                    deliveryNote.DeliveryNoteNumber = "DN" + DateTime.Now.ToString("yy") + cDocumentCounter.DeliveryNoteCounter.ToString().PadLeft(5, '0');
+                    cDocumentCounter.DeliveryNoteCounter++;
                     await Update(company);
                 }
                 if (string.IsNullOrEmpty(deliveryNote.Subject))
@@ -83,12 +70,15 @@ namespace BillingSoftware.Persistence.Repository
                     deliveryNote.FlowText = "Die gelieferte Ware bleibt bis zu vollständigen Bezahlung unser Eigentum.";
                 }
                 await _context.DeliveryNotes.AddAsync(deliveryNote);
+                await Update(cDocumentCounter);
             }
         }
 
         public async Task AddInvoice(Guid companyId, Invoice invoice)
         {
             var company = await _context.Companies.FindAsync(companyId);
+            var cDocumentCounters = await _context.CompanyDocumentCounters.ToArrayAsync();
+            var cDocumentCounter = cDocumentCounters.Where(i => i.CompanyId.Equals(companyId)).SingleOrDefault();
             if (company == null)
             {
                 throw new EntityNotFoundException("Company does not exist.");
@@ -100,8 +90,8 @@ namespace BillingSoftware.Persistence.Repository
                 invoice.CompanyId = companyId;
                 if (string.IsNullOrEmpty(invoice.InvoiceNumber))
                 {
-                    invoice.InvoiceNumber = "I" + DateTime.Now.ToString("yy") + company.InvoiceCounter.ToString().PadLeft(5, '0');
-                    company.InvoiceCounter++;
+                    invoice.InvoiceNumber = "I" + DateTime.Now.ToString("yy") + cDocumentCounter.InvoiceCounter.ToString().PadLeft(5, '0');
+                    cDocumentCounter.InvoiceCounter++;
                     await Update(company);
                 }
                 if (string.IsNullOrEmpty(invoice.Subject))
@@ -117,12 +107,15 @@ namespace BillingSoftware.Persistence.Repository
                     invoice.FlowText = "Zahlbar sofort ohne Abzug. Für Rückfragen zu dieser Rechnung stehen wir gerne jederzeit zur Verfügung.";
                 }
                 await _context.Invoices.AddAsync(invoice);
+                await Update(cDocumentCounter);
             }
         }
 
         public async Task AddOffer(Guid companyId, Offer offer)
         {
             var company = await _context.Companies.FindAsync(companyId);
+            var cDocumentCounters = await _context.CompanyDocumentCounters.ToArrayAsync();
+            var cDocumentCounter = cDocumentCounters.Where(i => i.CompanyId.Equals(companyId)).SingleOrDefault();
             if (company == null)
             {
                 throw new EntityNotFoundException("Company does not exist.");
@@ -134,8 +127,8 @@ namespace BillingSoftware.Persistence.Repository
                 offer.CompanyId = companyId;
                 if (string.IsNullOrEmpty(offer.OfferNumber))
                 {
-                    offer.OfferNumber = "O" + DateTime.Now.ToString("yy") + company.OfferCounter.ToString().PadLeft(5, '0');
-                    company.OfferCounter++;
+                    offer.OfferNumber = "O" + DateTime.Now.ToString("yy") + cDocumentCounter.OfferCounter.ToString().PadLeft(5, '0');
+                    cDocumentCounter.OfferCounter++;
                     await Update(company);
                 }
                 if (string.IsNullOrEmpty(offer.Subject))
@@ -151,12 +144,15 @@ namespace BillingSoftware.Persistence.Repository
                     offer.FlowText = "Wir hoffen, dass das Angebot Ihren Anforderungen entspricht und würden uns über eine zukünftige Zusammenarbeit sehr freuen. Für Rückfragen und weitere Informationen stehen wir gerne jederzeit zur Verfügung.";
                 }
                 await _context.Offers.AddAsync(offer);
+                await Update(cDocumentCounter);
             }
         }
 
         public async Task AddOrderConfirmation(Guid companyId, OrderConfirmation orderConfirmation)
         {
             var company = await _context.Companies.FindAsync(companyId);
+            var cDocumentCounters = await _context.CompanyDocumentCounters.ToArrayAsync();
+            var cDocumentCounter = cDocumentCounters.Where(i => i.CompanyId.Equals(companyId)).SingleOrDefault();
             if (company == null)
             {
                 throw new EntityNotFoundException("Company does not exist.");
@@ -168,8 +164,8 @@ namespace BillingSoftware.Persistence.Repository
                 orderConfirmation.CompanyId = companyId;
                 if (string.IsNullOrEmpty(orderConfirmation.OrderConfirmationNumber))
                 {
-                    orderConfirmation.OrderConfirmationNumber = "OC" + DateTime.Now.ToString("yy") + company.OrderConfirmationCounter.ToString().PadLeft(5, '0');
-                    company.OrderConfirmationCounter++;
+                    orderConfirmation.OrderConfirmationNumber = "OC" + DateTime.Now.ToString("yy") + cDocumentCounter.OrderConfirmationCounter.ToString().PadLeft(5, '0');
+                    cDocumentCounter.OrderConfirmationCounter++;
                     await Update(company);
                 }
                 if (string.IsNullOrEmpty(orderConfirmation.Subject))
@@ -185,6 +181,7 @@ namespace BillingSoftware.Persistence.Repository
                     orderConfirmation.FlowText = "Bei Rückfragen stehen wir selbstverständlich jeder Zeit gerne zur Verfügung.";
                 }
                 await _context.OrderConfirmations.AddAsync(orderConfirmation);
+                await Update(cDocumentCounter);
             }
         }
 
@@ -376,6 +373,23 @@ namespace BillingSoftware.Persistence.Repository
             _context.Users.Remove(tempUser);
         }
 
+        private async Task DeleteCompanyDocumentCounter(Guid companyId, Guid cDocumentCounterId)
+        {
+            var company = await _context.Companies.FindAsync(companyId);
+            if (company == null)
+            {
+                throw new EntityNotFoundException("Company does not exist.");
+            }
+
+            var tempDocCounter = await _context.CompanyDocumentCounters.FindAsync(cDocumentCounterId);
+            if (tempDocCounter == null)
+            {
+                throw new EntityNotFoundException("DocCounter does not exist.");
+            }
+
+            _context.CompanyDocumentCounters.Remove(tempDocCounter);
+        }
+
         public override async Task Remove(Guid id)
         {
             var company = await GetByIdAsync(id);
@@ -383,10 +397,9 @@ namespace BillingSoftware.Persistence.Repository
             {
                 await DeleteProduct(id, item.Id);
             }
-            foreach (var item in company.Addresses)
-            {
-                await DeleteAddress(id, item.Id);
-            }
+
+            await DeleteCompanyDocumentCounter(id, company.CompanyDocumentCounter.Id);
+            await DeleteAddress(id, company.AddressId);
             foreach (var item in company.Offers)
             {
                 await DeleteOffer(id, item.Id);

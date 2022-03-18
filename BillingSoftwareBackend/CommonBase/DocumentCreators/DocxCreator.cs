@@ -2,21 +2,18 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace CommonBase
+namespace CommonBase.DocumentCreators
 {
     public static class DocxCreator
     {
         private const string TEMPLATE_DIRECTORY = @".\templates\default\";
         private const string SAVE_DIRECTORY = @".\documents\";
 
-        public async static Task<(byte[], string)> CreateWordForOffer(Offer offer)
+        public async static Task<(byte[], string)> CreateWordForOffer(Offer offer, bool deleteWordAfterReturn = true)
         {
             var templateFile = TEMPLATE_DIRECTORY + "offer_template.docx";
             var path = SAVE_DIRECTORY + @$"offers\{offer.CompanyId}\";
@@ -35,10 +32,14 @@ namespace CommonBase
             CreateBasics(filePath, offer.Company, offer.DocumentInformation);
             CreateBodyForOffer(filePath, offer);
             var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
+            if (deleteWordAfterReturn)
+            {
+                File.Delete(filePath);
+            }
             return (bytes, filePath);
         }
 
-        public async static Task<(byte[], string)> CreateWordForOrderConfirmation(OrderConfirmation orderConfirmation)
+        public async static Task<(byte[], string)> CreateWordForOrderConfirmation(OrderConfirmation orderConfirmation, bool deleteWordAfterReturn = true)
         {
             var templateFile = TEMPLATE_DIRECTORY + "order_confirmation_template.docx";
             var path = SAVE_DIRECTORY + @$"orderConfirmations\{orderConfirmation.CompanyId}\";
@@ -57,10 +58,14 @@ namespace CommonBase
             CreateBasics(filePath, orderConfirmation.Company, orderConfirmation.DocumentInformation);
             CreateBodyForOrderConfirmation(filePath, orderConfirmation);
             var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
+            if (deleteWordAfterReturn)
+            {
+                File.Delete(filePath);
+            }
             return (bytes, Path.GetFileName(filePath));
         }
 
-        public async static Task<(byte[], string)> CreateWordForInvoice(Invoice invoice)
+        public async static Task<(byte[], string)> CreateWordForInvoice(Invoice invoice, bool deleteWordAfterReturn = true)
         {
             var templateFile = TEMPLATE_DIRECTORY + "invoice_template.docx";
             var path = SAVE_DIRECTORY + @$"invoices\{invoice.CompanyId}\";
@@ -79,10 +84,14 @@ namespace CommonBase
             CreateBasics(filePath, invoice.Company, invoice.DocumentInformation);
             CreateBodyForInvoice(filePath, invoice);
             var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
+            if (deleteWordAfterReturn)
+            {
+                File.Delete(filePath);
+            }
             return (bytes, Path.GetFileName(filePath));
         }
 
-        public async static Task<(byte[], string)> CreateWordForDeliveryNote(DeliveryNote deliveryNote)
+        public async static Task<(byte[], string)> CreateWordForDeliveryNote(DeliveryNote deliveryNote, bool deleteWordAfterReturn = true)
         {
             var templateFile = TEMPLATE_DIRECTORY + "delivery_note_template.docx";
             var path = SAVE_DIRECTORY + @$"deliveryNotes\{deliveryNote.CompanyId}\";
@@ -101,6 +110,10 @@ namespace CommonBase
             CreateBasics(filePath, deliveryNote.Company, deliveryNote.DocumentInformations);
             CreateBodyForDeliveryNote(filePath, deliveryNote);
             var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
+            if (deleteWordAfterReturn)
+            {
+                File.Delete(filePath);
+            }
             return (bytes, Path.GetFileName(filePath));
         }
 
@@ -124,9 +137,9 @@ namespace CommonBase
                 }
 
                 docText = docText.Replace("company.name", company.CompanyName);
-                docText = docText.Replace("company.street", company.Addresses[0].Street);
-                docText = docText.Replace("company.postCode", company.Addresses[0].ZipCode);
-                docText = docText.Replace("company.city", company.Addresses[0].City);
+                docText = docText.Replace("company.street", company.Address.Street);
+                docText = docText.Replace("company.postCode", company.Address.ZipCode);
+                docText = docText.Replace("company.city", company.Address.City);
                 docText = docText.Replace("company.ustNumber", company.UstNumber);
                 docText = docText.Replace("company.phoneNumber", company.PhoneNumber);
                 docText = docText.Replace("company.email", company.Email);
@@ -155,12 +168,12 @@ namespace CommonBase
                 }
 
                 docText = docText.Replace("company.name", company.CompanyName);
-                docText = docText.Replace("company.street", company.Addresses[0].Street);
-                docText = docText.Replace("company.postCode", company.Addresses[0].ZipCode);
-                docText = docText.Replace("company.city", company.Addresses[0].City);
-                docText = docText.Replace("client.street", documentInformation.Client.Addresses[0].Street);
-                docText = docText.Replace("client.postCode", documentInformation.Client.Addresses[0].ZipCode);
-                docText = docText.Replace("client.city", documentInformation.Client.Addresses[0].City);
+                docText = docText.Replace("company.street", company.Address.Street);
+                docText = docText.Replace("company.postCode", company.Address.ZipCode);
+                docText = docText.Replace("company.city", company.Address.City);
+                docText = docText.Replace("client.street", documentInformation.Client.Address.Street);
+                docText = docText.Replace("client.postCode", documentInformation.Client.Address.ZipCode);
+                docText = docText.Replace("client.city", documentInformation.Client.Address.City);
                 docText = docText.Replace("client.gender", documentInformation.Client.Gender == BillingSoftware.Core.Enums.Gender.Male ? "Herr" : "Frau");
                 docText = docText.Replace("contact.name", documentInformation.ContactPerson.LastName + " " + documentInformation.ContactPerson.FirstName);
 

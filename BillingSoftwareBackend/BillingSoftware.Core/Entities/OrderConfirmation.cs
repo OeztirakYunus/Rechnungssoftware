@@ -13,12 +13,12 @@ namespace BillingSoftware.Core.Entities
         public string OrderConfirmationNumber { get; set; }
         [Required]
         public DateTime OrderConfirmationDate { get; set; }
-        public Guid DocumentInformationId { get; set; }
         public Status Status { get; set; } = Status.OPEN;
-        public Guid CompanyId { get; set; }
         public string Subject { get; set; }
         public string HeaderText { get; set; }
         public string FlowText { get; set; }
+        public Guid CompanyId { get; set; }
+        public Guid DocumentInformationId { get; set; }
 
         //Navigation Properties
         public virtual DocumentInformations DocumentInformation { get; set; }

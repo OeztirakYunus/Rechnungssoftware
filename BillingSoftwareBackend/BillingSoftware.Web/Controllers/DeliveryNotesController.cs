@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
-using CommonBase;
+using CommonBase.DocumentCreators;
 using CommonBase.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -137,6 +137,26 @@ namespace BillingSoftware.Web.Controllers
                 var deliveryNote = await _uow.DeliveryNoteRepository.GetByIdAsync(guid);
                 var (bytes, path) = await DocxCreator.CreateWordForDeliveryNote(deliveryNote);
                 return File(bytes, "application/docx", Path.GetFileName(path));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("get-as-pdf/{deliveryNoteId}")]
+        public async Task<IActionResult> GetDeliveryNoteAsPdf(string deliveryNoteId)
+        {
+            try
+            {
+                var guid = Guid.Parse(deliveryNoteId);
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this delivery note as pdf!" });
+                }
+                var deliveryNote = await _uow.DeliveryNoteRepository.GetByIdAsync(guid);
+                var (bytes, path) = await PdfCreator.CreatePdfForDeliveryNote(deliveryNote);
+                return File(bytes, "application/pdf", Path.GetFileName(path));
             }
             catch (Exception ex)
             {

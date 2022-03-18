@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
-using CommonBase;
+using CommonBase.DocumentCreators;
 using CommonBase.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -182,6 +182,26 @@ namespace BillingSoftware.Web.Controllers
                 var orderConfirmation = await _uow.OrderConfirmationRepository.GetByIdAsync(guid);
                 var (bytes, path) = await DocxCreator.CreateWordForOrderConfirmation(orderConfirmation);
                 return File(bytes, "application/docx", Path.GetFileName(path));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("get-as-pdf/{orderConfirmationId}")]
+        public async Task<IActionResult> GetOrderConfirmationAsPdf(string orderConfirmationId)
+        {
+            try
+            {
+                var guid = Guid.Parse(orderConfirmationId);
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this order confirmation as pdf!" });
+                }
+                var orderConfirmation = await _uow.OrderConfirmationRepository.GetByIdAsync(guid);
+                var (bytes, path) = await PdfCreator.CreatePdfForOrderConfirmation(orderConfirmation);
+                return File(bytes, "application/pdf", Path.GetFileName(path));
             }
             catch (Exception ex)
             {

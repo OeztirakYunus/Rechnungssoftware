@@ -15,17 +15,15 @@ namespace BillingSoftware.Core.Entities
         public string Email { get; set; }
         [Required]
         public string PhoneNumber { get; set; }
-        public int InvoiceCounter { get; set; } = 1;
-        public int OfferCounter { get; set; } = 1;
-        public int DeliveryNoteCounter { get; set; } = 1;
-        public int OrderConfirmationCounter { get; set; } = 1;
         public string BankName { get; set; }
         public string Iban { get; set; }
         public string Bic { get; set; }
         public string UstNumber { get; set; }
+        public Guid AddressId{ get; set; }
 
         //Navigation Properties
-        public virtual List<Address> Addresses { get; set; } = new();
+        public virtual CompanyDocumentCounter CompanyDocumentCounter { get; set; } = new CompanyDocumentCounter();
+        public virtual Address Address { get; set; }
         public virtual List<User> Users { get; set; } = new();
         public virtual List<Contact> Contacts { get; set; } = new();
         public virtual List<Offer> Offers { get; set; } = new();
