@@ -111,6 +111,31 @@ class NavBar extends StatelessWidget {
               const SizedBox(height: 16),
               ListTile(
                 leading: Image.asset(
+                  "lib/assets/document.png",
+                  scale: 2.0,
+                  height: 35.0,
+                  width: 35.0,
+                ),
+                title: const Text('Dokumente',
+                    style: TextStyle(color: Colors.white, fontSize: 18)),
+                onTap: () => selectedItem(context, 5),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                leading: Image.asset(
+                  "lib/assets/order.png",
+                  scale: 2.0,
+                  height: 35.0,
+                  width: 35.0,
+                ),
+                title: const Text('Auftrags-\nbestätigungen',
+                    style: TextStyle(
+                        color: Colors.white, fontSize: 18, height: 1.40)),
+                onTap: () => selectedItem(context, 6),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                leading: Image.asset(
                   "lib/assets/user.png",
                   scale: 2.0,
                   height: 38.0,
