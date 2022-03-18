@@ -30,6 +30,7 @@ dependencies:
   flutter:
     sdk: flutter
   sizer: ^2.0.15
+  http: ^0.13.4
   responsive_table: ^0.2.0+2
   path_provider: any
   open_file: any 

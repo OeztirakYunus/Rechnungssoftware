@@ -1,3 +1,4 @@
+import 'package:demo5/address/address.dart';
 import 'package:demo5/companies/addCompany.dart';
 import 'package:demo5/navbar.dart';
 import 'package:flutter/material.dart';
@@ -24,4 +25,13 @@ class _CompaniesState extends State<Companies> {
       ),
     );
   }
+}
+
+class Company {
+  final String companyName;
+  final String email;
+  final String phoneNumber;
+  final List<Address> addresses;
+
+  Company(this.companyName, this.email, this.phoneNumber, this.addresses);
 }

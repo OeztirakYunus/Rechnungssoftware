@@ -1,5 +1,4 @@
-// ignore_for_file: prefer_const_constructors
-
+import 'package:http/http.dart' as http;
 import 'package:demo5/products/product.dart';
 import 'package:flutter/material.dart';
 
@@ -19,15 +18,14 @@ class SignUp extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Container(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Form(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ignore: prefer_const_constructors
-                    Align(
+                    const Align(
                       alignment: Alignment(-0.95, 1),
-                      child: const Text(
+                      child: Text(
                         'Vorname',
                         style: TextStyle(fontSize: 20.00),
                       ),
@@ -41,14 +39,12 @@ class SignUp extends StatelessWidget {
                           hintStyle: const TextStyle(fontSize: 20.00)),
                       style: const TextStyle(fontSize: 20.00),
                     ),
-
                     const SizedBox(
                       height: 25.00,
                     ),
-
-                    Align(
+                    const Align(
                       alignment: Alignment(-0.95, 1),
-                      child: const Text(
+                      child: Text(
                         'Nachname',
                         style: TextStyle(fontSize: 20.00),
                       ),
@@ -62,19 +58,16 @@ class SignUp extends StatelessWidget {
                           hintStyle: const TextStyle(fontSize: 20.00)),
                       style: const TextStyle(fontSize: 20.00),
                     ),
-
                     const SizedBox(
                       height: 25.00,
                     ),
-
-                    Align(
+                    const Align(
                       alignment: Alignment(-0.95, 1),
-                      child: const Text(
+                      child: Text(
                         'Email',
                         style: TextStyle(fontSize: 20.00),
                       ),
                     ),
-
                     TextFormField(
                       autofocus: false,
                       decoration: InputDecoration(
@@ -109,7 +102,6 @@ class SignUp extends StatelessWidget {
                       ),
                       style: const TextStyle(fontSize: 20.00),
                     ),
-
                     const SizedBox(
                       height: 25.00,
                     ),
@@ -117,7 +109,8 @@ class SignUp extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Product()),
+                          MaterialPageRoute(
+                              builder: (context) => const Product()),
                         );
                       },
                       shape: RoundedRectangleBorder(
@@ -138,4 +131,18 @@ class SignUp extends StatelessWidget {
       ),
     );
   }
+
+  /*Future<Album> fetchAlbum() async {  
+    final response = await http.post("/api/Auth/register");
+
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      return Album.fromJson(jsonDecode(response.body));
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+  }*/
 }
