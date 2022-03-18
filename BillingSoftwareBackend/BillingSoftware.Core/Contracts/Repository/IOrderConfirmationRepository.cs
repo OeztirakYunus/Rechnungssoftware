@@ -9,7 +9,7 @@ namespace BillingSoftware.Core.Contracts.Repository
 {
     public interface IOrderConfirmationRepository : IRepository<OrderConfirmation>
     {
-        public Invoice OrderConfirmationToInvoice(OrderConfirmation orderConfirmation);
-        public DeliveryNote OrderConfirmationToDeliveryNote(OrderConfirmation orderConfirmation);
+        public Task<Invoice> OrderConfirmationToInvoice(OrderConfirmation orderConfirmation);
+        public Task<DeliveryNote> OrderConfirmationToDeliveryNote(OrderConfirmation orderConfirmation);
     }
 }

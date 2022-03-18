@@ -27,11 +27,18 @@ namespace BillingSoftware.Persistence.Migrations
                 name: "Companies",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    InvoiceCounter = table.Column<int>(type: "int", nullable: false),
+                    OfferCounter = table.Column<int>(type: "int", nullable: false),
+                    DeliveryNoteCounter = table.Column<int>(type: "int", nullable: false),
+                    OrderConfirmationCounter = table.Column<int>(type: "int", nullable: false),
+                    BankName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Iban = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Bic = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UstNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -68,7 +75,7 @@ namespace BillingSoftware.Persistence.Migrations
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CompanyId = table.Column<int>(type: "int", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -91,15 +98,15 @@ namespace BillingSoftware.Persistence.Migrations
                         name: "FK_AspNetUsers_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Contacts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TypeOfContactEnum = table.Column<int>(type: "int", nullable: false),
                     Gender = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -108,7 +115,7 @@ namespace BillingSoftware.Persistence.Migrations
                     NameOfOrganisation = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CompanyId = table.Column<int>(type: "int", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -118,24 +125,22 @@ namespace BillingSoftware.Persistence.Migrations
                         name: "FK_Contacts_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ArticleNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ValueAddedTax = table.Column<double>(type: "float", nullable: false),
                     SellingPriceNet = table.Column<double>(type: "float", nullable: false),
-                    PurchasingPriceNet = table.Column<double>(type: "float", nullable: false),
                     Category = table.Column<int>(type: "int", nullable: false),
                     Unit = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CompanyId = table.Column<int>(type: "int", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -145,7 +150,8 @@ namespace BillingSoftware.Persistence.Migrations
                         name: "FK_Products_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -237,14 +243,13 @@ namespace BillingSoftware.Persistence.Migrations
                 name: "Addresses",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Street = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ZipCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: true),
-                    ContactId = table.Column<int>(type: "int", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ContactId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -266,15 +271,12 @@ namespace BillingSoftware.Persistence.Migrations
                 name: "DocumentInformations",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ClientId = table.Column<int>(type: "int", nullable: false),
-                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    HeaderText = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FlowText = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ContactPersonId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ContactPersonId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     TotalDiscount = table.Column<double>(type: "float", nullable: false),
                     TypeOfDiscount = table.Column<int>(type: "int", nullable: false),
+                    Tax = table.Column<double>(type: "float", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -284,27 +286,27 @@ namespace BillingSoftware.Persistence.Migrations
                         name: "FK_DocumentInformations_AspNetUsers_ContactPersonId",
                         column: x => x.ContactPersonId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_DocumentInformations_Contacts_ClientId",
                         column: x => x.ClientId,
                         principalTable: "Contacts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "DeliveryNotes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DeliveryNoteNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DeliveryNoteNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeliveryNoteDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DeliveryNoteInformationsId = table.Column<int>(type: "int", nullable: false),
+                    DocumentInformationsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HeaderText = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FlowText = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -314,10 +316,11 @@ namespace BillingSoftware.Persistence.Migrations
                         name: "FK_DeliveryNotes_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DeliveryNotes_DocumentInformations_DeliveryNoteInformationsId",
-                        column: x => x.DeliveryNoteInformationsId,
+                        name: "FK_DeliveryNotes_DocumentInformations_DocumentInformationsId",
+                        column: x => x.DocumentInformationsId,
                         principalTable: "DocumentInformations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -327,14 +330,16 @@ namespace BillingSoftware.Persistence.Migrations
                 name: "Invoices",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    InvoiceNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    InvoiceNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     InvoiceDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PaymentTerm = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    InvoiceInformationsId = table.Column<int>(type: "int", nullable: false),
+                    DocumentInformationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HeaderText = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FlowText = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -344,10 +349,11 @@ namespace BillingSoftware.Persistence.Migrations
                         name: "FK_Invoices_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Invoices_DocumentInformations_InvoiceInformationsId",
-                        column: x => x.InvoiceInformationsId,
+                        name: "FK_Invoices_DocumentInformations_DocumentInformationId",
+                        column: x => x.DocumentInformationId,
                         principalTable: "DocumentInformations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -357,13 +363,16 @@ namespace BillingSoftware.Persistence.Migrations
                 name: "Offers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OfferNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OfferNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OfferDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OfferInformationsId = table.Column<int>(type: "int", nullable: false),
+                    ValidUntil = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DocumentInformationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HeaderText = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FlowText = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -373,10 +382,11 @@ namespace BillingSoftware.Persistence.Migrations
                         name: "FK_Offers_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Offers_DocumentInformations_OfferInformationsId",
-                        column: x => x.OfferInformationsId,
+                        name: "FK_Offers_DocumentInformations_DocumentInformationId",
+                        column: x => x.DocumentInformationId,
                         principalTable: "DocumentInformations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -386,13 +396,15 @@ namespace BillingSoftware.Persistence.Migrations
                 name: "OrderConfirmations",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderConfirmationNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrderConfirmationNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OrderConfirmationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OrderConfirmationInformationsId = table.Column<int>(type: "int", nullable: false),
+                    DocumentInformationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: true),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HeaderText = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FlowText = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
@@ -402,10 +414,11 @@ namespace BillingSoftware.Persistence.Migrations
                         name: "FK_OrderConfirmations_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderConfirmations_DocumentInformations_OrderConfirmationInformationsId",
-                        column: x => x.OrderConfirmationInformationsId,
+                        name: "FK_OrderConfirmations_DocumentInformations_DocumentInformationId",
+                        column: x => x.DocumentInformationId,
                         principalTable: "DocumentInformations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -415,23 +428,23 @@ namespace BillingSoftware.Persistence.Migrations
                 name: "Positions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Quantity = table.Column<double>(type: "float", nullable: false),
                     Discount = table.Column<double>(type: "float", nullable: false),
                     TypeOfDiscount = table.Column<int>(type: "int", nullable: false),
-                    DocumentInformationsId = table.Column<int>(type: "int", nullable: true),
+                    DocumentInformationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Positions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Positions_DocumentInformations_DocumentInformationsId",
-                        column: x => x.DocumentInformationsId,
+                        name: "FK_Positions_DocumentInformations_DocumentInformationId",
+                        column: x => x.DocumentInformationId,
                         principalTable: "DocumentInformations",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Positions_Products_ProductId",
                         column: x => x.ProductId,
@@ -505,9 +518,9 @@ namespace BillingSoftware.Persistence.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DeliveryNotes_DeliveryNoteInformationsId",
+                name: "IX_DeliveryNotes_DocumentInformationsId",
                 table: "DeliveryNotes",
-                column: "DeliveryNoteInformationsId");
+                column: "DocumentInformationsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DocumentInformations_ClientId",
@@ -525,9 +538,9 @@ namespace BillingSoftware.Persistence.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Invoices_InvoiceInformationsId",
+                name: "IX_Invoices_DocumentInformationId",
                 table: "Invoices",
-                column: "InvoiceInformationsId");
+                column: "DocumentInformationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Offers_CompanyId",
@@ -535,9 +548,9 @@ namespace BillingSoftware.Persistence.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Offers_OfferInformationsId",
+                name: "IX_Offers_DocumentInformationId",
                 table: "Offers",
-                column: "OfferInformationsId");
+                column: "DocumentInformationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderConfirmations_CompanyId",
@@ -545,14 +558,14 @@ namespace BillingSoftware.Persistence.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderConfirmations_OrderConfirmationInformationsId",
+                name: "IX_OrderConfirmations_DocumentInformationId",
                 table: "OrderConfirmations",
-                column: "OrderConfirmationInformationsId");
+                column: "DocumentInformationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Positions_DocumentInformationsId",
+                name: "IX_Positions_DocumentInformationId",
                 table: "Positions",
-                column: "DocumentInformationsId");
+                column: "DocumentInformationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Positions_ProductId",

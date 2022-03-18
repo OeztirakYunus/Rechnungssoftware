@@ -51,7 +51,10 @@ namespace CommonBase.Extensions
             ignoreTypes.Add(typeof(TypeOfDiscount));
             ignoreTypes.Add(typeof(Unit));
             ignoreTypes.Add(typeof(int));
+            ignoreTypes.Add(typeof(Guid));
             ignoreTypes.Add(typeof(DateTimeOffset?));
+            ignoreTypes.Add(typeof(DateTimeOffset));
+            ignoreTypes.Add(typeof(byte[]));
             return ignoreTypes;
         }
 

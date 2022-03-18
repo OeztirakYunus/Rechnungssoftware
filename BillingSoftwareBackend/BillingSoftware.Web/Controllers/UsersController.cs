@@ -1,15 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
-using BillingSoftware.Core.DataTransferObjects;
+using BillingSoftware.Core.DataTransferObjects.UserDtos;
 using BillingSoftware.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BillingSoftware.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
@@ -24,7 +27,9 @@ namespace BillingSoftware.Web.Controllers
         {
             try
             {
+                var companyId = await GetCompanyId();
                 var users = await _uow.UserRepository.GetAllUsersAsync();
+                users = users.Where(i => i.CompanyId.Equals(companyId)).ToArray();
                 var usersDto = new List<UserDto>();
                 users.ToList().ForEach(x => usersDto.Add(MapUserToUserDto(x)));
                 return usersDto.ToArray();
@@ -40,7 +45,13 @@ namespace BillingSoftware.Web.Controllers
         {
             try
             {
-                var user = await _uow.UserRepository.GetUserByIdAsync(id);
+                var guid = Guid.Parse(id);
+                var user = await _uow.UserRepository.GetUserByIdAsync(guid);
+                var companyId = await GetCompanyId();
+                if (!user.CompanyId.Equals(companyId))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this user!" });
+                }
                 return MapUserToUserDto(user);
             }
             catch (System.Exception ex)
@@ -59,6 +70,13 @@ namespace BillingSoftware.Web.Controllers
                 Email = user.Email,
                 Id = user.Id
             };
-        }  
+        }
+
+        private async Task<Guid> GetCompanyId()
+        {
+            var email = HttpContext.User.Identity.Name;
+            var user = await _uow.UserRepository.GetUserByEmail(email);
+            return user.CompanyId;
+        }
     }
 }

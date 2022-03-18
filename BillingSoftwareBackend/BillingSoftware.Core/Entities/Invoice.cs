@@ -10,22 +10,19 @@ namespace BillingSoftware.Core.Entities
 {
     public class Invoice : EntityObject
     {
-        [Required]
         public string InvoiceNumber { get; set; }
         [Required]
         public DateTime InvoiceDate { get; set; }
         public DateTime PaymentTerm { get; set; }
-        [Required]
-        public virtual DocumentInformations InvoiceInformations { get; set; }
+        public Guid DocumentInformationId { get; set; }
         public Status Status { get; set; } = Status.OPEN;
+        public Guid CompanyId { get; set; }
+        public string Subject { get; set; }
+        public string HeaderText { get; set; }
+        public string FlowText { get; set; }
 
-        public void CopyProperties(Invoice other)
-        {
-            InvoiceNumber = other.InvoiceNumber;
-            InvoiceDate = other.InvoiceDate;
-            PaymentTerm = other.PaymentTerm;
-            InvoiceInformations.CopyProperties(other.InvoiceInformations);
-            Status = other.Status;
-        }
+        //Navigation Properties
+        public virtual DocumentInformations DocumentInformation { get; set; }
+        public virtual Company Company { get; set; }
     }
 }

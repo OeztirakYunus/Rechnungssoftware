@@ -4,6 +4,7 @@ using BillingSoftware.Core.Entities;
 using CommonBase.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -37,8 +38,9 @@ namespace BillingSoftware.Persistence.Repository
             return user;
         }
 
-        public async Task<User> GetUserByIdAsync(string id)
+        public async Task<User> GetUserByIdAsync(Guid guid)
         {
+            var id = guid.ToString();
             var user = await _userManager.Users
                 .IncludeAllRecursively()
                 .SingleOrDefaultAsync(i => i.Id == id);

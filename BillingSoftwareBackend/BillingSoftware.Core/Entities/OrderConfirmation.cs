@@ -10,19 +10,18 @@ namespace BillingSoftware.Core.Entities
 {
     public class OrderConfirmation : EntityObject
     {
-        [Required]
         public string OrderConfirmationNumber { get; set; }
         [Required]
         public DateTime OrderConfirmationDate { get; set; }
-        [Required]
-        public virtual DocumentInformations OrderConfirmationInformations { get; set; }
+        public Guid DocumentInformationId { get; set; }
         public Status Status { get; set; } = Status.OPEN;
+        public Guid CompanyId { get; set; }
+        public string Subject { get; set; }
+        public string HeaderText { get; set; }
+        public string FlowText { get; set; }
 
-        public void CopyProperties(OrderConfirmation other)
-        {
-            OrderConfirmationNumber = other.OrderConfirmationNumber;
-            OrderConfirmationDate = other.OrderConfirmationDate;
-            OrderConfirmationInformations.CopyProperties(other.OrderConfirmationInformations);
-        }
+        //Navigation Properties
+        public virtual DocumentInformations DocumentInformation { get; set; }
+        public virtual Company Company { get; set; }
     }
 }

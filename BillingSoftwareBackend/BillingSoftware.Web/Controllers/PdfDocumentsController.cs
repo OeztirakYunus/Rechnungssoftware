@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
-using BillingSoftware.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,20 +12,35 @@ namespace BillingSoftware.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PdfDocumentsController : ControllerBase
     {
-        private const string PATH = @".\pdfs\";
+        private const string MAIN_DIRECTORY = @".\pdfs\";
+        private readonly IUnitOfWork _uow;
+
+        public PdfDocumentsController(IUnitOfWork uow)
+        {
+            _uow = uow;
+        }
+
         [HttpGet]
-        public ActionResult<IEnumerable<string>> GetPdfDocuments()
+        public async Task<ActionResult<IEnumerable<string>>> GetPdfDocuments()
         {
             try
             {
-                if (!Directory.Exists(PATH))
+                var companyId = await GetCompanyIdForUser();
+                if (companyId.Equals(Guid.Empty))
+                {
+                    return BadRequest("No Company found!");
+                }
+
+                var path = MAIN_DIRECTORY + companyId;
+                if (!Directory.Exists(path))
                 {
                     return BadRequest("No files available.");
                 }
 
-                var pdfDocumentsTemp = Directory.GetFiles(PATH);
+                var pdfDocumentsTemp = Directory.GetFiles(path);
                 var pdfDocumentNames = new List<string>();
                 foreach (var pdfDocumentName in pdfDocumentsTemp)
                 {
@@ -46,7 +60,14 @@ namespace BillingSoftware.Web.Controllers
         {
             try
             {
-                string filePath = Path.Combine(PATH, fileName);
+                var companyId = await GetCompanyIdForUser();
+                if (companyId.Equals(Guid.Empty))
+                {
+                    return BadRequest("No Company found!");
+                }
+                var path = MAIN_DIRECTORY + companyId;
+
+                string filePath = Path.Combine(path, fileName);
                 if (!System.IO.File.Exists(filePath))
                 {
                     return BadRequest($"File \"{fileName}\" not found!");
@@ -66,12 +87,19 @@ namespace BillingSoftware.Web.Controllers
         {
             try
             {
+                var companyId = await GetCompanyIdForUser();
+                if (companyId.Equals(Guid.Empty))
+                {
+                    return BadRequest("No Company found!");
+                }
+                var path = MAIN_DIRECTORY + companyId;
+
                 if (file.Length > 0)
                 {
-                    var filePath = Path.Combine(PATH, file.FileName);
-                    if (!System.IO.File.Exists(PATH))
+                    var filePath = Path.Combine(path, file.FileName);
+                    if (!System.IO.File.Exists(path))
                     {
-                        Directory.CreateDirectory(PATH);
+                        Directory.CreateDirectory(path);
                     }
 
                     if (System.IO.File.Exists(filePath))
@@ -94,11 +122,18 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpDelete("{fileName}")]
-        public IActionResult DeletePdfDocument(string fileName)
+        public async Task<IActionResult> DeletePdfDocument(string fileName)
         {
             try
             {
-                var filePath = Path.Combine(PATH,fileName);
+                var companyId = await GetCompanyIdForUser();
+                if (companyId.Equals(Guid.Empty))
+                {
+                    return BadRequest("No Company found!");
+                }
+                var path = MAIN_DIRECTORY + companyId;
+
+                var filePath = Path.Combine(path, fileName);
                 if (!System.IO.File.Exists(filePath))
                 {
                     return BadRequest($"File \"{fileName}\" not found!");
@@ -111,6 +146,18 @@ namespace BillingSoftware.Web.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        private async Task<Guid> GetCompanyIdForUser()
+        {
+            var email = HttpContext.User.Identity.Name;
+            var user = await _uow.UserRepository.GetUserByEmail(email);
+            if (user.Company != null)
+            {
+                return user.Company.Id;
+            }
+
+            return Guid.Empty;
         }
     }
 }

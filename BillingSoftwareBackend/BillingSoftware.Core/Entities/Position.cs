@@ -9,7 +9,7 @@ namespace BillingSoftware.Core.Entities
     public class Position : EntityObject
     {
         [Required]
-        public virtual Product Product { get; set; }
+        public Guid ProductId { get; set; }
         [Required]
         public double Quantity { get; set; }
         public double Discount { get; set; } = 0;
@@ -18,7 +18,11 @@ namespace BillingSoftware.Core.Entities
         {
             get
             {
-                if(TypeOfDiscount == TypeOfDiscount.Percent)
+                if(Product == null)
+                {
+                    return 0;
+                }
+                else if(TypeOfDiscount == TypeOfDiscount.Percent)
                 {
                     return Product.SellingPriceNet * (1 - (Discount / 100)) * Quantity;
                 }
@@ -29,27 +33,10 @@ namespace BillingSoftware.Core.Entities
             }
         }
 
-        public double TotalPriceGross
-        {
-            get
-            {
-                if (TypeOfDiscount == TypeOfDiscount.Percent)
-                {
-                    return Product.SellingPriceGross * (1 - (Discount / 100)) * Quantity;
-                }
-                else
-                {
-                    return (Product.SellingPriceGross - Discount) * Quantity;
-                }
-            }
-        }
+        public Guid DocumentInformationId { get; set; }
 
-        public void CopyProperties(Position other)
-        {
-            Product.CopyProperties(other.Product);
-            Quantity = other.Quantity;
-            Discount = other.Discount;
-            TypeOfDiscount = other.TypeOfDiscount;
-        }
+        //Navigation Properties
+        public virtual Product Product { get; set; }
+        public virtual DocumentInformations DocumentInformation { get; set; }
     }
 }

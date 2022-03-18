@@ -1,16 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
-using BillingSoftware.Persistence;
+using CommonBase;
+using CommonBase.Extensions;
+using DocumentFormat.OpenXml;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BillingSoftware.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class OffersController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
@@ -25,7 +30,12 @@ namespace BillingSoftware.Web.Controllers
         {
             try
             {
-                return Ok(await _uow.OfferRepository.GetAllAsync());
+                var email = HttpContext.User.Identity.Name;
+                var user = await _uow.UserRepository.GetUserByEmail(email);
+                var offers = await _uow.OfferRepository.GetAllAsync();
+                offers = offers.Where(i => user.Company.Offers.Any(a => a.Id.Equals(i.Id))).ToArray();
+
+                return Ok(offers);
             }
             catch (System.Exception ex)
             {
@@ -34,11 +44,17 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Offer>> GetOffer(int id)
+        public async Task<ActionResult<Offer>> GetOffer(string id)
         {
             try
             {
-                var offer = await _uow.OfferRepository.GetByIdAsync(id);
+                var guid = Guid.Parse(id);
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this offer!" });
+                }
+
+                var offer = await _uow.OfferRepository.GetByIdAsync(guid);
                 return offer;
             }
             catch (System.Exception ex)
@@ -52,9 +68,14 @@ namespace BillingSoftware.Web.Controllers
         {
             try
             {
+                if (!await CheckAuthorization(offer.Id))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to update this offer!" });
+                }
+
                 var entity = await _uow.OfferRepository.GetByIdAsync(offer.Id);
-                entity.CopyProperties(offer);
-                _uow.OfferRepository.Update(entity);
+                offer.CopyProperties(entity);
+                await _uow.OfferRepository.Update(entity);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -69,6 +90,11 @@ namespace BillingSoftware.Web.Controllers
         {
             try
             {
+                if (!await CheckAuthorization(offer.Id))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this offer!" });
+                }
+
                 await _uow.OfferRepository.AddAsync(offer);
                 await _uow.SaveChangesAsync();
                 return Ok();
@@ -80,11 +106,17 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOffer(int id)
+        public async Task<IActionResult> DeleteOffer(string id)
         {
             try
             {
-                await _uow.OfferRepository.Remove(id);
+                var guid = Guid.Parse(id);
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this offer!" });
+                }
+
+                await _uow.OfferRepository.Remove(guid);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
@@ -94,19 +126,73 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPost("offer-to-order-confirmation")]
-        public async Task<IActionResult> OfferToOrderConfirmation(Offer offer)
+        [HttpPost("offer-to-order-confirmation/{offerId}")]
+        public async Task<IActionResult> OfferToOrderConfirmation(string offerId)
         {
             try
             {
-                var orderConfirmation = _uow.OfferRepository.OfferToOrderConfirmation(offer);
+                var guid = Guid.Parse(offerId);
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to transform this offer!" });
+                }
+
+                var offer = await _uow.OfferRepository.GetByIdAsync(guid);
+                var orderConfirmation = await _uow.OfferRepository.OfferToOrderConfirmation(offer);
                 await _uow.SaveChangesAsync();
                 return Ok(orderConfirmation);
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message  + "\n" + ex.InnerException.Message);
+                return BadRequest(ex.Message + "\n" + ex.InnerException.Message);
             }
+        }
+
+        [HttpGet("get-as-word/{offerId}")]
+        public async Task<IActionResult> GetOfferAsWord(string offerId)
+        {
+            try
+            {
+                var guid = Guid.Parse(offerId);
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this offer as word!" });
+                }
+                var offer = await _uow.OfferRepository.GetByIdAsync(guid);          
+                var (bytes, path) = await DocxCreator.CreateWordForOffer(offer);          
+                return File(bytes, "application/docx", Path.GetFileName(path));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("get-as-pdf/{offerId}")]
+        public async Task<IActionResult> GetOfferAsPdf(string offerId)
+        {
+            try
+            {
+                var guid = Guid.Parse(offerId);
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this offer as word!" });
+                }
+                var offer = await _uow.OfferRepository.GetByIdAsync(guid);
+                var (bytes, path) = await PdfCreator.CreatePdfForOffer(offer);
+                return File(bytes, "application/pdf", Path.GetFileName(path));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        private async Task<bool> CheckAuthorization(Guid offerId)
+        {
+            var email = HttpContext.User.Identity.Name;
+            var user = await _uow.UserRepository.GetUserByEmail(email);
+            return user.Company.Offers.Any(i => i.Id.Equals(offerId));
         }
     }
 }

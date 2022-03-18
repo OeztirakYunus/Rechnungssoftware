@@ -3,6 +3,7 @@ using BillingSoftware.Core.Entities;
 using BillingSoftware.Core.Enums;
 using CommonBase.Extensions;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading.Tasks;
 
 namespace BillingSoftware.Persistence.Repository
@@ -13,15 +14,25 @@ namespace BillingSoftware.Persistence.Repository
         {
         }
 
-        public OrderConfirmation OfferToOrderConfirmation(Offer offer)
+        public async Task<OrderConfirmation> OfferToOrderConfirmation(Offer offer)
         {
+            var company = await _context.Companies.FindAsync(offer.CompanyId);
+            
             OrderConfirmation orderConfirmation = new OrderConfirmation();
             orderConfirmation.OrderConfirmationDate = System.DateTime.Now;
-            orderConfirmation.OrderConfirmationNumber = "OC " + offer.Id;
-            orderConfirmation.OrderConfirmationInformations = offer.OfferInformations;
+            orderConfirmation.OrderConfirmationNumber = "OC" + DateTime.Now.ToString("yy") + company.OrderConfirmationCounter.ToString().PadLeft(5, '0');
+            orderConfirmation.Subject = "Auftragsbestätigung " + orderConfirmation.OrderConfirmationNumber;
+            orderConfirmation.HeaderText = "Vielen Dank für Ihr Vertrauen und den Auftrag. Gemäß unserem Angebot erbringen wir folgende Leistungen:";
+            orderConfirmation.FlowText = "Bei Rückfragen stehen wir selbstverständlich jeder Zeit gerne zur Verfügung.";
+            orderConfirmation.DocumentInformationId = offer.DocumentInformationId;
+            orderConfirmation.CompanyId = offer.CompanyId;
+            
             offer.Status = Status.CLOSED;
-            Update(orderConfirmation);
-            Update(offer);
+            company.OrderConfirmationCounter++;
+            
+            await AddAsync(orderConfirmation);
+            await Update(offer);
+            await Update(company);
             return orderConfirmation;
         }
 
@@ -32,7 +43,7 @@ namespace BillingSoftware.Persistence.Repository
                 .ToArrayAsync();
         }
 
-        public override async Task<Offer> GetByIdAsync(int id)
+        public override async Task<Offer> GetByIdAsync(Guid id)
         {
             return await _context.Offers
                 .IncludeAllRecursively()

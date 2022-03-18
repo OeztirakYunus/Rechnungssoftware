@@ -10,20 +10,18 @@ namespace BillingSoftware.Core.Entities
 {
     public class DeliveryNote : EntityObject
     {
-        [Required]
         public string DeliveryNoteNumber { get; set; }
         [Required]
         public DateTime DeliveryNoteDate { get; set; }
-        [Required]
-        public virtual DocumentInformations DeliveryNoteInformations { get; set; }
+        public Guid DocumentInformationsId { get; set; }
         public Status Status { get; set; } = Status.OPEN;
+        public Guid CompanyId { get; set; }
+        public string Subject { get; set; }
+        public string HeaderText { get; set; }
+        public string FlowText { get; set; }
 
-        public void CopyProperties(DeliveryNote other)
-        {
-            DeliveryNoteNumber = other.DeliveryNoteNumber;
-            DeliveryNoteDate = other.DeliveryNoteDate;
-            DeliveryNoteInformations.CopyProperties(other.DeliveryNoteInformations);
-            Status = other.Status;
-        }
+        //Navigation Properties
+        public virtual DocumentInformations DocumentInformations { get; set; }
+        public virtual Company Company { get; set; }
     }
 }

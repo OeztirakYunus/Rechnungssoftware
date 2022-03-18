@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,18 +11,12 @@ namespace BillingSoftware.Core.Entities
 {
     public class DocumentInformations : EntityObject
     {
-        [Required]
-        public virtual Contact Client { get; set; }
-        [Required]
-        public string Subject { get; set; }
-        public string HeaderText { get; set; }
-        [Required]
-        public virtual List<Position> Positions { get; set; } = new();
-        public string FlowText { get; set; }
-        [Required]
-        public virtual User ContactPerson { get; set; }
+        public Guid? ClientId { get; set; }
+        public string? ContactPersonId { get; set; }
         public double TotalDiscount { get; set; } = 0;
         public TypeOfDiscount TypeOfDiscount { get; set; } = TypeOfDiscount.Percent;
+        [Required]
+        public double Tax { get; set; }
         public double TotalPriceNet
         {
             get
@@ -48,8 +43,9 @@ namespace BillingSoftware.Core.Entities
                 double totalPriceGross = 0;
                 foreach (var item in Positions)
                 {
-                    totalPriceGross += item.TotalPriceGross;
+                    totalPriceGross += item.TotalPriceNet;
                 }
+                totalPriceGross = totalPriceGross * (1 + (Tax / 100));
                 if (TypeOfDiscount == TypeOfDiscount.Percent)
                 {
                     return totalPriceGross * (1 - (TotalDiscount / 100));
@@ -61,20 +57,9 @@ namespace BillingSoftware.Core.Entities
             }
         }
 
-        public void CopyProperties(DocumentInformations other)
-        {
-            //Client.CopyProperties(other.Client);
-            Subject = other.Subject;
-            HeaderText = other.HeaderText;
-            FlowText = other.FlowText;
-            ContactPerson.CopyProperties(other.ContactPerson);
-            TotalDiscount = other.TotalDiscount;
-            TypeOfDiscount = other.TypeOfDiscount;
-            Positions = new List<Position>();
-            foreach (var item in other.Positions)
-            {
-                Positions.Add(item);
-            }
-        }
+        //Navigation Properties
+        public virtual List<Position> Positions { get; set; } = new();
+        public virtual User ContactPerson { get; set; }
+        public virtual Contact Client { get; set; }
     }
 }

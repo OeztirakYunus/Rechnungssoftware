@@ -2,6 +2,7 @@
 using BillingSoftware.Core.Entities;
 using CommonBase.Extensions;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading.Tasks;
 
 namespace BillingSoftware.Persistence.Repository
@@ -12,13 +13,22 @@ namespace BillingSoftware.Persistence.Repository
         {
         }
       
-        public DeliveryNote InvoiceToDeliveryNote(Invoice invoice)
+        public async Task<DeliveryNote> InvoiceToDeliveryNote(Invoice invoice)
         {
+            var company = await _context.Companies.FindAsync(invoice.CompanyId);
+
             DeliveryNote deliveryNote = new DeliveryNote();
             deliveryNote.DeliveryNoteDate = System.DateTime.Now;
-            deliveryNote.DeliveryNoteNumber = "DN " + invoice.Id;
-            deliveryNote.DeliveryNoteInformations = invoice.InvoiceInformations;
-            Update(deliveryNote);
+            deliveryNote.DeliveryNoteNumber = "DN" + DateTime.Now.ToString("yy") + company.DeliveryNoteCounter.ToString().PadLeft(5, '0');
+            deliveryNote.Subject = "Lieferschein " + deliveryNote.DeliveryNoteNumber;
+            deliveryNote.HeaderText = "Vielen Dank für die Zusammenarbeit. Vereinbarungsgemäß liefern wir Ihnen folgende Waren:";
+            deliveryNote.FlowText = "Die gelieferte Ware bleibt bis zu vollständiger Bezahlung unser Eigentum.";
+            deliveryNote.DocumentInformationsId = invoice.DocumentInformationId;
+            deliveryNote.CompanyId = invoice.CompanyId;
+
+            await AddAsync(deliveryNote);
+            await Update(company);
+
             return deliveryNote;
         }
 
@@ -29,7 +39,7 @@ namespace BillingSoftware.Persistence.Repository
                 .ToArrayAsync();
         }
 
-        public override async Task<Invoice> GetByIdAsync(int id)
+        public override async Task<Invoice> GetByIdAsync(Guid id)
         {
             return await _context.Invoices
                 .IncludeAllRecursively()
