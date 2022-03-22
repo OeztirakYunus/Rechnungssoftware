@@ -136,6 +136,71 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
+        [HttpPut("add-position/{documentInformationId}")]
+        public async Task<IActionResult> AddPositionToDocumentInformation(string documentInformationId, Position position)
+        {
+            try
+            {
+                var docInfromationGuid = Guid.Parse(documentInformationId);
+                if (!await CheckAuthorization(docInfromationGuid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this position to this document information!" });
+                }
+
+                await _uow.DocumentInformationsRepository.AddPosition(docInfromationGuid, position);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("add-positions/{documentInformationId}")]
+        public async Task<IActionResult> AddPositionsToDocumentInformation(string documentInformationId, ICollection<Position> positions)
+        {
+            try
+            {
+                var docInfromationGuid = Guid.Parse(documentInformationId);
+                if (!await CheckAuthorization(docInfromationGuid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this positions to this document information!" });
+                }
+
+                await _uow.DocumentInformationsRepository.AddPositions(docInfromationGuid, positions);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("delete-position/{documentInformationId}/{positionId}")]
+        public async Task<IActionResult> DeletePositionFromDocumentInformation(string documentInformationId, string positionId)
+        {
+            try
+            {
+                var docInfromationGuid = Guid.Parse(documentInformationId);
+                if (!await CheckAuthorization(docInfromationGuid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this position from this document information!" });
+                }
+
+                var toDeleteId = Guid.Parse(positionId);
+
+                await _uow.DocumentInformationsRepository.DeletePosition(docInfromationGuid, toDeleteId);
+                await _uow.SaveChangesAsync();
+                return Ok();
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         private async Task<bool> CheckAuthorization(Guid docInfoId)
         {
             var email = HttpContext.User.Identity.Name;
@@ -155,6 +220,18 @@ namespace BillingSoftware.Web.Controllers
                 result = user.Company.Invoices.Any(i => i.DocumentInformationId.Equals(docInfoId));
             }
             return result;
+        }
+
+        private async Task<Guid> GetCompanyIdForUser()
+        {
+            var email = HttpContext.User.Identity.Name;
+            var user = await _uow.UserRepository.GetUserByEmail(email);
+            if (user.Company != null)
+            {
+                return user.Company.Id;
+            }
+
+            return Guid.Empty;
         }
     }
 }

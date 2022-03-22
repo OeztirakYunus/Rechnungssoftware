@@ -1,6 +1,9 @@
 ﻿using BillingSoftware.Core.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Diagnostics;
 
 namespace BillingSoftware.Persistence
 {
@@ -20,15 +23,19 @@ namespace BillingSoftware.Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //var builder = new ConfigurationBuilder()
-            //    .SetBasePath(Environment.CurrentDirectory)
-            //    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-            //var configuration = builder.Build();
-            //var connectionString = configuration["ConnectionStrings:DefaultConnection"];
-            //optionsBuilder.UseSqlServer(connectionString);
+            var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                var builder = new ConfigurationBuilder()
+                    .SetBasePath(Environment.CurrentDirectory)
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                var configuration = builder.Build();
+                Debug.Write(configuration.ToString());
+                connectionString = configuration["ConnectionStrings:DefaultConnection"];
+            }
+            Console.WriteLine($"!!!!Connecting with {connectionString}");
             optionsBuilder
-               // .UseLazyLoadingProxies(true)
-                .UseSqlServer("Data Source=(localdb)\\MSSQLLOCALDB;Initial Catalog=BillingSoftwareDb;Integrated Security=True");
+                .UseSqlServer(connectionString);
         }
     }
 }
