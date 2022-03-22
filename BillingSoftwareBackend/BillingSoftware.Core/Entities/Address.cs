@@ -15,11 +15,5 @@ namespace BillingSoftware.Core.Entities
         public string City { get; set; }
         [Required]
         public string Country { get; set; }
-        public Guid? CompanyId { get; set; }
-        public Guid? ContactId { get; set; }
-
-        //Navigation Properties
-        public virtual Company Company { get; set; }
-        public virtual Contact Contact { get; set; }
     }
 }

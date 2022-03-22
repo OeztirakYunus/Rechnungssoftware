@@ -13,12 +13,12 @@ namespace BillingSoftware.Core.Entities
         public string DeliveryNoteNumber { get; set; }
         [Required]
         public DateTime DeliveryNoteDate { get; set; }
-        public Guid DocumentInformationsId { get; set; }
         public Status Status { get; set; } = Status.OPEN;
-        public Guid CompanyId { get; set; }
         public string Subject { get; set; }
         public string HeaderText { get; set; }
         public string FlowText { get; set; }
+        public Guid CompanyId { get; set; }
+        public Guid DocumentInformationsId { get; set; }
 
         //Navigation Properties
         public virtual DocumentInformations DocumentInformations { get; set; }

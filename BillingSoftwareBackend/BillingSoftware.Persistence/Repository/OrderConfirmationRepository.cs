@@ -4,6 +4,7 @@ using BillingSoftware.Core.Enums;
 using CommonBase.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BillingSoftware.Persistence.Repository
@@ -16,11 +17,12 @@ namespace BillingSoftware.Persistence.Repository
      
         public async Task<Invoice> OrderConfirmationToInvoice(OrderConfirmation orderConfirmation)
         {
-            var company = await _context.Companies.FindAsync(orderConfirmation.CompanyId);
+            var cDocumentCounters = await _context.CompanyDocumentCounters.ToArrayAsync();
+            var cDocumentCounter = cDocumentCounters.Where(i => i.CompanyId.Equals(orderConfirmation.CompanyId)).SingleOrDefault();
 
             Invoice invoice = new Invoice();
             invoice.InvoiceDate = System.DateTime.Now;
-            invoice.InvoiceNumber = "I" + DateTime.Now.ToString("yy") + company.InvoiceCounter.ToString().PadLeft(5, '0');
+            invoice.InvoiceNumber = "I" + DateTime.Now.ToString("yy") + cDocumentCounter.InvoiceCounter.ToString().PadLeft(5, '0');
             invoice.Subject = "Rechnung " + invoice.InvoiceNumber;
             invoice.HeaderText = "Vielen Dank für Ihren Auftrag. Wir berechnen Ihnen folgende Leistung:";
             invoice.FlowText = "Zahlbar sofort ohne Abzug. Für Rückfragen zu dieser Rechnung stehen wir gerne jederzeit zur Verfügung.";
@@ -28,32 +30,33 @@ namespace BillingSoftware.Persistence.Repository
             invoice.CompanyId = orderConfirmation.CompanyId;
             invoice.PaymentTerm = System.DateTime.Now.AddDays(14);
 
-            company.InvoiceCounter++;
+            cDocumentCounter.InvoiceCounter++;
             orderConfirmation.Status = Status.CLOSED;
 
             await AddAsync(invoice);
             await Update(orderConfirmation);
-            await Update(company);
+            await Update(cDocumentCounter);
             return invoice;
         }
 
         public async Task<DeliveryNote> OrderConfirmationToDeliveryNote(OrderConfirmation orderConfirmation)
         {
-            var company = await _context.Companies.FindAsync(orderConfirmation.CompanyId);
+            var cDocumentCounters = await _context.CompanyDocumentCounters.ToArrayAsync();
+            var cDocumentCounter = cDocumentCounters.Where(i => i.CompanyId.Equals(orderConfirmation.CompanyId)).SingleOrDefault();
 
             DeliveryNote deliveryNote = new DeliveryNote();
             deliveryNote.DeliveryNoteDate = System.DateTime.Now;
-            deliveryNote.DeliveryNoteNumber = "DN" + DateTime.Now.ToString("yy") + company.DeliveryNoteCounter.ToString().PadLeft(5, '0');
+            deliveryNote.DeliveryNoteNumber = "DN" + DateTime.Now.ToString("yy") + cDocumentCounter.DeliveryNoteCounter.ToString().PadLeft(5, '0');
             deliveryNote.Subject = "Lieferschein " + deliveryNote.DeliveryNoteNumber;
             deliveryNote.HeaderText = "Vielen Dank für die Zusammenarbeit. Vereinbarungsgemäß liefern wir Ihnen folgende Waren:";
             deliveryNote.FlowText = "Die gelieferte Ware bleibt bis zu vollständiger Bezahlung unser Eigentum.";
             deliveryNote.DocumentInformationsId = orderConfirmation.DocumentInformationId;
             deliveryNote.CompanyId = orderConfirmation.CompanyId;
 
-            company.DeliveryNoteCounter++;
+            cDocumentCounter.DeliveryNoteCounter++;
 
             await AddAsync(deliveryNote);
-            await Update(company);
+            await Update(cDocumentCounter);
             return deliveryNote;
         }
 

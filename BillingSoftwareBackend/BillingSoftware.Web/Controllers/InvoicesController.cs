@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
-using CommonBase;
+using CommonBase.DocumentCreators;
 using CommonBase.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -159,6 +159,26 @@ namespace BillingSoftware.Web.Controllers
                 var invoice = await _uow.InvoiceRepository.GetByIdAsync(guid);
                 var (bytes, path) = await DocxCreator.CreateWordForInvoice(invoice);
                 return File(bytes, "application/docx", Path.GetFileName(path));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("get-as-pdf/{invoiceId}")]
+        public async Task<IActionResult> GetInvoiceAsPdf(string invoiceId)
+        {
+            try
+            {
+                var guid = Guid.Parse(invoiceId);
+                if (!await CheckAuthorization(guid))
+                {
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this invoice as pdf!" });
+                }
+                var invoice = await _uow.InvoiceRepository.GetByIdAsync(guid);
+                var (bytes, path) = await PdfCreator.CreatePdfForInvoice(invoice);
+                return File(bytes, "application/pdf", Path.GetFileName(path));
             }
             catch (Exception ex)
             {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
-using CommonBase;
+using CommonBase.DocumentCreators;
 using CommonBase.Extensions;
 using DocumentFormat.OpenXml;
 using Microsoft.AspNetCore.Authorization;
@@ -15,7 +15,7 @@ namespace BillingSoftware.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class OffersController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
@@ -176,7 +176,7 @@ namespace BillingSoftware.Web.Controllers
                 var guid = Guid.Parse(offerId);
                 if (!await CheckAuthorization(guid))
                 {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this offer as word!" });
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this offer as pdf!" });
                 }
                 var offer = await _uow.OfferRepository.GetByIdAsync(guid);
                 var (bytes, path) = await PdfCreator.CreatePdfForOffer(offer);

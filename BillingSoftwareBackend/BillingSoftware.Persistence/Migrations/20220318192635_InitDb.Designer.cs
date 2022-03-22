@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BillingSoftware.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220317094722_InitDb")]
+    [Migration("20220318192635_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,12 +34,6 @@ namespace BillingSoftware.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ContactId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -59,10 +53,6 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("ContactId");
-
                     b.ToTable("Addresses");
                 });
 
@@ -70,6 +60,9 @@ namespace BillingSoftware.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AddressId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("BankName")
@@ -82,24 +75,12 @@ namespace BillingSoftware.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DeliveryNoteCounter")
-                        .HasColumnType("int");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Iban")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("InvoiceCounter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OfferCounter")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrderConfirmationCounter")
-                        .HasColumnType("int");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -115,7 +96,43 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AddressId");
+
                     b.ToTable("Companies");
+                });
+
+            modelBuilder.Entity("BillingSoftware.Core.Entities.CompanyDocumentCounter", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("DeliveryNoteCounter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InvoiceCounter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OfferCounter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderConfirmationCounter")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId")
+                        .IsUnique();
+
+                    b.ToTable("CompanyDocumentCounters");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Contact", b =>
@@ -124,7 +141,10 @@ namespace BillingSoftware.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CompanyId")
+                    b.Property<Guid?>("AddressId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CompanyId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
@@ -158,6 +178,8 @@ namespace BillingSoftware.Persistence.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("CompanyId");
 
@@ -681,28 +703,37 @@ namespace BillingSoftware.Persistence.Migrations
                     b.HasDiscriminator().HasValue("User");
                 });
 
-            modelBuilder.Entity("BillingSoftware.Core.Entities.Address", b =>
+            modelBuilder.Entity("BillingSoftware.Core.Entities.Company", b =>
                 {
-                    b.HasOne("BillingSoftware.Core.Entities.Company", "Company")
-                        .WithMany("Addresses")
-                        .HasForeignKey("CompanyId");
+                    b.HasOne("BillingSoftware.Core.Entities.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("BillingSoftware.Core.Entities.Contact", "Contact")
-                        .WithMany("Addresses")
-                        .HasForeignKey("ContactId");
+                    b.Navigation("Address");
+                });
 
-                    b.Navigation("Company");
-
-                    b.Navigation("Contact");
+            modelBuilder.Entity("BillingSoftware.Core.Entities.CompanyDocumentCounter", b =>
+                {
+                    b.HasOne("BillingSoftware.Core.Entities.Company", null)
+                        .WithOne("CompanyDocumentCounter")
+                        .HasForeignKey("BillingSoftware.Core.Entities.CompanyDocumentCounter", "CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Contact", b =>
                 {
+                    b.HasOne("BillingSoftware.Core.Entities.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId");
+
                     b.HasOne("BillingSoftware.Core.Entities.Company", "Company")
                         .WithMany("Contacts")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Address");
 
                     b.Navigation("Company");
                 });
@@ -892,7 +923,7 @@ namespace BillingSoftware.Persistence.Migrations
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.Company", b =>
                 {
-                    b.Navigation("Addresses");
+                    b.Navigation("CompanyDocumentCounter");
 
                     b.Navigation("Contacts");
 
@@ -907,11 +938,6 @@ namespace BillingSoftware.Persistence.Migrations
                     b.Navigation("Products");
 
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("BillingSoftware.Core.Entities.Contact", b =>
-                {
-                    b.Navigation("Addresses");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.DocumentInformations", b =>

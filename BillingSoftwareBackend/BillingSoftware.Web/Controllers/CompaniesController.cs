@@ -105,27 +105,6 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpPut("add-address")]
-        public async Task<IActionResult> AddAddressToCompany(Address address)
-        {
-            try
-            {
-                var compId = await GetCompanyIdForUser();
-                if (compId.Equals(Guid.Empty))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add an address to this company!" });
-                }
-
-                await _uow.CompanyRepository.AddAddress(compId, address);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
         [HttpPut("add-contact")]
         public async Task<IActionResult> AddContactToCompany(Contact contact)
         {

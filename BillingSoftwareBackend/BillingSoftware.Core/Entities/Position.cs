@@ -9,8 +9,6 @@ namespace BillingSoftware.Core.Entities
     public class Position : EntityObject
     {
         [Required]
-        public Guid ProductId { get; set; }
-        [Required]
         public double Quantity { get; set; }
         public double Discount { get; set; } = 0;
         public TypeOfDiscount TypeOfDiscount { get; set; } = TypeOfDiscount.Percent;
@@ -24,15 +22,36 @@ namespace BillingSoftware.Core.Entities
                 }
                 else if(TypeOfDiscount == TypeOfDiscount.Percent)
                 {
-                    return Product.SellingPriceNet * (1 - (Discount / 100)) * Quantity;
+                    return Math.Round(Product.SellingPriceNet * (1 - (Discount / 100)) * Quantity, 2);
                 }
                 else
                 {
-                    return (Product.SellingPriceNet - Discount) * Quantity;
+                    return Math.Round((Product.SellingPriceNet - Discount) * Quantity, 2);
                 }
             }
         }
 
+        public double ProductPriceNet
+        {
+            get
+            {
+                if (Product == null)
+                {
+                    return 0;
+                }
+                else if (TypeOfDiscount == TypeOfDiscount.Percent)
+                {
+                    return Math.Round(Product.SellingPriceNet * (1 - (Discount / 100)), 2);
+                }
+                else
+                {
+                    return Math.Round((Product.SellingPriceNet - Discount), 2);
+                }
+            }
+        }
+
+        [Required]
+        public Guid ProductId { get; set; }
         public Guid DocumentInformationId { get; set; }
 
         //Navigation Properties

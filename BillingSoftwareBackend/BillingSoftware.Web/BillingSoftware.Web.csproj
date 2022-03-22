@@ -25,4 +25,8 @@
     <ProjectReference Include="..\BillingSoftware.Persistence\BillingSoftware.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="documents\" />
+  </ItemGroup>
+
 </Project>

@@ -10,7 +10,6 @@ namespace BillingSoftware.Core.Contracts.Repository
 {
     public interface ICompanyRepository : IRepository<Company>
     {
-        Task AddAddress(Guid companyId, Address address);
         Task AddContact(Guid companyId, Contact contact);
         Task AddDeliveryNote(Guid companyId, DeliveryNote deliveryNote);
         Task AddInvoice(Guid companyId, Invoice invoice);

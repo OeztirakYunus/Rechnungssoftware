@@ -19,10 +19,11 @@ namespace BillingSoftware.Core.Entities
         public string PhoneNumber { get; set; }
         [EmailAddress]
         public string Email { get; set; }
-        public Guid CompanyId { get; set; }
+        public Guid? CompanyId { get; set; }
+        public Guid? AddressId { get; set; }
 
         //Navigation Properties
-        public virtual List<Address> Addresses { get; set; } = new();
+        public virtual Address Address { get; set; }
         public virtual Company Company { get; set; }
 
     }

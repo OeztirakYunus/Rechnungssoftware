@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+
+  billingsoftware-backend:
+    environment:
+      - DB_CONNECTION_STRING=Server=dbserver,1433;Database=BillingSoftwareDb;User Id=sa;Password=BillingSoftware20222022!
+    build: .
+    links:
+      - dbserver
+    depends_on:
+      - dbserver
+    networks:
+      - billingsoftware-network 
+    ports:
+      - 8080:80
+
+  dbserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest 
+    environment:  
+      ACCEPT_EULA: "Y"  
+      SA_PASSWORD: "BillingSoftware20222022!"
+    volumes:  
+      - mssqlsystem:/var/opt/mssql/ 
+      - mssqluser:/var/opt/sqlserver
+    networks:
+      - billingsoftware-network  
+    ports:  
+      - 1433:1433  
+
+volumes:
+  mssqlsystem: 
+  mssqluser:
+
+networks:
+  billingsoftware-network:
+    name: billingsoftware-network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.8.0.0/16

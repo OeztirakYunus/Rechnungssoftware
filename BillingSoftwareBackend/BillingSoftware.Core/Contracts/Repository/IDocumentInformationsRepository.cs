@@ -9,5 +9,8 @@ namespace BillingSoftware.Core.Contracts.Repository
 {
     public interface IDocumentInformationsRepository : IRepository<DocumentInformations>
     {
+        Task AddPosition(Guid documentInformationId, Position position);
+        Task AddPositions(Guid documentInformationId, ICollection<Position> positions);
+        Task DeletePosition(Guid documentInformationId, Guid positionId);
     }
 }

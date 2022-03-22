@@ -11,12 +11,12 @@ namespace BillingSoftware.Core.Entities
 {
     public class DocumentInformations : EntityObject
     {
-        public Guid? ClientId { get; set; }
-        public string? ContactPersonId { get; set; }
         public double TotalDiscount { get; set; } = 0;
         public TypeOfDiscount TypeOfDiscount { get; set; } = TypeOfDiscount.Percent;
         [Required]
         public double Tax { get; set; }
+        public Guid? ClientId { get; set; }
+        public string? ContactPersonId { get; set; }
         public double TotalPriceNet
         {
             get
@@ -28,11 +28,11 @@ namespace BillingSoftware.Core.Entities
                 }
                 if (TypeOfDiscount == TypeOfDiscount.Percent)
                 {
-                    return totalPriceNet * (1 - (TotalDiscount / 100));
+                    return Math.Round(totalPriceNet * (1 - (TotalDiscount / 100)), 2);
                 }
                 else
                 {
-                    return totalPriceNet - TotalDiscount;
+                    return Math.Round(totalPriceNet - TotalDiscount, 2);
                 }
             }
         }
@@ -48,14 +48,15 @@ namespace BillingSoftware.Core.Entities
                 totalPriceGross = totalPriceGross * (1 + (Tax / 100));
                 if (TypeOfDiscount == TypeOfDiscount.Percent)
                 {
-                    return totalPriceGross * (1 - (TotalDiscount / 100));
+                    return Math.Round(totalPriceGross * (1 - (TotalDiscount / 100)), 2);
                 }
                 else
                 {
-                    return totalPriceGross - TotalDiscount;
+                    return Math.Round(totalPriceGross - TotalDiscount, 2);
                 }
             }
         }
+
 
         //Navigation Properties
         public virtual List<Position> Positions { get; set; } = new();
