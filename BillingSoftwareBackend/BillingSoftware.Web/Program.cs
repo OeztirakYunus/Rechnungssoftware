@@ -23,7 +23,7 @@ namespace BillingSoftware.Web
                 await roleManager.CreateAsync(new IdentityRole("User"));
             }
             catch(Exception ex){
-                
+                Console.WriteLine(ex.Message);
             }
             
             server.Run();
