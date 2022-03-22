@@ -12,7 +12,7 @@ namespace BillingSoftware.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class AddressesController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
@@ -27,10 +27,10 @@ namespace BillingSoftware.Web.Controllers
         {
             try
             {
-                var email = HttpContext.User.Identity.Name;
-                var user = await _uow.UserRepository.GetUserByEmail(email);
+                // var email = HttpContext.User.Identity.Name;
+                // var user = await _uow.UserRepository.GetUserByEmail(email);
                 var addresses = await _uow.AddressRepository.GetAllAsync();
-                addresses = addresses.Where(i => user.Company.Address.Id.Equals(i)).ToArray();
+                //addresses = addresses.Where(i => user.Company.Address.Id.Equals(i)).ToArray();
                 return Ok(addresses);
             }
             catch (System.Exception ex)

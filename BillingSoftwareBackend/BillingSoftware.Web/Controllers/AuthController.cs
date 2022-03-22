@@ -118,7 +118,9 @@ namespace BillingSoftware.Web.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> Register(UserRegisterDTO newUser)
         {
+            Console.WriteLine($"!!!!Here1");
             var existingUser = await _userManager.FindByEmailAsync(newUser.User.Email);
+            Console.WriteLine($"!!!!Here2");
             // gibt es schon einen Benutzer mit der Mailadresse?
             if (existingUser != null)
             {

@@ -35,7 +35,10 @@ namespace BillingSoftware.Persistence
             }
             Console.WriteLine($"!!!!Connecting with {connectionString}");
             optionsBuilder
-                .UseSqlServer(connectionString);
+                .UseSqlServer(connectionString, builder =>{
+                    builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                });
+            base.OnConfiguring(optionsBuilder);
         }
     }
 }

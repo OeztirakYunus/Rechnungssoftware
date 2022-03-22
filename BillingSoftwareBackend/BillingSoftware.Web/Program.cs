@@ -16,10 +16,16 @@ namespace BillingSoftware.Web
         public async static Task Main(string[] args)
         {
             var server = CreateHostBuilder(args).Build();
-            using var scope = server.Services.CreateScope();
-            var roleManager = scope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
-            await roleManager.CreateAsync(new IdentityRole("Admin"));
-            await roleManager.CreateAsync(new IdentityRole("User"));
+            try{
+                using var scope = server.Services.CreateScope();
+                var roleManager = scope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
+                await roleManager.CreateAsync(new IdentityRole("Admin"));
+                await roleManager.CreateAsync(new IdentityRole("User"));
+            }
+            catch(Exception ex){
+                
+            }
+            
             server.Run();
         }
 
