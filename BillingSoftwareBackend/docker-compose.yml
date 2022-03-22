@@ -5,6 +5,7 @@ services:
   billingsoftware-backend:
     environment:
       - DB_CONNECTION_STRING=Server=dbserver,1433;Database=BillingSoftwareDb;User Id=sa;Password=BillingSoftware20222022!
+      - DELETE_DATABASE=true
     build: .
     links:
       - dbserver
@@ -16,14 +17,13 @@ services:
       - 8080:80
 
   dbserver:
-    image: "mcr.microsoft.com/mssql/server:2017-latest" 
+    image: mcr.microsoft.com/mssql/server:2019-latest 
     environment:  
       ACCEPT_EULA: "Y"  
       SA_PASSWORD: "BillingSoftware20222022!"
-      DB_NAME: "BillingSoftwareDb"
     volumes:  
       - mssqlsystem:/var/opt/mssql/ 
-      - mssqluser:/var/opt/sqlserver/
+      - mssqluser:/var/opt/sqlserver
     networks:
       - billingsoftware-network  
     ports:  
