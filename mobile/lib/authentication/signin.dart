@@ -1,8 +1,11 @@
+import 'package:demo5/products/categoryList.dart';
 import 'package:demo5/products/product.dart';
 import 'package:demo5/authentication/signup.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'dart:convert';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -13,6 +16,9 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool? changed = false;
+  TextEditingController userMail = TextEditingController();
+  TextEditingController userPsw = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,16 +46,15 @@ class _LoginState extends State<Login> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ignore: prefer_const_constructors
-                    Align(
-                      alignment: const Alignment(-0.95, 1),
-                      child: const Text(
+                    const Align(
+                      alignment: Alignment(-0.95, 1),
+                      child: Text(
                         'Email',
                         style: TextStyle(fontSize: 20.00),
                       ),
                     ),
-
                     TextFormField(
+                      controller: userMail,
                       autofocus: false,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
@@ -67,6 +72,7 @@ class _LoginState extends State<Login> {
                           Text('Passwort', style: TextStyle(fontSize: 20.00)),
                     ),
                     TextFormField(
+                      controller: userPsw,
                       autofocus: false,
                       obscureText: true,
                       decoration: InputDecoration(
@@ -111,7 +117,7 @@ class _LoginState extends State<Login> {
                                   ..onTap = () => Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const SignUp())),
+                                          builder: (context) => SignUp())),
                                 style: const TextStyle(
                                   color: Colors.blueAccent,
                                   fontSize: 18,
@@ -124,11 +130,16 @@ class _LoginState extends State<Login> {
                       height: 25.00,
                     ),
                     MaterialButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Product()),
-                        );
+                      onPressed: () async {
+                        int statusCode =
+                            await loginUser(userMail.text, userPsw.text);
+                        if (statusCode == 200) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Categories()),
+                          );
+                        }
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(100)),
@@ -151,7 +162,7 @@ class _LoginState extends State<Login> {
                     text: 'Noch kein Konto?',
                     recognizer: TapGestureRecognizer()
                       ..onTap = () => Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => const SignUp())),
+                          MaterialPageRoute(builder: (context) => SignUp())),
                     style: const TextStyle(
                       color: Colors.blueAccent,
                       fontSize: 18,
@@ -162,5 +173,20 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
+  }
+
+  Future<int> loginUser(String email, String password) async {
+    String url = "http://invoicer.at:8080/api/Auth/login";
+    Uri uri = Uri.parse(url);
+
+    String authorization = email + ":" + password;
+    String encodedAuthorization = base64.encode(utf8.encode(authorization));
+
+    final response = await http
+        .get(uri, headers: {"Authorization": "Basic " + encodedAuthorization});
+    print(response.statusCode);
+    print(response.body);
+
+    return response.statusCode;
   }
 }

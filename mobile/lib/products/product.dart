@@ -2,166 +2,111 @@
 import 'package:demo5/products/addProduct.dart';
 import 'package:flutter/material.dart';
 import '../NavBar.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import 'package:syncfusion_flutter_core/theme.dart';
 
 class Product extends StatefulWidget {
-  const Product({Key? key}) : super(key: key);
+  final String productCategory;
+
+  const Product({Key? key, required this.productCategory}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _ProductsState();
 }
 
 class _ProductsState extends State<Product> {
-  late List<Products> _products;
-  late ProductsDataSource _productsDataSource;
+  final Products _products = Products("", "", "", "", 0.0);
 
   @override
   void initState() {
-    _products = getProductsData();
-    _productsDataSource = ProductsDataSource(_products);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _products.getList();
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Produkte',
-              style: TextStyle(
-                  height: 1.00, fontSize: 25.00, color: Colors.white)),
-          centerTitle: true,
+        child: Scaffold(
+      appBar: AppBar(
+        title: const Text('Produkte',
+            style:
+                TextStyle(height: 1.00, fontSize: 25.00, color: Colors.white)),
+        centerTitle: true,
+      ),
+      drawer: NavBar(),
+      body: ListView.builder(
+          itemBuilder: _itemBuilder,
+          itemCount:
+              _products.getMatchingCategoryCount(widget.productCategory)),
+    ));
+  }
+
+  Widget _itemBuilder(BuildContext context, int index) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const AddProduct()),
+        );
+      },
+      child: Card(
+        child: ListTile(
+          leading: Text(_products.getNameByCategory(index)),
         ),
-        drawer: NavBar(),
-        body: SfDataGridTheme(
-          data: SfDataGridThemeData(
-              headerColor: Colors.purple,
-              brightness: Brightness.light,
-              gridLineColor: Colors.black,
-              gridLineStrokeWidth: 0.5,
-              sortIconColor: Colors.orange,
-              selectionColor: Colors.yellow),
-          child: SfDataGrid(
-            source: _productsDataSource,
-            selectionMode: SelectionMode.multiple,
-            columnWidthMode: ColumnWidthMode.lastColumnFill,
-            allowSorting: true,
-            columns: [
-              GridColumn(
-                  columnName: "productName",
-                  label: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Produkt Name",
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                  )),
-              GridColumn(
-                  columnName: "productCategory",
-                  label: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Kategorie",
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                  )),
-              GridColumn(
-                  columnName: "description",
-                  label: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Beschreibung",
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                  ))
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AddProduct()),
-            );
-          },
-          child: Image.asset("lib/assets/add.png"),
-        ),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       ),
     );
-  }
-
-  List<Products> getProductsData() {
-    return [
-      Products("Red Bull", "Getränke", "Koffeinhalitges Getränk"),
-      Products("Äpfel", "Obst", "Frische Äpfel aus Spanien"),
-      Products("Eistee", "Getränke", "Zuckerhalitges Getränk"),
-      Products("Eistee2", "Getränke", "Zuckerhalitges Getränk"),
-      Products("Eistee", "Getränke", "Zuckerhalitges Getränk"),
-      Products("Eistee", "Getränke", "Zuckerhalitges Getränk"),
-      Products("Eistee", "Getränke", "Zuckerhalitges Getränk"),
-      Products("Eistee", "Getränke", "Zuckerhalitges Getränk"),
-      Products("Eistee", "Getränke", "Zuckerhalitges Getränk"),
-      Products("Red Bull", "Getränke", "Koffeinhalitges Getränk"),
-      Products("Red Bull", "Getränke", "Koffeinhalitges Getränk"),
-      Products("Red Bull", "Getränke", "Koffeinhalitges Getränk"),
-      Products("Red Bull", "Getränke", "Koffeinhalitges Getränk"),
-      Products("Red Bull", "Getränke", "Koffeinhalitges Getränk"),
-      Products("Red Bull", "Getränke", "Koffeinhalitges Getränk"),
-      Products("Red Bull", "Getränke", "Koffeinhalitges Getränk"),
-      Products("Red Bull", "Getränke", "Koffeinhalitges Getränk"),
-    ];
-  }
-}
-
-class ProductsDataSource extends DataGridSource {
-  ProductsDataSource(List<Products> products) {
-    dataGridRows = products
-        .map<DataGridRow>((dataGridRow) => DataGridRow(cells: [
-              DataGridCell<String>(
-                  columnName: "Produkt Name", value: dataGridRow.productName),
-              DataGridCell<String>(
-                  columnName: "Kategorie", value: dataGridRow.productCategory),
-              DataGridCell<String>(
-                  columnName: "Beschreibung", value: dataGridRow.description)
-            ]))
-        .toList();
-  }
-
-  late List<DataGridRow> dataGridRows;
-
-  @override
-  List<DataGridRow> get rows => dataGridRows;
-
-  @override
-  DataGridRowAdapter buildRow(DataGridRow row) {
-    return DataGridRowAdapter(
-        cells: row.getCells().map<Widget>((dataGridCell) {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        alignment: Alignment.centerLeft,
-        child: Text(
-          dataGridCell.value.toString(),
-          overflow: TextOverflow.ellipsis,
-        ),
-      );
-    }).toList());
   }
 }
 
 class Products {
-  Products(this.productName, this.productCategory, this.description);
+  Products(this.productName, this.category, this.description,
+      this.articleNumber, this.sellingPriceNet);
 
   final String productName;
-  final String productCategory;
   final String description;
+  final String articleNumber;
+  final double sellingPriceNet;
+  final String category;
+  int categoryProductsCount = 0;
+
+  List<Products> productsList = [];
+  List<Products> matchingCategory = [];
+
+  void getList() {
+    productsList.add(
+        Products("Red Bull", "Getränk", "Koffeinhalitges Getränk", "", 1.20));
+    productsList
+        .add(Products("Äpfel", "Obst", "Frische Äpfel aus Spanien", "", 1));
+    productsList
+        .add(Products("Eistee", "Getränk", "Zuckerhalitges Getränk", "", 2));
+    productsList.add(
+        Products("Birnen", "Obst", "Frische Birnen aus Deutschland", "", 1));
+    productsList
+        .add(Products("Fanta", "Getränk", "Zuckerhalitges Getränk", "", 2));
+  }
+
+  String getName(int index) {
+    return productsList[index].productName;
+  }
+
+  String getNameByCategory(int index) {
+    return matchingCategory[index].productName;
+  }
+
+  int getMatchingCategoryCount(String category) {
+    for (int i = 0; i < productsList.length; i++) {
+      if (productsList[i].category == category) {
+        matchingCategory.add(productsList[i]);
+        categoryProductsCount++;
+      }
+    }
+    if (categoryProductsCount > 0) {
+      return categoryProductsCount;
+    }
+    throw Exception("Kategorie ist nicht vorhanden");
+  }
+
+  int getProductListLength() {
+    return productsList.length;
+  }
 }

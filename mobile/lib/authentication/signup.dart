@@ -1,9 +1,24 @@
+import 'dart:convert';
+
+import 'package:demo5/products/categoryList.dart';
 import 'package:http/http.dart' as http;
 import 'package:demo5/products/product.dart';
 import 'package:flutter/material.dart';
 
 class SignUp extends StatelessWidget {
-  const SignUp({Key? key}) : super(key: key);
+  SignUp({Key? key}) : super(key: key);
+  final formGlobalKey = GlobalKey<FormState>();
+  TextEditingController firstName = TextEditingController();
+  TextEditingController lastName = TextEditingController();
+  TextEditingController userMail = TextEditingController();
+  TextEditingController userPsw = TextEditingController();
+  TextEditingController companyName = TextEditingController();
+  TextEditingController companyMail = TextEditingController();
+  TextEditingController companyPhoneNumber = TextEditingController();
+  TextEditingController companyAddress = TextEditingController();
+  TextEditingController companyPostalCode = TextEditingController();
+  TextEditingController companyCity = TextEditingController();
+  TextEditingController companyCountry = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +35,7 @@ class SignUp extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               child: Form(
+                key: formGlobalKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -31,7 +47,15 @@ class SignUp extends StatelessWidget {
                       ),
                     ),
                     TextFormField(
-                      autofocus: false,
+                      controller: firstName,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Bitte Vorname eingeben";
+                        } else if (value.length < 2) {
+                          return "Vorname ist zu kurz";
+                        }
+                        return null;
+                      },
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(100.0)),
@@ -50,7 +74,16 @@ class SignUp extends StatelessWidget {
                       ),
                     ),
                     TextFormField(
+                      controller: lastName,
                       autofocus: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Bitte Nachname eingeben";
+                        } else if (value.length < 2) {
+                          return "Nachname ist zu kurz";
+                        }
+                        return null;
+                      },
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(100.0)),
@@ -69,7 +102,16 @@ class SignUp extends StatelessWidget {
                       ),
                     ),
                     TextFormField(
+                      controller: userMail,
                       autofocus: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Bitte Email eingeben";
+                        } else if (isEmailValid(value.toString())) {
+                          return "Email ist nicht gültig";
+                        }
+                        return null;
+                      },
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(100.0)),
@@ -86,7 +128,16 @@ class SignUp extends StatelessWidget {
                           Text('Passwort', style: TextStyle(fontSize: 20.00)),
                     ),
                     TextFormField(
+                      controller: userPsw,
                       autofocus: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Bitte Passwort eingeben";
+                        } else if (value.length < 6) {
+                          return "Passwort muss mindestens 6 Zeichen lang sein";
+                        }
+                        return null;
+                      },
                       obscureText: true,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -105,13 +156,222 @@ class SignUp extends StatelessWidget {
                     const SizedBox(
                       height: 25.00,
                     ),
+                    const Align(
+                      alignment: Alignment(-0.95, 1),
+                      child: Text(
+                        'Firmenname',
+                        style: TextStyle(fontSize: 20.00),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: companyName,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Bitte Firmenname eingeben";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100.0)),
+                          hintText: 'Firmenname eingeben',
+                          hintStyle: const TextStyle(fontSize: 20.00)),
+                      style: const TextStyle(fontSize: 20.00),
+                    ),
+                    const SizedBox(
+                      height: 25.00,
+                    ),
+                    const Align(
+                      alignment: Alignment(-0.95, 1),
+                      child: Text(
+                        'Firmenemail',
+                        style: TextStyle(fontSize: 20.00),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: companyMail,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Bitte Firmenmail eingeben";
+                        } else if (isEmailValid(value.toString())) {
+                          return "Firmenmail ist nicht gültig";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100.0)),
+                          hintText: 'Firmenemail eingeben',
+                          hintStyle: const TextStyle(fontSize: 20.00)),
+                      style: const TextStyle(fontSize: 20.00),
+                    ),
+                    const SizedBox(
+                      height: 25.00,
+                    ),
+                    const Align(
+                      alignment: Alignment(-0.95, 1),
+                      child: Text(
+                        'Firmentelefonnummer',
+                        style: TextStyle(fontSize: 20.00),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: companyPhoneNumber,
+                      autofocus: false,
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Bitte Firmentelefonnummer eingeben";
+                        } else if (value.length < 4) {
+                          return "Firmentelefonnummer muss mind. 8 Ziffern lang sein";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100.0)),
+                          hintText: 'Firmentelefonnummer eingeben',
+                          hintStyle: const TextStyle(fontSize: 20.00)),
+                      style: const TextStyle(fontSize: 20.00),
+                    ),
+                    const SizedBox(
+                      height: 25.00,
+                    ),
+                    const Align(
+                      alignment: Alignment(-0.95, 1),
+                      child: Text(
+                        'Firmenadresse',
+                        style: TextStyle(fontSize: 20.00),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: companyAddress,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Bitte Firmenadresse eingeben";
+                        } else if (!value.contains(RegExp(r'[0-9]'))) {
+                          return "Bitte Hausnummer eingeben";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100.0)),
+                          hintText: 'Firmenadresse mit Hausnummer',
+                          hintStyle: const TextStyle(fontSize: 20.00)),
+                      style: const TextStyle(fontSize: 20.00),
+                    ),
+                    const SizedBox(
+                      height: 25.00,
+                    ),
+                    const Align(
+                      alignment: Alignment(-0.95, 1),
+                      child: Text(
+                        'Postleitzahl',
+                        style: TextStyle(fontSize: 20.00),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: companyPostalCode,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Bitte Postleitzahl eingeben";
+                        } else if (value.length != 4) {
+                          return "Postleitzahl muss 4 Ziffern lang sein";
+                        }
+                        return null;
+                      },
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100.0)),
+                          hintText: 'Postleitzahl eingeben',
+                          hintStyle: const TextStyle(fontSize: 20.00)),
+                      style: const TextStyle(fontSize: 20.00),
+                    ),
+                    const SizedBox(
+                      height: 25.00,
+                    ),
+                    const Align(
+                      alignment: Alignment(-0.95, 1),
+                      child: Text(
+                        'Stadt',
+                        style: TextStyle(fontSize: 20.00),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: companyCity,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Bitte Stadt eingeben";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100.0)),
+                          hintText: 'Stadt eingeben',
+                          hintStyle: const TextStyle(fontSize: 20.00)),
+                      style: const TextStyle(fontSize: 20.00),
+                    ),
+                    const SizedBox(
+                      height: 25.00,
+                    ),
+                    const Align(
+                      alignment: Alignment(-0.95, 1),
+                      child: Text(
+                        'Land',
+                        style: TextStyle(fontSize: 20.00),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: companyCountry,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Bitte Land eingeben";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100.0)),
+                          hintText: 'Land eingeben',
+                          hintStyle: const TextStyle(fontSize: 20.00)),
+                      style: const TextStyle(fontSize: 20.00),
+                    ),
+                    const SizedBox(
+                      height: 25.00,
+                    ),
                     MaterialButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Product()),
-                        );
+                      onPressed: () async {
+                        if (!formGlobalKey.currentState!.validate()) {
+                          return;
+                        }
+                        int code = await registerUser(
+                            firstName.text,
+                            lastName.text,
+                            userMail.text,
+                            userPsw.text,
+                            companyName.text,
+                            companyMail.text,
+                            companyPhoneNumber.text,
+                            companyAddress.text,
+                            companyPostalCode.text,
+                            companyCity.text,
+                            companyCountry.text);
+                        if (code == 200) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Categories()),
+                          );
+                        }
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(100)),
@@ -132,17 +392,54 @@ class SignUp extends StatelessWidget {
     );
   }
 
-  /*Future<Album> fetchAlbum() async {  
-    final response = await http.post("/api/Auth/register");
+  bool isEmailValid(String email) {
+    String pattern =
+        '^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))';
+    RegExp regex = RegExp(pattern);
+    return regex.hasMatch(email);
+  }
 
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      return Album.fromJson(jsonDecode(response.body));
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load album');
-    }
-  }*/
+  Future<int> registerUser(
+      String firstName,
+      String lastName,
+      String userMail,
+      String userPsw,
+      String companyName,
+      String companyMail,
+      String companyPhoneNumber,
+      String companyAddress,
+      String companyPostalCode,
+      String companyCity,
+      String companyCountry) async {
+    String url = "http://invoicer.at:8080/api/Auth/register";
+
+    Uri uri = Uri.parse(url);
+
+    final response = await http.post(uri,
+        body: jsonEncode(<String, Object>{
+          "user": {
+            "firstName": firstName,
+            "lastName": lastName,
+            "company": {
+              "companyName": companyName,
+              "email": companyMail,
+              "phoneNumber": companyPhoneNumber,
+              "addresses": [
+                {
+                  "street": companyAddress,
+                  "zipCode": companyPostalCode,
+                  "city": companyCity,
+                  "country": companyCountry
+                }
+              ]
+            },
+            "email": userMail
+          },
+          "password": userPsw
+        }));
+    print(response.statusCode);
+    print(response.body);
+    var convertedDatatoJson = jsonDecode(response.body);
+    return response.statusCode;
+  }
 }

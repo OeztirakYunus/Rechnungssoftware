@@ -3,6 +3,7 @@
 import 'package:demo5/companies/companies.dart';
 import 'package:demo5/contact/contacts.dart';
 import 'package:demo5/invoice/invoice.dart';
+import 'package:demo5/products/categoryList.dart';
 import 'deliveryNote/delivery_note.dart';
 import 'package:demo5/products/product.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class NavBar extends StatelessWidget {
     switch (index) {
       case 0:
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => const Product()));
+            .push(MaterialPageRoute(builder: (context) => const Categories()));
         return;
       case 1:
         Navigator.of(context)
