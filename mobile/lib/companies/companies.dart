@@ -31,7 +31,7 @@ class Company {
   final String companyName;
   final String email;
   final String phoneNumber;
-  final List<Address> addresses;
+  final Address addresses;
 
   Company(this.companyName, this.email, this.phoneNumber, this.addresses);
 }

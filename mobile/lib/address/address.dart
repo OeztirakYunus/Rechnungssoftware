@@ -1,6 +1,6 @@
 class Address {
   final String street;
-  final int zipCode;
+  final String zipCode;
   final String city;
   final String country;
 

@@ -1,6 +1,9 @@
 import 'dart:convert';
 
+import 'package:demo5/address/address.dart';
+import 'package:demo5/companies/companies.dart';
 import 'package:demo5/products/categoryList.dart';
+import 'package:demo5/user/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:demo5/products/product.dart';
 import 'package:flutter/material.dart';
@@ -414,29 +417,16 @@ class SignUp extends StatelessWidget {
     String url = "http://invoicer.at:8080/api/Auth/register";
 
     Uri uri = Uri.parse(url);
+    Address address =
+        Address(companyAddress, companyPostalCode, companyCity, companyCountry);
+    Company company =
+        Company(companyName, companyMail, companyPhoneNumber, address);
 
-    final response = await http.post(uri,
-        body: jsonEncode(<String, Object>{
-          "user": {
-            "firstName": firstName,
-            "lastName": lastName,
-            "company": {
-              "companyName": companyName,
-              "email": companyMail,
-              "phoneNumber": companyPhoneNumber,
-              "addresses": [
-                {
-                  "street": companyAddress,
-                  "zipCode": companyPostalCode,
-                  "city": companyCity,
-                  "country": companyCountry
-                }
-              ]
-            },
-            "email": userMail
-          },
-          "password": userPsw
-        }));
+    User user = User(firstName, lastName, userMail, company);
+
+    final response = await http
+        .post(uri, body: {"user": user.toString(), "password": userPsw});
+    print(user.toString());
     print(response.statusCode);
     print(response.body);
     var convertedDatatoJson = jsonDecode(response.body);
