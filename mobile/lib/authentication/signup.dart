@@ -356,7 +356,7 @@ class SignUp extends StatelessWidget {
                         if (!formGlobalKey.currentState!.validate()) {
                           return;
                         }
-                        int code = await registerUser(
+                        int statusCode = await registerUser(
                             firstName.text,
                             lastName.text,
                             userMail.text,
@@ -368,7 +368,7 @@ class SignUp extends StatelessWidget {
                             companyPostalCode.text,
                             companyCity.text,
                             companyCountry.text);
-                        if (code == 200) {
+                        if (statusCode == 200) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -417,19 +417,24 @@ class SignUp extends StatelessWidget {
     String url = "http://invoicer.at:8080/api/Auth/register";
 
     Uri uri = Uri.parse(url);
+
     Address address =
         Address(companyAddress, companyPostalCode, companyCity, companyCountry);
+
     Company company =
         Company(companyName, companyMail, companyPhoneNumber, address);
 
     User user = User(firstName, lastName, userMail, company);
 
-    final response = await http
-        .post(uri, body: {"user": user.toString(), "password": userPsw});
-    print(user.toString());
-    print(response.statusCode);
-    print(response.body);
-    var convertedDatatoJson = jsonDecode(response.body);
+    //print(jsonEncode({"user": user.toJson(), "password": userPsw}));
+
+    var response = await http.post(uri,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"user": user.toJson(), "password": userPsw}));
+
+    //print(response.statusCode);
+    //print(response.body);
+
     return response.statusCode;
   }
 }
