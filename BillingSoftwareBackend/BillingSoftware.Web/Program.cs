@@ -22,29 +22,18 @@ namespace BillingSoftware.Web
             try
             {
                 var roleManager = scope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
-                await roleManager.CreateAsync(new IdentityRole("Admin"));
-                await roleManager.CreateAsync(new IdentityRole("User"));
+                if(roleManager.Roles.Count() == 0)
+                {
+                    await roleManager.CreateAsync(new IdentityRole("Admin"));
+                    await roleManager.CreateAsync(new IdentityRole("User"));
+                }
             }
             catch(Exception ex){
                 Console.WriteLine(ex.Message);
             }
 
             var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-            var deleteDatabase = Environment.GetEnvironmentVariable("DELETE_DATABASE");
-            if (string.IsNullOrEmpty(deleteDatabase))
-            {
-                var builder = new ConfigurationBuilder()
-                    .SetBasePath(Environment.CurrentDirectory)
-                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-                var configuration = builder.Build();
-                Debug.Write(configuration.ToString());
-                deleteDatabase = configuration["DeleteDatabase"];
-            }
-
-            if (deleteDatabase.ToLower().Equals("true"))
-            {
-                await context.Database.EnsureDeletedAsync();
-            }
+            //await context.Database.EnsureDeletedAsync();
             await context.Database.EnsureCreatedAsync();
 
             server.Run();
