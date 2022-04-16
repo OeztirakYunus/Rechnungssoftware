@@ -122,6 +122,29 @@ namespace BillingSoftware.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BSFiles",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FileName = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Bytes = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    ContentType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreationTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BSFiles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BSFiles_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CompanyDocumentCounters",
                 columns: table => new
                 {
@@ -517,6 +540,17 @@ namespace BillingSoftware.Persistence.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BSFiles_CompanyId",
+                table: "BSFiles",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BSFiles_FileName",
+                table: "BSFiles",
+                column: "FileName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Companies_AddressId",
                 table: "Companies",
                 column: "AddressId");
@@ -619,6 +653,9 @@ namespace BillingSoftware.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "BSFiles");
 
             migrationBuilder.DropTable(
                 name: "CompanyDocumentCounters");

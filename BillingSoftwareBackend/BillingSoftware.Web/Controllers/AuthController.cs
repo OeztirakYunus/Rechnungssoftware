@@ -116,7 +116,7 @@ namespace BillingSoftware.Web.Controllers
         /// <param name="newUser"></param>
         /// <returns></returns>
         [HttpPost("register")]
-        public async Task<ActionResult> Register(UserRegisterDTO newUser)
+        public async Task<ActionResult> Register(RegisterDto newUser)
         {
             Console.WriteLine($"!!!!Here1");
             var existingUser = await _userManager.FindByEmailAsync(newUser.User.Email);
@@ -127,16 +127,34 @@ namespace BillingSoftware.Web.Controllers
                 return BadRequest(new { Status = "Error", Message = "User already exists!" });
             }
 
+            Company company = new Company()
+            {
+                Email = newUser.Company.Email,
+                PhoneNumber = newUser.Company.PhoneNumber,
+                CompanyName = newUser.Company.CompanyName,
+                BankName = newUser.Company.BankName,
+                Iban = newUser.Company.Iban,
+                Bic = newUser.Company.Bic,
+                UstNumber = newUser.Company.UstNumber,
+                Address = new Address()
+                {
+                    City = newUser.Company.Address.City,
+                    Country = newUser.Company.Address.Country,
+                    Street = newUser.Company.Address.Street,
+                    ZipCode = newUser.Company.Address.ZipCode
+                }
+            };
+
             User user = new User
             {
                 Email = newUser.User.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = newUser.User.Email,
-                Company = newUser.User.Company,
+                Company = company,
                 FirstName = newUser.User.FirstName,
                 LastName = newUser.User.LastName
             };
-            var resultUser = await _userManager.CreateAsync(user, newUser.Password);
+            var resultUser = await _userManager.CreateAsync(user, newUser.User.Password);
             var resultRole = await _userManager.AddToRoleAsync(user, "Admin");
 
             if (!resultUser.Succeeded)

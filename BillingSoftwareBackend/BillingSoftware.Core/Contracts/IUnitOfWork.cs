@@ -1,9 +1,5 @@
 ﻿using BillingSoftware.Core.Contracts.Repository;
-using BillingSoftware.Core.Entities;
-using Microsoft.AspNetCore.Identity;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BillingSoftware.Core.Contracts
@@ -21,6 +17,7 @@ namespace BillingSoftware.Core.Contracts
         public IPositionRepository PositionRepository { get; }
         public IProductRepository ProductRepository { get; }
         public IUserRepository UserRepository { get; }
+        public IBSFileRepository BSFileRepository { get; }
 
         Task<int> SaveChangesAsync();
         Task DeleteDatabaseAsync();
