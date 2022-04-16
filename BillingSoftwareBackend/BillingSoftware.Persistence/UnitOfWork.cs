@@ -37,6 +37,7 @@ namespace BillingSoftware.Persistence
             OrderConfirmationRepository = new OrderConfirmationRepository(_context);
             PositionRepository = new PositionRepository(_context);
             ProductRepository = new ProductRepository(_context);
+            BSFileRepository = new BSFileRepository(_context);
         }
 
         public ICompanyRepository CompanyRepository { get; }
@@ -50,6 +51,7 @@ namespace BillingSoftware.Persistence
         public IPositionRepository PositionRepository { get; }
         public IProductRepository ProductRepository { get; }
         public IUserRepository UserRepository { get; }
+        public IBSFileRepository BSFileRepository { get; set; }
 
         public async Task<int> SaveChangesAsync() => await _context.SaveChangesAsync();
         public async Task DeleteDatabaseAsync() => await _context.Database.EnsureDeletedAsync();

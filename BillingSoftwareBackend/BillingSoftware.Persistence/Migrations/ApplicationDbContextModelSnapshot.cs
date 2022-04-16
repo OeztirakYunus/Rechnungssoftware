@@ -54,6 +54,45 @@ namespace BillingSoftware.Persistence.Migrations
                     b.ToTable("Addresses");
                 });
 
+            modelBuilder.Entity("BillingSoftware.Core.Entities.BSFile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<byte[]>("Bytes")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("FileName")
+                        .IsUnique();
+
+                    b.ToTable("BSFiles");
+                });
+
             modelBuilder.Entity("BillingSoftware.Core.Entities.Company", b =>
                 {
                     b.Property<Guid>("Id")
@@ -701,6 +740,15 @@ namespace BillingSoftware.Persistence.Migrations
                     b.HasDiscriminator().HasValue("User");
                 });
 
+            modelBuilder.Entity("BillingSoftware.Core.Entities.BSFile", b =>
+                {
+                    b.HasOne("BillingSoftware.Core.Entities.Company", null)
+                        .WithMany("Files")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("BillingSoftware.Core.Entities.Company", b =>
                 {
                     b.HasOne("BillingSoftware.Core.Entities.Address", "Address")
@@ -926,6 +974,8 @@ namespace BillingSoftware.Persistence.Migrations
                     b.Navigation("Contacts");
 
                     b.Navigation("DeliveryNotes");
+
+                    b.Navigation("Files");
 
                     b.Navigation("Invoices");
 

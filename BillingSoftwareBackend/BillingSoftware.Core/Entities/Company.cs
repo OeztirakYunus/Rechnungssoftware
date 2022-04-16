@@ -1,9 +1,6 @@
-﻿using BillingSoftware.Core.Contracts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace BillingSoftware.Core.Entities
 {
@@ -31,5 +28,6 @@ namespace BillingSoftware.Core.Entities
         public virtual List<DeliveryNote> DeliveryNotes { get; set; } = new();
         public virtual List<Invoice> Invoices { get; set; } = new();
         public virtual List<Product> Products { get; set; } = new();
+        public virtual List<BSFile> Files { get; set; }
     }
 }

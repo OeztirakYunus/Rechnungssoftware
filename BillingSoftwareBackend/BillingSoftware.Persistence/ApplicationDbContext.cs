@@ -9,17 +9,18 @@ namespace BillingSoftware.Persistence
 {
     public class ApplicationDbContext : IdentityDbContext
     {
-        public DbSet<Address> Addresses { get; set; }
-        public DbSet<DeliveryNote> DeliveryNotes { get; set; }
-        public DbSet<Invoice> Invoices { get; set; }
-        public DbSet<Offer> Offers { get; set; }
-        public DbSet<OrderConfirmation> OrderConfirmations { get; set; }
-        public DbSet<Position> Positions { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<Company> Companies { get; set; }
-        public DbSet<Contact> Contacts { get; set; }
-        public DbSet<DocumentInformations> DocumentInformations { get; set; }
-        public DbSet<CompanyDocumentCounter> CompanyDocumentCounters { get; set; }
+        internal DbSet<Address> Addresses { get; set; }
+        internal DbSet<DeliveryNote> DeliveryNotes { get; set; }
+        internal DbSet<Invoice> Invoices { get; set; }
+        internal DbSet<Offer> Offers { get; set; }
+        internal DbSet<OrderConfirmation> OrderConfirmations { get; set; }
+        internal DbSet<Position> Positions { get; set; }
+        internal DbSet<Product> Products { get; set; }
+        internal DbSet<Company> Companies { get; set; }
+        internal DbSet<Contact> Contacts { get; set; }
+        internal DbSet<DocumentInformations> DocumentInformations { get; set; }
+        internal DbSet<CompanyDocumentCounter> CompanyDocumentCounters { get; set; }
+        internal DbSet<BSFile> BSFiles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
