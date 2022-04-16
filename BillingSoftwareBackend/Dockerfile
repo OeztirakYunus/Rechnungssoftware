@@ -14,5 +14,5 @@ EXPOSE 80
 EXPOSE 443
 ENV ASPNETCORE_ENVIRONMENT=Production
 COPY --from=build /app/publish .
-COPY ./BillingSoftware.Web/templates/ .
+COPY ./BillingSoftware.Web/templates/ ./templates/.
 ENTRYPOINT ["dotnet", "BillingSoftware.Web.dll"]
