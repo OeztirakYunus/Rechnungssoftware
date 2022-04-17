@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,13 +11,13 @@ namespace CommonBase.DocumentCreators
 {
     public static class DocxCreator
     {
-        private const string TEMPLATE_DIRECTORY = @".\templates\default\";
-        private const string SAVE_DIRECTORY = @".\documents\";
+        private static string TEMPLATE_DIRECTORY = Globals.TEMPLATE_DIRECTORY;
+        private static string SEP = Globals.SEP;
 
         public async static Task<(byte[], string)> CreateWordForOffer(Offer offer, bool deleteWordAfterReturn = true)
         {
             var templateFile = TEMPLATE_DIRECTORY + "offer_template.docx";
-            var path = SAVE_DIRECTORY + @$"offers\{offer.CompanyId}\";
+            var path = Globals.OFFER_PATH + $"{offer.CompanyId}{SEP}";
 
             if (!Directory.Exists(path))
             {
@@ -42,7 +43,7 @@ namespace CommonBase.DocumentCreators
         public async static Task<(byte[], string)> CreateWordForOrderConfirmation(OrderConfirmation orderConfirmation, bool deleteWordAfterReturn = true)
         {
             var templateFile = TEMPLATE_DIRECTORY + "order_confirmation_template.docx";
-            var path = SAVE_DIRECTORY + @$"orderConfirmations\{orderConfirmation.CompanyId}\";
+            var path = Globals.OC_PATH + $"{orderConfirmation.CompanyId}{SEP}";
 
             if (!Directory.Exists(path))
             {
@@ -68,7 +69,7 @@ namespace CommonBase.DocumentCreators
         public async static Task<(byte[], string)> CreateWordForInvoice(Invoice invoice, bool deleteWordAfterReturn = true)
         {
             var templateFile = TEMPLATE_DIRECTORY + "invoice_template.docx";
-            var path = SAVE_DIRECTORY + @$"invoices\{invoice.CompanyId}\";
+            var path = Globals.INVOICE_PATH + $"{invoice.CompanyId}{SEP}";
 
             if (!Directory.Exists(path))
             {
@@ -94,7 +95,7 @@ namespace CommonBase.DocumentCreators
         public async static Task<(byte[], string)> CreateWordForDeliveryNote(DeliveryNote deliveryNote, bool deleteWordAfterReturn = true)
         {
             var templateFile = TEMPLATE_DIRECTORY + "delivery_note_template.docx";
-            var path = SAVE_DIRECTORY + @$"deliveryNotes\{deliveryNote.CompanyId}\";
+            var path = Globals.DN_PATH + $"{deliveryNote.CompanyId}{SEP}";
 
             if (!Directory.Exists(path))
             {

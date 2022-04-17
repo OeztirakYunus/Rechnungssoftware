@@ -7,11 +7,11 @@ namespace CommonBase.DocumentCreators
 {
     public static class PdfCreator
     {
-        private const string SAVE_DIRECTORY = @".\documents\";
+        private static string SEP = Globals.SEP;
         public static async Task<(byte[], string)> CreatePdfForOffer(Offer offer)
         {
             var (_, wordFile) = await DocxCreator.CreateWordForOffer(offer, false);
-            var mainPath = SAVE_DIRECTORY + @$"offers\{offer.CompanyId}\";
+            var mainPath = Globals.OFFER_PATH + $"{offer.CompanyId}{SEP}";
             var pdfFile = mainPath + $"Angebot_{offer.OfferNumber}.pdf";
             return await CreatePdf(mainPath, pdfFile, wordFile);
         }
@@ -19,7 +19,7 @@ namespace CommonBase.DocumentCreators
         public static async Task<(byte[], string)> CreatePdfForOrderConfirmation(OrderConfirmation orderConfirmation)
         {
             var (_, wordFile) = await DocxCreator.CreateWordForOrderConfirmation(orderConfirmation, false);
-            var mainPath = SAVE_DIRECTORY + @$"orderConfirmations\{orderConfirmation.CompanyId}\";
+            var mainPath = Globals.OC_PATH + $"{orderConfirmation.CompanyId}{SEP}";
             var pdfFile = mainPath + $"Auftragsbestätigung_{orderConfirmation.OrderConfirmationNumber}.pdf";
             return await CreatePdf(mainPath, pdfFile, wordFile);
         }
@@ -27,7 +27,7 @@ namespace CommonBase.DocumentCreators
         public static async Task<(byte[], string)> CreatePdfForInvoice(Invoice invoice)
         {
             var (_, wordFile) = await DocxCreator.CreateWordForInvoice(invoice, false);
-            var mainPath = SAVE_DIRECTORY + @$"invoices\{invoice.CompanyId}\";
+            var mainPath = Globals.INVOICE_PATH + $"{invoice.CompanyId}{SEP}";
             var pdfFile = mainPath + $"Rechnung_{invoice.InvoiceNumber}.pdf";
             return await CreatePdf(mainPath, pdfFile, wordFile);
         }
@@ -35,7 +35,7 @@ namespace CommonBase.DocumentCreators
         public static async Task<(byte[], string)> CreatePdfForDeliveryNote(DeliveryNote deliveryNote)
         {
             var (_, wordFile) = await DocxCreator.CreateWordForDeliveryNote(deliveryNote, false);
-            var mainPath = SAVE_DIRECTORY + @$"deliveryNotes\{deliveryNote.CompanyId}\";
+            var mainPath = Globals.DN_PATH + $"{deliveryNote.CompanyId}{SEP}";
             var pdfFile = mainPath + $"Lieferschein_{deliveryNote.DeliveryNoteNumber}.pdf";
             return await CreatePdf(mainPath, pdfFile, wordFile);
         }
