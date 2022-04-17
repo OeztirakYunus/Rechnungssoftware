@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BillingSoftware.Core.DataTransferObjects.UserDtos
+namespace BillingSoftware.Core.DataTransferObjects
 {
     public class CompanyRegisterDto
     {
