@@ -117,6 +117,8 @@ namespace BillingSoftware.Web
             });
 
             app.UseRouting();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
 
             app.UseAuthentication();
             app.UseAuthorization();
