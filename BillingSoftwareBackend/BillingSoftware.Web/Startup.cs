@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace BillingSoftware.Web
 {
@@ -109,6 +110,11 @@ namespace BillingSoftware.Web
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BillingSoftware.Web v1"));
 
             //app.UseHttpsRedirection();
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
             app.UseRouting();
 

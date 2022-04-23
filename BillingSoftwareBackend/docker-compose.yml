@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
 
-  billingsoftware-backend:
+  backend:
     environment:
       - DB_CONNECTION_STRING=Server=dbserver,1433;Database=BillingSoftwareDb;User Id=sa;Password=BillingSoftware20222022!
     build: .
@@ -14,6 +14,19 @@ services:
       - billingsoftware-network 
     ports:
       - 8080:80
+  
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs
+    depends_on:
+      - backend
+    networks:
+      - billingsoftware-network 
+    ports:
+      - "80:80"
+      - "443:443"
 
   dbserver:
     image: mcr.microsoft.com/mssql/server:2019-latest 

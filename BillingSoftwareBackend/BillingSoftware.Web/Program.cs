@@ -34,7 +34,7 @@ namespace BillingSoftware.Web
 
             var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
             //await context.Database.EnsureDeletedAsync();
-            await context.Database.EnsureCreatedAsync();
+            //await context.Database.EnsureCreatedAsync();
 
             server.Run();
         }
