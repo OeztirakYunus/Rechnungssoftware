@@ -5,15 +5,17 @@ using BillingSoftware.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CommonBase.Extensions;
+using CommonBase.DtoEntityParser;
 using System;
 using BillingSoftware.Core.DataTransferObjects;
 using System.Collections.Generic;
+using CommonBase.Extensions.DtoEntityParser;
 
 namespace BillingSoftware.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class CompaniesController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
@@ -181,39 +183,7 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add an offer to this company!" });
                 }
 
-                var positions = new List<Position>();
-                foreach (var item in offerDto.DocumentInformation.Positions)
-                {
-                    positions.Add(new Position()
-                    {
-                        Discount = item.Discount,
-                        ProductId = item.ProductId,
-                        Quantity = item.Quantity,
-                        TypeOfDiscount = item.TypeOfDiscount
-                    });
-                }
-
-                var offer = new Offer()
-                {
-                    OfferDate = offerDto.OfferDate,
-                    OfferNumber = offerDto.OfferNumber,
-                    FlowText = offerDto.FlowText,
-                    HeaderText = offerDto.HeaderText,
-                    Status = offerDto.Status,
-                    Subject = offerDto.Subject,
-                    ValidUntil = offerDto.ValidUntil,
-                    DocumentInformation = new DocumentInformations()
-                    {
-                        ClientId = offerDto.DocumentInformation.ClientId,
-                        ContactPersonId = offerDto.DocumentInformation.ContactPersonId,
-                        Tax = offerDto.DocumentInformation.Tax,
-                        TotalDiscount = offerDto.DocumentInformation.TotalDiscount,
-                        TypeOfDiscount = offerDto.DocumentInformation.TypeOfDiscount,
-                        Positions = positions
-                    }
-                };
-
-                await _uow.CompanyRepository.AddOffer(compId, offer);
+                await _uow.CompanyRepository.AddOffer(compId, offerDto.ToEntity());
                 await _uow.SaveChangesAsync();
                 return Ok();
             }

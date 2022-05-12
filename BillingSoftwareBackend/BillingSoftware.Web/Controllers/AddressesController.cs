@@ -12,7 +12,7 @@ namespace BillingSoftware.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class AddressesController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
