@@ -5,7 +5,6 @@ using BillingSoftware.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CommonBase.Extensions;
-using CommonBase.DtoEntityParser;
 using System;
 using BillingSoftware.Core.DataTransferObjects;
 using System.Collections.Generic;
@@ -38,14 +37,14 @@ namespace BillingSoftware.Web.Controllers
                 }
                 else
                 {
-                    return BadRequest("No Company found!");
+                    return BadRequest(new { Status = "Error", Message = $"Company not found!" });
                 }
                 
             }
             catch (System.Exception ex)
             {
 
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -64,28 +63,28 @@ namespace BillingSoftware.Web.Controllers
                 company.CopyProperties(entity);            
                 await _uow.CompanyRepository.Update(entity);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Company updated." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostCompany(Company company)
-        {
-            try
-            {
-                await _uow.CompanyRepository.AddAsync(company);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> PostCompany(Company company)
+        //{
+        //    try
+        //    {
+        //        await _uow.CompanyRepository.AddAsync(company);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         [HttpDelete]
         [Authorize(Roles = "Admin")]
@@ -101,11 +100,11 @@ namespace BillingSoftware.Web.Controllers
 
                 await _uow.CompanyRepository.Remove(companyId);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Company deleted." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -120,13 +119,13 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add a contact to this company!" });
                 }
 
-                await _uow.CompanyRepository.AddContact(compId, contact.ToEntity() as Contact);
+                await _uow.CompanyRepository.AddContact(compId, contact.ToEntity());
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Contact added." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -143,11 +142,11 @@ namespace BillingSoftware.Web.Controllers
 
                 await _uow.CompanyRepository.AddDeliveryNote(compId, deliveryNote);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Delivery Note added." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -164,11 +163,11 @@ namespace BillingSoftware.Web.Controllers
 
                 await _uow.CompanyRepository.AddInvoice(compId, invoice);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Invoice added." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -185,11 +184,11 @@ namespace BillingSoftware.Web.Controllers
 
                 await _uow.CompanyRepository.AddOffer(compId, offerDto.ToEntity());
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Offer added." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -206,11 +205,11 @@ namespace BillingSoftware.Web.Controllers
 
                 await _uow.CompanyRepository.AddOrderConfirmation(compId, orderConfirmation);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Order Confirmation added." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -227,11 +226,11 @@ namespace BillingSoftware.Web.Controllers
 
                 await _uow.CompanyRepository.AddProduct(compId, product);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Product added." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -249,35 +248,35 @@ namespace BillingSoftware.Web.Controllers
 
                 await _uow.CompanyRepository.AddUser(compId, user);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "User added." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
-        [HttpPut("delete-address/{addressId}")]
-        public async Task<IActionResult> DeleteAddressFromCompany(string addressId)
-        {
-            try
-            {
-                var toDeleteId = Guid.Parse(addressId);
-                var compId = await GetCompanyIdForUser();
-                if (compId.Equals(Guid.Empty))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this address" });
-                }
+        //[HttpPut("delete-address/{addressId}")]
+        //public async Task<IActionResult> DeleteAddressFromCompany(string addressId)
+        //{
+        //    try
+        //    {
+        //        var toDeleteId = Guid.Parse(addressId);
+        //        var compId = await GetCompanyIdForUser();
+        //        if (compId.Equals(Guid.Empty))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this address" });
+        //        }
 
-                await _uow.CompanyRepository.DeleteAddress(compId, toDeleteId);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        await _uow.CompanyRepository.DeleteAddress(compId, toDeleteId);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(new { Status = "Error", Message = ex.Message });
+        //    }
+        //}
 
         [HttpPut("delete-contact/{contactId}")]
         public async Task<IActionResult> DeleteContactFromCompany(string contactId)
@@ -293,11 +292,11 @@ namespace BillingSoftware.Web.Controllers
 
                 await _uow.CompanyRepository.DeleteContact(compId, toDeleteId);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Contact deleted." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -315,11 +314,11 @@ namespace BillingSoftware.Web.Controllers
 
                 await _uow.CompanyRepository.DeleteDeliveryNote(compId, toDeleteId);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Delivery Note deleted." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -337,11 +336,11 @@ namespace BillingSoftware.Web.Controllers
 
                 await _uow.CompanyRepository.DeleteInvoice(compId, toDeleteId);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Invoice deleted." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -359,11 +358,11 @@ namespace BillingSoftware.Web.Controllers
 
                 await _uow.CompanyRepository.DeleteOffer(compId, toDeleteId);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Offer deleted." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -381,11 +380,11 @@ namespace BillingSoftware.Web.Controllers
 
                 await _uow.CompanyRepository.DeleteOrderConfirmation(compId, toDeleteId);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Order Confirmation deleted." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -403,11 +402,11 @@ namespace BillingSoftware.Web.Controllers
 
                 await _uow.CompanyRepository.DeleteProduct(compId, toDeleteId);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Product deleted." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -425,11 +424,11 @@ namespace BillingSoftware.Web.Controllers
 
                 await _uow.CompanyRepository.DeleteUser(compId, userId);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "User deleted." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 

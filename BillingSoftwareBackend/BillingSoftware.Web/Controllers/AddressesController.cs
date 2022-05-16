@@ -27,15 +27,15 @@ namespace BillingSoftware.Web.Controllers
         {
             try
             {
-                // var email = HttpContext.User.Identity.Name;
-                // var user = await _uow.UserRepository.GetUserByEmail(email);
+                var email = HttpContext.User.Identity.Name;
+                var user = await _uow.UserRepository.GetUserByEmail(email);
                 var addresses = await _uow.AddressRepository.GetAllAsync();
-                //addresses = addresses.Where(i => user.Company.Address.Id.Equals(i)).ToArray();
+                addresses = addresses.Where(i => user.Company.Address.Id.Equals(i)).ToArray();
                 return Ok(addresses);
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -56,7 +56,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -73,32 +73,32 @@ namespace BillingSoftware.Web.Controllers
                 address.CopyProperties(entity);
                 await _uow.AddressRepository.Update(entity);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Address updated." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostAddress(Address address)
-        {
-            try
-            {
-                if (!await CheckAuthorization(address.Id))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this address!" });
-                }
-                await _uow.AddressRepository.AddAsync(address);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> PostAddress(Address address)
+        //{
+        //    try
+        //    {
+        //        if (!await CheckAuthorization(address.Id))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this address!" });
+        //        }
+        //        await _uow.AddressRepository.AddAsync(address);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok(new { Status = "Success", Message = "Address added." });
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(new { Status = "Error", Message = ex.Message });
+        //    }
+        //}
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAddress(string id)
@@ -113,11 +113,11 @@ namespace BillingSoftware.Web.Controllers
 
                 await _uow.AddressRepository.Remove(guid);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Address deleted." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 

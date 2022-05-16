@@ -41,14 +41,9 @@ namespace BillingSoftware.Web.Controllers
                 var password = credentials[1];
 
                 var authenticatedUser = await _userManager.FindByEmailAsync(email);
-                if (authenticatedUser == null)
+                if (authenticatedUser == null || !await _userManager.CheckPasswordAsync(authenticatedUser, password))
                 {
-                    return Unauthorized(new { Status = "Error", Message = $"User with Email {email} does not exist!" });
-                }
-
-                if (!await _userManager.CheckPasswordAsync(authenticatedUser, password))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"User with Email {email} has sent a wrong password!" });
+                    return Unauthorized(new { Status = "Error", Message = $"Wrong email or password!" });
                 }
 
                 var (token, roles) = await GenerateJwtToken(authenticatedUser);
@@ -62,11 +57,11 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (UnauthorizedAccessException)
             {
-                return Unauthorized($"Wrong email or password");
+                return Unauthorized(new { Status = "Error", Message = $"Wrong email or password!" });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Exception: {ex.Message}");
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -118,9 +113,7 @@ namespace BillingSoftware.Web.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> Register(RegisterDto newUser)
         {
-            Console.WriteLine($"!!!!Here1");
             var existingUser = await _userManager.FindByEmailAsync(newUser.User.Email);
-            Console.WriteLine($"!!!!Here2");
             // gibt es schon einen Benutzer mit der Mailadresse?
             if (existingUser != null)
             {

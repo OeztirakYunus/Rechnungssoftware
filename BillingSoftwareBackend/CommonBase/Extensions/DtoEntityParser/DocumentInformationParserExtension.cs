@@ -20,7 +20,7 @@ namespace CommonBase.Extensions.DtoEntityParser
                 Tax = source.Tax,
                 TotalDiscount = source.TotalDiscount,
                 TypeOfDiscount = source.TypeOfDiscount,
-                //Positions = source.Positions.ToEntity()
+                Positions = source.Positions.ToEntity()
             };
         }
     }
