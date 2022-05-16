@@ -10,11 +10,9 @@ namespace BillingSoftware.Core.DataTransferObjects
 {
     public class PositionDto
     {
-        [Required]
         public double Quantity { get; set; }
         public double Discount { get; set; } = 0;
         public TypeOfDiscount TypeOfDiscount { get; set; } = TypeOfDiscount.Percent;
-        [Required]
         public Guid ProductId { get; set; }
     }
 }

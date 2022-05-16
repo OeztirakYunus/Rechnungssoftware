@@ -110,7 +110,7 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpPut("add-contact")]
-        public async Task<IActionResult> AddContactToCompany(Contact contact)
+        public async Task<IActionResult> AddContactToCompany(ContactDto contact)
         {
             try
             {
@@ -120,7 +120,7 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add a contact to this company!" });
                 }
 
-                await _uow.CompanyRepository.AddContact(compId, contact);
+                await _uow.CompanyRepository.AddContact(compId, contact.ToEntity() as Contact);
                 await _uow.SaveChangesAsync();
                 return Ok();
             }
