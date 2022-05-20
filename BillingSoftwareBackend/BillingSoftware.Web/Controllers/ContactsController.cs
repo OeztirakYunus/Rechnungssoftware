@@ -4,11 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
 using BillingSoftware.Core.Entities;
-using BillingSoftware.Persistence;
 using CommonBase.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BillingSoftware.Web.Controllers
 {
@@ -37,7 +35,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -54,11 +52,11 @@ namespace BillingSoftware.Web.Controllers
                 }
 
                 var contact = await _uow.ContactRepository.GetByIdAsync(guid);
-                return contact;
+                return Ok(contact);
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -76,54 +74,54 @@ namespace BillingSoftware.Web.Controllers
                 contact.CopyProperties(entity);
                 await _uow.ContactRepository.Update(entity);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Contact updated." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostContact(Contact contact)
-        {
-            try
-            {
-                if (!await CheckAuthorization(contact.Id))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add a contact!" });
-                }
+        //[HttpPost]
+        //public async Task<IActionResult> PostContact(Contact contact)
+        //{
+        //    try
+        //    {
+        //        if (!await CheckAuthorization(contact.Id))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add a contact!" });
+        //        }
 
-                await _uow.ContactRepository.AddAsync(contact);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        await _uow.ContactRepository.AddAsync(contact);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(new { Status = "Error", Message = ex.Message });
+        //    }
+        //}
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Contact>> DeleteContact(string id)
-        {
-            try
-            {
-                var guid = Guid.Parse(id);
-                if (!await CheckAuthorization(guid))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this contact!" });
-                }
+        //[HttpDelete("{id}")]
+        //public async Task<ActionResult<Contact>> DeleteContact(string id)
+        //{
+        //    try
+        //    {
+        //        var guid = Guid.Parse(id);
+        //        if (!await CheckAuthorization(guid))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this contact!" });
+        //        }
 
-                await _uow.ContactRepository.Remove(guid);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        await _uow.ContactRepository.Remove(guid);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok(new { Status = "Success", Message = "Contact deleted." });
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(new { Status = "Error", Message = ex.Message });
+        //    }
+        //}
 
         private async Task<bool> CheckAuthorization(Guid contactId)
         {

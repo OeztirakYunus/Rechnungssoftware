@@ -37,7 +37,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -53,11 +53,11 @@ namespace BillingSoftware.Web.Controllers
                 }
 
                 var deliveryNote = await _uow.DeliveryNoteRepository.GetByIdAsync(guid);
-                return deliveryNote;
+                return Ok(deliveryNote);
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -75,54 +75,54 @@ namespace BillingSoftware.Web.Controllers
                 deliveryNote.CopyProperties(entity);
                 await _uow.DeliveryNoteRepository.Update(entity);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Delivery Note updated." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostDeliveryNote(DeliveryNote deliveryNote)
-        {
-            try
-            {
-                if (!await CheckAuthorization(deliveryNote.Id))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this delivery note!" });
-                }
+        //[HttpPost]
+        //public async Task<IActionResult> PostDeliveryNote(DeliveryNote deliveryNote)
+        //{
+        //    try
+        //    {
+        //        if (!await CheckAuthorization(deliveryNote.Id))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this delivery note!" });
+        //        }
 
-                await _uow.DeliveryNoteRepository.AddAsync(deliveryNote);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        await _uow.DeliveryNoteRepository.AddAsync(deliveryNote);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDeliveryNote(string id)
-        {
-            try
-            {
-                var guid = Guid.Parse(id);
-                if (!await CheckAuthorization(guid))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this delivery note!" });
-                }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteDeliveryNote(string id)
+        //{
+        //    try
+        //    {
+        //        var guid = Guid.Parse(id);
+        //        if (!await CheckAuthorization(guid))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this delivery note!" });
+        //        }
 
-                await _uow.DeliveryNoteRepository.Remove(guid);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        await _uow.DeliveryNoteRepository.Remove(guid);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         [HttpGet("get-as-word/{deliveryNoteId}")]
         public async Task<IActionResult> GetDeliveryNoteAsWord(string deliveryNoteId)
@@ -140,7 +140,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -160,7 +160,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 

@@ -21,7 +21,7 @@ namespace CommonBase.DtoEntityParser
             };
         }
 
-        public static List<Position> ToEntity(this List<PositionDto> source)
+        public static List<Position> ToEntity(this ICollection<PositionDto> source)
         {
             var positions = new List<Position>();
             foreach (var item in source)

@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace BillingSoftware.Core.DataTransferObjects
 {
-    public class DeliveryNoteDto
+    public class InvoiceDto
     {
-        public string DeliveryNoteNumber { get; set; }
-        public DateTime DeliveryNoteDate { get; set; }
+        public string InvoiceNumber { get; set; }
+        public DateTime InvoiceDate { get; set; }
+        public DateTime PaymentTerm { get; set; }
         public Status Status { get; set; } = Status.OPEN;
         public string Subject { get; set; }
         public string HeaderText { get; set; }
         public string FlowText { get; set; }
-        public virtual DocumentInformationDto DocumentInformations { get; set; }
+        public virtual DocumentInformationDto DocumentInformation { get; set; }
     }
 }

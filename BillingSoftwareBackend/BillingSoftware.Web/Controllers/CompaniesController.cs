@@ -130,7 +130,7 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpPut("add-delivery-note")]
-        public async Task<IActionResult> AddDeliveryNoteToCompany(DeliveryNote deliveryNote)
+        public async Task<IActionResult> AddDeliveryNoteToCompany(DeliveryNoteDto deliveryNote)
         {
             try
             {
@@ -140,7 +140,7 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add a delivery note to this company!" });
                 }
 
-                await _uow.CompanyRepository.AddDeliveryNote(compId, deliveryNote);
+                await _uow.CompanyRepository.AddDeliveryNote(compId, deliveryNote.ToEntity());
                 await _uow.SaveChangesAsync();
                 return Ok(new { Status = "Success", Message = "Delivery Note added." });
             }
@@ -151,7 +151,7 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpPut("add-invoice")]
-        public async Task<IActionResult> AddInvoiceToCompany(Invoice invoice)
+        public async Task<IActionResult> AddInvoiceToCompany(InvoiceDto invoice)
         {
             try
             {
@@ -161,7 +161,7 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add an invoice to this company!" });
                 }
 
-                await _uow.CompanyRepository.AddInvoice(compId, invoice);
+                await _uow.CompanyRepository.AddInvoice(compId, invoice.ToEntity());
                 await _uow.SaveChangesAsync();
                 return Ok(new { Status = "Success", Message = "Invoice added." });
             }
@@ -193,7 +193,7 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpPut("add-order-confirmation")]
-        public async Task<IActionResult> AddOrderConfirmationToCompany(OrderConfirmation orderConfirmation)
+        public async Task<IActionResult> AddOrderConfirmationToCompany(OrderConfirmationDto orderConfirmation)
         {
             try
             {
@@ -203,7 +203,7 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add an order confirmation to this company!" });
                 }
 
-                await _uow.CompanyRepository.AddOrderConfirmation(compId, orderConfirmation);
+                await _uow.CompanyRepository.AddOrderConfirmation(compId, orderConfirmation.ToEntity());
                 await _uow.SaveChangesAsync();
                 return Ok(new { Status = "Success", Message = "Order Confirmation added." });
             }
@@ -214,7 +214,7 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpPut("add-product")]
-        public async Task<IActionResult> AddProductToCompany(Product product)
+        public async Task<IActionResult> AddProductToCompany(ProductDto product)
         {
             try
             {
@@ -224,7 +224,7 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add a product to this company!" });
                 }
 
-                await _uow.CompanyRepository.AddProduct(compId, product);
+                await _uow.CompanyRepository.AddProduct(compId, product.ToEntity());
                 await _uow.SaveChangesAsync();
                 return Ok(new { Status = "Success", Message = "Product added." });
             }
