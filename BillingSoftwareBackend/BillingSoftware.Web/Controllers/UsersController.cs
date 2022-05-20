@@ -32,11 +32,11 @@ namespace BillingSoftware.Web.Controllers
                 users = users.Where(i => i.CompanyId.Equals(companyId)).ToArray();
                 var usersDto = new List<UserDto>();
                 users.ToList().ForEach(x => usersDto.Add(MapUserToUserDto(x)));
-                return usersDto.ToArray();
+                return Ok(usersDto.ToArray());
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -52,11 +52,11 @@ namespace BillingSoftware.Web.Controllers
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this user!" });
                 }
-                return MapUserToUserDto(user);
+                return Ok(MapUserToUserDto(user));
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 

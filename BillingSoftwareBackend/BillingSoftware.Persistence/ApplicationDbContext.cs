@@ -21,6 +21,7 @@ namespace BillingSoftware.Persistence
         internal DbSet<DocumentInformations> DocumentInformations { get; set; }
         internal DbSet<CompanyDocumentCounter> CompanyDocumentCounters { get; set; }
         internal DbSet<BSFile> BSFiles { get; set; }
+        internal DbSet<BankInformation> BankInformations { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

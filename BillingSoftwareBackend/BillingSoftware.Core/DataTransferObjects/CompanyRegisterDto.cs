@@ -10,16 +10,11 @@ namespace BillingSoftware.Core.DataTransferObjects
 {
     public class CompanyRegisterDto
     {
-        [Required]
         public string CompanyName { get; set; }
-        [Required, EmailAddress]
         public string Email { get; set; }
-        [Required]
         public string PhoneNumber { get; set; }
-        public string BankName { get; set; }
-        public string Iban { get; set; }
-        public string Bic { get; set; }
         public string UstNumber { get; set; }
-        public AddressRegisterDto Address { get; set; }
+        public AddressDto Address { get; set; }
+        public BankInformationDto BankInformation { get; set; }
     }
 }

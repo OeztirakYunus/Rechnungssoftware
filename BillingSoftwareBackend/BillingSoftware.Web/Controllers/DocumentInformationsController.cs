@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
+using BillingSoftware.Core.DataTransferObjects;
 using BillingSoftware.Core.Entities;
+using CommonBase.DtoEntityParser;
 using CommonBase.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,7 +51,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -65,11 +67,11 @@ namespace BillingSoftware.Web.Controllers
                 }
 
                 var documentInformations = await _uow.DocumentInformationsRepository.GetByIdAsync(guid);
-                return documentInformations;
+                return Ok(documentInformations);
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -87,57 +89,57 @@ namespace BillingSoftware.Web.Controllers
                 documentInformations.CopyProperties(entity);
                 await _uow.DocumentInformationsRepository.Update(entity);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "DocumentInformation updated." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostDocumentInformations(DocumentInformations documentInformations)
-        {
-            try
-            {
-                if (!await CheckAuthorization(documentInformations.Id))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this document information!" });
-                }
+        //[HttpPost]
+        //public async Task<IActionResult> PostDocumentInformations(DocumentInformations documentInformations)
+        //{
+        //    try
+        //    {
+        //        if (!await CheckAuthorization(documentInformations.Id))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this document information!" });
+        //        }
 
-                await _uow.DocumentInformationsRepository.AddAsync(documentInformations);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        await _uow.DocumentInformationsRepository.AddAsync(documentInformations);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteDocumentInformations(string id)
-        {
-            try
-            {
-                var guid = Guid.Parse(id);
-                if (!await CheckAuthorization(guid))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this document information!" });
-                }
+        //[HttpDelete("{id}")]
+        //public async Task<ActionResult<User>> DeleteDocumentInformations(string id)
+        //{
+        //    try
+        //    {
+        //        var guid = Guid.Parse(id);
+        //        if (!await CheckAuthorization(guid))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this document information!" });
+        //        }
 
-                await _uow.DocumentInformationsRepository.Remove(guid);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        await _uow.DocumentInformationsRepository.Remove(guid);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         [HttpPut("add-position/{documentInformationId}")]
-        public async Task<IActionResult> AddPositionToDocumentInformation(string documentInformationId, Position position)
+        public async Task<IActionResult> AddPositionToDocumentInformation(string documentInformationId, PositionDto position)
         {
             try
             {
@@ -147,18 +149,18 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this position to this document information!" });
                 }
 
-                await _uow.DocumentInformationsRepository.AddPosition(docInfromationGuid, position);
+                await _uow.DocumentInformationsRepository.AddPosition(docInfromationGuid, position.ToEntity());
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Position added." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
         [HttpPut("add-positions/{documentInformationId}")]
-        public async Task<IActionResult> AddPositionsToDocumentInformation(string documentInformationId, ICollection<Position> positions)
+        public async Task<IActionResult> AddPositionsToDocumentInformation(string documentInformationId, ICollection<PositionDto> positions)
         {
             try
             {
@@ -168,13 +170,13 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this positions to this document information!" });
                 }
 
-                await _uow.DocumentInformationsRepository.AddPositions(docInfromationGuid, positions);
+                await _uow.DocumentInformationsRepository.AddPositions(docInfromationGuid, positions.ToEntity());
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Positions added." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -193,11 +195,11 @@ namespace BillingSoftware.Web.Controllers
 
                 await _uow.DocumentInformationsRepository.DeletePosition(docInfromationGuid, toDeleteId);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Position deleted." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -222,16 +224,16 @@ namespace BillingSoftware.Web.Controllers
             return result;
         }
 
-        private async Task<Guid> GetCompanyIdForUser()
-        {
-            var email = HttpContext.User.Identity.Name;
-            var user = await _uow.UserRepository.GetUserByEmail(email);
-            if (user.Company != null)
-            {
-                return user.Company.Id;
-            }
+        //private async Task<Guid> GetCompanyIdForUser()
+        //{
+        //    var email = HttpContext.User.Identity.Name;
+        //    var user = await _uow.UserRepository.GetUserByEmail(email);
+        //    if (user.Company != null)
+        //    {
+        //        return user.Company.Id;
+        //    }
 
-            return Guid.Empty;
-        }
+        //    return Guid.Empty;
+        //}
     }
 }

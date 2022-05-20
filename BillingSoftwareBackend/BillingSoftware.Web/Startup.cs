@@ -31,6 +31,12 @@ namespace BillingSoftware.Web
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddDbContext<ApplicationDbContext>();
             services.AddControllers();
+            services.AddCors(c => c.AddDefaultPolicy(builder =>
+            {
+                builder.AllowAnyOrigin();
+                builder.AllowAnyHeader();
+                builder.AllowAnyMethod();
+            }));
 
             services.AddSwaggerGen(setup =>
             {
@@ -122,6 +128,7 @@ namespace BillingSoftware.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
+            
 
             app.UseEndpoints(endpoints =>
             {

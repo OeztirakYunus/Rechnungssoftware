@@ -13,25 +13,25 @@ namespace BillingSoftware.Web.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class AddressesController : ControllerBase
+    public class BankInformationsController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
 
-        public AddressesController(IUnitOfWork uow)
+        public BankInformationsController(IUnitOfWork uow)
         {
             _uow = uow;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Address>>> GetAddresses()
+        public async Task<ActionResult<IEnumerable<BankInformation>>> GetBankInformation()
         {
             try
             {
                 var email = HttpContext.User.Identity.Name;
                 var user = await _uow.UserRepository.GetUserByEmail(email);
-                var addresses = await _uow.AddressRepository.GetAllAsync();
-                addresses = addresses.Where(i => user.Company.Address.Id.Equals(i)).ToArray();
-                return Ok(addresses);
+                var bankInformation = await _uow.BankInformationRepository.GetAllAsync();
+                bankInformation = bankInformation.Where(i => user.Company.BankInformation.Id.Equals(i)).ToArray();
+                return Ok(bankInformation);
             }
             catch (System.Exception ex)
             {
@@ -39,41 +39,41 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Address>> GetAddress(string id)
-        {
-            try
-            {
-                var guid = Guid.Parse(id);
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Address>> GetAddress(string id)
+        //{
+        //    try
+        //    {
+        //        var guid = Guid.Parse(id);
 
-                if (!await CheckAuthorization(guid))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this address!" });
-                }
+        //        if (!await CheckAuthorization(guid))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this address!" });
+        //        }
 
-                var address = await _uow.AddressRepository.GetByIdAsync(guid);
-                return address;
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(new { Status = "Error", Message = ex.Message });
-            }
-        }
+        //        var address = await _uow.AddressRepository.GetByIdAsync(guid);
+        //        return address;
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(new { Status = "Error", Message = ex.Message });
+        //    }
+        //}
 
         [HttpPut]
-        public async Task<IActionResult> PutAddress(Address address)
+        public async Task<IActionResult> PutBankInformation(BankInformation bankInformation)
         {
             try
             {
-                if (!await CheckAuthorization(address.Id))
+                if (!await CheckAuthorization(bankInformation.Id))
                 {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to edit this address!" });
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to edit this bank information!" });
                 }
-                var entity = await _uow.AddressRepository.GetByIdAsync(address.Id);
-                address.CopyProperties(entity);
-                await _uow.AddressRepository.Update(entity);
+                var entity = await _uow.BankInformationRepository.GetByIdAsync(bankInformation.Id);
+                bankInformation.CopyProperties(entity);
+                await _uow.BankInformationRepository.Update(entity);
                 await _uow.SaveChangesAsync();
-                return Ok(new { Status = "Success", Message = "Address updated." });
+                return Ok(new { Status = "Success", Message = "Bank Information updated." });
             }
             catch (System.Exception ex)
             {
@@ -101,19 +101,19 @@ namespace BillingSoftware.Web.Controllers
         //}
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAddress(string id)
+        public async Task<IActionResult> DeleteBankInformation(string id)
         {
             try
             {
                 var guid = Guid.Parse(id);
                 if (!await CheckAuthorization(guid))
                 {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this address!" });
+                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this bank information!" });
                 }
 
-                await _uow.AddressRepository.Remove(guid);
+                await _uow.BankInformationRepository.Remove(guid);
                 await _uow.SaveChangesAsync();
-                return Ok(new { Status = "Success", Message = "Address deleted." });
+                return Ok(new { Status = "Success", Message = "Bank Information deleted." });
             }
             catch (System.Exception ex)
             {
@@ -121,11 +121,11 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        private async Task<bool> CheckAuthorization(Guid addressId)
+        private async Task<bool> CheckAuthorization(Guid bankInformationId)
         {
             var email = HttpContext.User.Identity.Name;
             var user = await _uow.UserRepository.GetUserByEmail(email);
-            return user.Company.Address.Id.Equals(addressId);
+            return user.Company.BankInformation.Id.Equals(bankInformationId);
         }
     }
 }

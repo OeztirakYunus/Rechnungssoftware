@@ -49,7 +49,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -65,11 +65,11 @@ namespace BillingSoftware.Web.Controllers
                 }
 
                 var position = await _uow.PositionRepository.GetByIdAsync(guid);
-                return position;
+                return Ok(position);
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -87,54 +87,54 @@ namespace BillingSoftware.Web.Controllers
                 position.CopyProperties(entity);
                 await _uow.PositionRepository.Update(entity);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Position updated." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostPosition(Position position)
-        {
-            try
-            {
-                if (!await CheckAuthorization(position.Id))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this position!" });
-                }
+        //[HttpPost]
+        //public async Task<IActionResult> PostPosition(Position position)
+        //{
+        //    try
+        //    {
+        //        if (!await CheckAuthorization(position.Id))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this position!" });
+        //        }
 
-                await _uow.PositionRepository.AddAsync(position);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        await _uow.PositionRepository.AddAsync(position);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Position>> DeletePosition(string id)
-        {
-            try
-            {
-                var guid = Guid.Parse(id);
-                if (!await CheckAuthorization(guid))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this position!" });
-                }
+        //[HttpDelete("{id}")]
+        //public async Task<ActionResult<Position>> DeletePosition(string id)
+        //{
+        //    try
+        //    {
+        //        var guid = Guid.Parse(id);
+        //        if (!await CheckAuthorization(guid))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this position!" });
+        //        }
 
-                await _uow.PositionRepository.Remove(guid);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        await _uow.PositionRepository.Remove(guid);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         private async Task<bool> CheckAuthorization(Guid positionId)
         {

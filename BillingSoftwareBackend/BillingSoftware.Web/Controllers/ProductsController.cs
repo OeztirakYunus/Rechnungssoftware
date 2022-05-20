@@ -32,11 +32,11 @@ namespace BillingSoftware.Web.Controllers
                 var products = await _uow.ProductRepository.GetAllAsync();
                 products = products.Where(i => user.Company.Products.Any(a => a.Id.Equals(i.Id))).ToArray();
 
-                return Ok(await _uow.ProductRepository.GetAllAsync());
+                return Ok(products);
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -52,11 +52,11 @@ namespace BillingSoftware.Web.Controllers
                 }
 
                 var product = await _uow.ProductRepository.GetByIdAsync(guid);
-                return product;
+                return Ok(product);
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -74,54 +74,54 @@ namespace BillingSoftware.Web.Controllers
                 product.CopyProperties(entity);
                 await _uow.ProductRepository.Update(entity);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Product updated." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostProduct(Product product)
-        {
-            try
-            {
-                if (!await CheckAuthorization(product.Id))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this product!" });
-                }
+        //[HttpPost]
+        //public async Task<IActionResult> PostProduct(Product product)
+        //{
+        //    try
+        //    {
+        //        if (!await CheckAuthorization(product.Id))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this product!" });
+        //        }
 
-                await _uow.ProductRepository.AddAsync(product);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        await _uow.ProductRepository.AddAsync(product);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Product>> DeleteProduct(string id)
-        {
-            try
-            {
-                var guid = Guid.Parse(id);
-                if (!await CheckAuthorization(guid))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this product!" });
-                }
+        //[HttpDelete("{id}")]
+        //public async Task<ActionResult<Product>> DeleteProduct(string id)
+        //{
+        //    try
+        //    {
+        //        var guid = Guid.Parse(id);
+        //        if (!await CheckAuthorization(guid))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this product!" });
+        //        }
 
-                await _uow.ProductRepository.Remove(guid);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        await _uow.ProductRepository.Remove(guid);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         private async Task<bool> CheckAuthorization(Guid productId)
         {
