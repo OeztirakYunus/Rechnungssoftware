@@ -12,14 +12,13 @@ namespace BillingSoftware.Core.Entities
         public string Email { get; set; }
         [Required]
         public string PhoneNumber { get; set; }
-        public string BankName { get; set; }
-        public string Iban { get; set; }
-        public string Bic { get; set; }
         public string UstNumber { get; set; }
         public Guid AddressId{ get; set; }
+        public Guid BankInformationId { get; set; }
 
         //Navigation Properties
         public virtual CompanyDocumentCounter CompanyDocumentCounter { get; set; } = new CompanyDocumentCounter();
+        public virtual BankInformation BankInformation { get; set; }
         public virtual Address Address { get; set; }
         public virtual List<User> Users { get; set; } = new();
         public virtual List<Contact> Contacts { get; set; } = new();

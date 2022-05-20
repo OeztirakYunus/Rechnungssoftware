@@ -38,7 +38,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -54,11 +54,11 @@ namespace BillingSoftware.Web.Controllers
                 }
 
                 var orderInformation = await _uow.OrderConfirmationRepository.GetByIdAsync(guid);
-                return orderInformation;
+                return Ok(orderInformation);
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -76,54 +76,54 @@ namespace BillingSoftware.Web.Controllers
                 orderConfirmation.CopyProperties(entity);
                 await _uow.OrderConfirmationRepository.Update(entity);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Invoice updated." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostOrderConfirmation(OrderConfirmation orderConfirmation)
-        {
-            try
-            {
-                if (!await CheckAuthorization(orderConfirmation.Id))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this order confirmation!" });
-                }
+        //[HttpPost]
+        //public async Task<IActionResult> PostOrderConfirmation(OrderConfirmation orderConfirmation)
+        //{
+        //    try
+        //    {
+        //        if (!await CheckAuthorization(orderConfirmation.Id))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this order confirmation!" });
+        //        }
 
-                await _uow.OrderConfirmationRepository.AddAsync(orderConfirmation);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        await _uow.OrderConfirmationRepository.AddAsync(orderConfirmation);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<OrderConfirmation>> DeleteOrderConfirmation(string id)
-        {
-            try
-            {
-                var guid = Guid.Parse(id);
-                if (!await CheckAuthorization(guid))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this order confirmation!" });
-                }
+        //[HttpDelete("{id}")]
+        //public async Task<ActionResult<OrderConfirmation>> DeleteOrderConfirmation(string id)
+        //{
+        //    try
+        //    {
+        //        var guid = Guid.Parse(id);
+        //        if (!await CheckAuthorization(guid))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this order confirmation!" });
+        //        }
 
-                await _uow.OrderConfirmationRepository.Remove(guid);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        await _uow.OrderConfirmationRepository.Remove(guid);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         [HttpPost("order-confirmation-to-invoice/{orderConfirmationId}")]
         public async Task<IActionResult> OrderConfirmationToInvoice(string orderConfirmationId)
@@ -143,7 +143,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message + "\n" + ex.InnerException.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -165,7 +165,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message + "\n" + ex.InnerException.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -185,7 +185,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -205,7 +205,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 

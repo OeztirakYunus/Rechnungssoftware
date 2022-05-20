@@ -39,7 +39,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -55,11 +55,11 @@ namespace BillingSoftware.Web.Controllers
                 }
 
                 var offer = await _uow.OfferRepository.GetByIdAsync(guid);
-                return offer;
+                return Ok(offer);
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -77,54 +77,54 @@ namespace BillingSoftware.Web.Controllers
                 offer.CopyProperties(entity);
                 await _uow.OfferRepository.Update(entity);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Offer updated." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostOffer(Offer offer)
-        {
-            try
-            {
-                if (!await CheckAuthorization(offer.Id))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this offer!" });
-                }
+        //[HttpPost]
+        //public async Task<IActionResult> PostOffer(Offer offer)
+        //{
+        //    try
+        //    {
+        //        if (!await CheckAuthorization(offer.Id))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this offer!" });
+        //        }
 
-                await _uow.OfferRepository.AddAsync(offer);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        await _uow.OfferRepository.AddAsync(offer);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok(new { Status = "Success", Message = "Invoice updated." });
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOffer(string id)
-        {
-            try
-            {
-                var guid = Guid.Parse(id);
-                if (!await CheckAuthorization(guid))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this offer!" });
-                }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteOffer(string id)
+        //{
+        //    try
+        //    {
+        //        var guid = Guid.Parse(id);
+        //        if (!await CheckAuthorization(guid))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this offer!" });
+        //        }
 
-                await _uow.OfferRepository.Remove(guid);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        await _uow.OfferRepository.Remove(guid);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
         [HttpPost("offer-to-order-confirmation/{offerId}")]
         public async Task<IActionResult> OfferToOrderConfirmation(string offerId)
@@ -144,7 +144,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message + "\n" + ex.InnerException.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -164,7 +164,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -184,7 +184,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 

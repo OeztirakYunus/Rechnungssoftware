@@ -144,9 +144,9 @@ namespace CommonBase.DocumentCreators
                 docText = docText.Replace("company.ustNumber", company.UstNumber);
                 docText = docText.Replace("company.phoneNumber", company.PhoneNumber);
                 docText = docText.Replace("company.email", company.Email);
-                docText = docText.Replace("company.iban", company.Iban);
-                docText = docText.Replace("company.bankName", company.BankName);
-                docText = docText.Replace("company.bic", company.Bic);
+                docText = docText.Replace("company.iban", company.BankInformation.Iban);
+                docText = docText.Replace("company.bankName", company.BankInformation.BankName);
+                docText = docText.Replace("company.bic", company.BankInformation.Bic);
 
                 using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.FooterParts.First().GetStream(FileMode.Create)))
                 {

@@ -13,10 +13,8 @@ namespace BillingSoftware.Core.DataTransferObjects
         public string CompanyName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public string BankName { get; set; }
-        public string Iban { get; set; }
-        public string Bic { get; set; }
         public string UstNumber { get; set; }
         public AddressDto Address { get; set; }
+        public BankInformationDto BankInformation { get; set; }
     }
 }

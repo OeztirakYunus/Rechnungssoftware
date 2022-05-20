@@ -18,6 +18,7 @@ namespace BillingSoftware.Core.Contracts
         public IProductRepository ProductRepository { get; }
         public IUserRepository UserRepository { get; }
         public IBSFileRepository BSFileRepository { get; }
+        public IBankInformationRepository BankInformationRepository { get; }
 
         Task<int> SaveChangesAsync();
         Task DeleteDatabaseAsync();

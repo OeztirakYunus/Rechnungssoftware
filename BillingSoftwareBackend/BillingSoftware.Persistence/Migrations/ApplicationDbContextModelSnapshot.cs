@@ -54,6 +54,34 @@ namespace BillingSoftware.Persistence.Migrations
                     b.ToTable("Addresses");
                 });
 
+            modelBuilder.Entity("BillingSoftware.Core.Entities.BankInformation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("BankName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Bic")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Iban")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BankInformations");
+                });
+
             modelBuilder.Entity("BillingSoftware.Core.Entities.BSFile", b =>
                 {
                     b.Property<Guid>("Id")
@@ -102,11 +130,8 @@ namespace BillingSoftware.Persistence.Migrations
                     b.Property<Guid>("AddressId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("BankName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Bic")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("BankInformationId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CompanyName")
                         .IsRequired()
@@ -114,9 +139,6 @@ namespace BillingSoftware.Persistence.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Iban")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -134,6 +156,8 @@ namespace BillingSoftware.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId");
+
+                    b.HasIndex("BankInformationId");
 
                     b.ToTable("Companies");
                 });
@@ -757,7 +781,15 @@ namespace BillingSoftware.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BillingSoftware.Core.Entities.BankInformation", "BankInformation")
+                        .WithMany()
+                        .HasForeignKey("BankInformationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Address");
+
+                    b.Navigation("BankInformation");
                 });
 
             modelBuilder.Entity("BillingSoftware.Core.Entities.CompanyDocumentCounter", b =>

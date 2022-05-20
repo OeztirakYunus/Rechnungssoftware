@@ -125,9 +125,6 @@ namespace BillingSoftware.Web.Controllers
                 Email = newUser.Company.Email,
                 PhoneNumber = newUser.Company.PhoneNumber,
                 CompanyName = newUser.Company.CompanyName,
-                BankName = newUser.Company.BankName,
-                Iban = newUser.Company.Iban,
-                Bic = newUser.Company.Bic,
                 UstNumber = newUser.Company.UstNumber,
                 Address = new Address()
                 {
@@ -135,6 +132,12 @@ namespace BillingSoftware.Web.Controllers
                     Country = newUser.Company.Address.Country,
                     Street = newUser.Company.Address.Street,
                     ZipCode = newUser.Company.Address.ZipCode
+                },
+                BankInformation = new BankInformation()
+                {
+                    BankName = newUser.Company.BankInformation.BankName,
+                    Iban = newUser.Company.BankInformation.Iban,
+                    Bic = newUser.Company.BankInformation.Bic,
                 }
             };
 

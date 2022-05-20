@@ -256,28 +256,6 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        //[HttpPut("delete-address/{addressId}")]
-        //public async Task<IActionResult> DeleteAddressFromCompany(string addressId)
-        //{
-        //    try
-        //    {
-        //        var toDeleteId = Guid.Parse(addressId);
-        //        var compId = await GetCompanyIdForUser();
-        //        if (compId.Equals(Guid.Empty))
-        //        {
-        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this address" });
-        //        }
-
-        //        await _uow.CompanyRepository.DeleteAddress(compId, toDeleteId);
-        //        await _uow.SaveChangesAsync();
-        //        return Ok();
-        //    }
-        //    catch (System.Exception ex)
-        //    {
-        //        return BadRequest(new { Status = "Error", Message = ex.Message });
-        //    }
-        //}
-
         [HttpPut("delete-contact/{contactId}")]
         public async Task<IActionResult> DeleteContactFromCompany(string contactId)
         {

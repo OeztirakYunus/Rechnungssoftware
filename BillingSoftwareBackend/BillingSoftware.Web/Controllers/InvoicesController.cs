@@ -37,7 +37,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -53,11 +53,11 @@ namespace BillingSoftware.Web.Controllers
                 }
 
                 var invoice = await _uow.InvoiceRepository.GetByIdAsync(guid);
-                return invoice;
+                return Ok(invoice);
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -75,54 +75,54 @@ namespace BillingSoftware.Web.Controllers
                 invoice.CopyProperties(entity);
                 await _uow.InvoiceRepository.Update(entity);
                 await _uow.SaveChangesAsync();
-                return Ok();
+                return Ok(new { Status = "Success", Message = "Invoice updated." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostInvoice(Invoice invoice)
-        {
-            try
-            {
-                if (!await CheckAuthorization(invoice.Id))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this invoice!" });
-                }
+        //[HttpPost]
+        //public async Task<IActionResult> PostInvoice(Invoice invoice)
+        //{
+        //    try
+        //    {
+        //        if (!await CheckAuthorization(invoice.Id))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to add this invoice!" });
+        //        }
 
-                await _uow.InvoiceRepository.AddAsync(invoice);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        await _uow.InvoiceRepository.AddAsync(invoice);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(new { Status = "Error", Message = ex.Message });
+        //    }
+        //}
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteInvoice(string id)
-        {
-            try
-            {
-                var guid = Guid.Parse(id);
-                if (!await CheckAuthorization(guid))
-                {
-                    return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this invoice!" });
-                }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteInvoice(string id)
+        //{
+        //    try
+        //    {
+        //        var guid = Guid.Parse(id);
+        //        if (!await CheckAuthorization(guid))
+        //        {
+        //            return Unauthorized(new { Status = "Error", Message = $"You are not allowed to delete this invoice!" });
+        //        }
 
-                await _uow.InvoiceRepository.Remove(guid);
-                await _uow.SaveChangesAsync();
-                return Ok();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        await _uow.InvoiceRepository.Remove(guid);
+        //        await _uow.SaveChangesAsync();
+        //        return Ok();
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        return BadRequest(new { Status = "Error", Message = ex.Message });
+        //    }
+        //}
 
         [HttpPost("invoice-to-delivery-note/{invoiceId}")]
         public async Task<IActionResult> InvoiceToDeliveryNote(string invoiceId)
@@ -142,7 +142,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message + "\n" + ex.InnerException.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -162,7 +162,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -182,7 +182,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
