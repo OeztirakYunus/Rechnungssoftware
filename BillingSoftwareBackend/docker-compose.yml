@@ -33,6 +33,14 @@ services:
     networks:
       - traefik_web
 
+  frontend:
+    image: nginx:1.20
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`invoicer.at`)"
+    networks:
+      - traefik_web
+
   backend:
     environment:
       - DB_CONNECTION_STRING=Server=dbserver,1433;Database=BillingSoftwareDb;User Id=sa;Password=BillingSoftware20222022!
