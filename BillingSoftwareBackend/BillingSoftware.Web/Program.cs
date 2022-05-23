@@ -19,6 +19,17 @@ namespace BillingSoftware.Web
         {
             var server = CreateHostBuilder(args).Build();
             using var scope = server.Services.CreateScope();
+
+            // try
+            // {
+            //     var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            //     await context.Database.EnsureDeletedAsync();
+            //     await context.Database.EnsureCreatedAsync();
+            // }
+            // catch(Exception ex){
+            //     Console.WriteLine(ex.Message);
+            // }
+
             try
             {
                 var roleManager = scope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
@@ -31,11 +42,6 @@ namespace BillingSoftware.Web
             catch(Exception ex){
                 Console.WriteLine(ex.Message);
             }
-
-            var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
-            //await context.Database.EnsureDeletedAsync();
-            //await context.Database.EnsureCreatedAsync();
-
             server.Run();
         }
 

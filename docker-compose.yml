@@ -44,7 +44,7 @@ services:
   backend:
     environment:
       - DB_CONNECTION_STRING=Server=dbserver,1433;Database=BillingSoftwareDb;User Id=sa;Password=BillingSoftware20222022!
-    build: .
+    build: ./BillingSoftwareBackend/.
     links:
       - dbserver
     depends_on:
