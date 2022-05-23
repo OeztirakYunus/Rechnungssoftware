@@ -6,9 +6,10 @@ services:
     restart: always
     command:
       # Enable Dashboard
+      - '--api=true'
       - "--api.insecure=true"
       - "--api.dashboard=true"
-      # Dokcer configuration
+      # Docker configuration
       - "--providers.docker"
       - "--providers.docker.exposedByDefault=false"
       - "--providers.docker.network=traefik_web"
@@ -26,10 +27,16 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./letsencrypt:/letsencrypt
+    labels:
+      - 'traefik.enable=true'
+      # Traefik dashboard
+      - 'traefik.http.routers.traefik.rule=Host(`traefik.invoicer.at`)'
+      - 'traefik.http.services.traefik.loadbalancer.server.port=8080'
+      - 'traefik.http.routers.traefik.middlewares=traefik-auth'
+      - 'traefik.http.middlewares.traefik-auth.basicauth.users=admin:$$apr1$$8EVjn/nj$$GiLUZqcbueTFeD23SuB6x0' # username: admin, password: admin
     networks:
       - traefik_web
 
