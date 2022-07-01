@@ -12,7 +12,7 @@ namespace CommonBase.DocumentCreators
     public static class DocxCreator
     {
         private static string TEMPLATE_DIRECTORY = Globals.TEMPLATE_DIRECTORY;
-        private static string SEP = Globals.SEP;
+        private static string SEP = Globals.SEPARATOR;
 
         public async static Task<(byte[], string)> CreateWordForOffer(Offer offer, bool deleteWordAfterReturn = true)
         {
@@ -63,7 +63,7 @@ namespace CommonBase.DocumentCreators
             {
                 File.Delete(filePath);
             }
-            return (bytes, Path.GetFileName(filePath));
+            return (bytes, filePath);
         }
 
         public async static Task<(byte[], string)> CreateWordForInvoice(Invoice invoice, bool deleteWordAfterReturn = true)
@@ -89,7 +89,7 @@ namespace CommonBase.DocumentCreators
             {
                 File.Delete(filePath);
             }
-            return (bytes, Path.GetFileName(filePath));
+            return (bytes, filePath);
         }
 
         public async static Task<(byte[], string)> CreateWordForDeliveryNote(DeliveryNote deliveryNote, bool deleteWordAfterReturn = true)
@@ -115,7 +115,7 @@ namespace CommonBase.DocumentCreators
             {
                 File.Delete(filePath);
             }
-            return (bytes, Path.GetFileName(filePath));
+            return (bytes, filePath);
         }
 
         private static void CreateBasics(string path,Company company, DocumentInformations documentInformations)
