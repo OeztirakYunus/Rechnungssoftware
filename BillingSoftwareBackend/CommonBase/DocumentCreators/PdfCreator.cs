@@ -56,38 +56,11 @@ namespace CommonBase.DocumentCreators
                 File.Delete(pdfFile);
             }
 
-            //var convertApi = new ConvertApi("rdH5vHXH2xx8JBbX");
-            //var convert = await convertApi.ConvertAsync("docx", "pdf",
-            //    new ConvertApiFileParam("File", wordFile)
-            //);
-            //await convert.SaveFilesAsync(mainPath);
-
-            await System.Threading.Tasks.Task.Run(() =>
-            {
-                Microsoft.Office.Interop.Word.Application appWord = new Microsoft.Office.Interop.Word.Application();
-                Microsoft.Office.Interop.Word.Document wordDocument = appWord.Documents.Open(wordFile);
-                wordDocument.ExportAsFixedFormat(pdfFile, WdExportFormat.wdExportFormatPDF);
-                wordDocument.Close();
-                appWord.Quit();
-            });
-
-
-            //byte[] byteArray = File.ReadAllBytes(wordFile);
-            //using (MemoryStream memoryStream = new MemoryStream())
-            //{
-            //    memoryStream.Write(byteArray, 0, byteArray.Length);
-            //    using (WordprocessingDocument doc = WordprocessingDocument.Open(memoryStream, true))
-            //    {
-            //        HtmlConverterSettings settings = new HtmlConverterSettings()
-            //        {
-            //            PageTitle = "My Page Title"
-            //        };
-            //        XElement html = HtmlConverter.ConvertToHtml(doc, settings);
-
-            //        File.WriteAllText(pdfFile, html.ToStringNewLineOnAttributes());
-            //    }
-            //}
-
+            var convertApi = new ConvertApi("rdH5vHXH2xx8JBbX");
+            var convert = await convertApi.ConvertAsync("docx", "pdf",
+                new ConvertApiFileParam("File", wordFile)
+            );
+            await convert.SaveFilesAsync(mainPath);
 
             var bytesOfPdf = await System.IO.File.ReadAllBytesAsync(pdfFile);
             File.Delete(pdfFile);
