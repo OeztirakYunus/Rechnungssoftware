@@ -389,6 +389,22 @@ namespace BillingSoftware.Persistence.Repository
 
             _context.CompanyDocumentCounters.Remove(tempDocCounter);
         }
+        private async Task DeleteFile(Guid companyId, Guid fileId)
+        {
+            var company = await _context.Companies.FindAsync(companyId);
+            if (company == null)
+            {
+                throw new EntityNotFoundException("Company does not exist.");
+            }
+
+            var tempFile = await _context.BSFiles.FindAsync(fileId);
+            if (tempFile == null)
+            {
+                throw new EntityNotFoundException("File does not exist.");
+            }
+
+            _context.BSFiles.Remove(tempFile);
+        }
 
         public override async Task Remove(Guid id)
         {
@@ -423,7 +439,11 @@ namespace BillingSoftware.Persistence.Repository
             foreach (var item in company.Contacts)
             {
                 await DeleteContact(id, item.Id);
-            }  
+            }
+            foreach (var item in company.Files)
+            {
+                await DeleteFile(id, item.Id);
+            }
             await base.Remove(id);
         }
 
