@@ -1,12 +1,7 @@
 ﻿using BillingSoftware.Core.Entities;
 using ConvertApiDotNet;
-using DocumentFormat.OpenXml.Packaging;
-using Microsoft.Office.Interop.Word;
-using OpenXmlPowerTools;
-using System;
 using System.IO;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace CommonBase.DocumentCreators
 {
