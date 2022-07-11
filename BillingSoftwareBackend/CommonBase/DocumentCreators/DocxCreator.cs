@@ -413,7 +413,28 @@ namespace CommonBase.DocumentCreators
                 {
                     TableRow tr1 = new TableRow();
                     TableCell tcData1 = new TableCell(new Paragraph(new Run(new Text(posCounter.ToString()))));
-                    TableCell tcData2 = new TableCell(new Paragraph(new Run(new Text(item.Product.ArticleNumber + " " + item.Product.ProductName))));
+
+                    Run articleDescRun = new Run();
+                    articleDescRun.Append(new Text(item.Product.ArticleNumber + " " + item.Product.ProductName));
+
+                    if(item.Discount > 0)
+                    {
+                        var discountSymbol = "%";
+                        switch (item.TypeOfDiscount)
+                        {
+                            case BillingSoftware.Core.Enums.TypeOfDiscount.Percent:
+                                discountSymbol = "%";
+                                break;
+                            case BillingSoftware.Core.Enums.TypeOfDiscount.Euro:
+                                discountSymbol = "€";
+                                break;
+                            default:
+                                break;
+                        }
+                        articleDescRun.Append(new Break(),new Text("Rabatt: " + item.Discount + " " + discountSymbol));
+                    }
+
+                    TableCell tcData2 = new TableCell(new Paragraph(articleDescRun));
                     TableCell tcData3 = new TableCell(new Paragraph(new Run(new Text(item.Quantity.ToString()))));
                     TableCell tcData4 = new TableCell(new Paragraph(new Run(new Text(item.Product.Unit.ToString()))));
                     TableCell tcData5 = new TableCell(new Paragraph(new Run(new Text(item.Product.SellingPriceNet.ToString()))));
