@@ -159,7 +159,7 @@ namespace BillingSoftware.Web.Controllers
                 }
 
                 var orderConfirmation = await _uow.OrderConfirmationRepository.GetByIdAsync(guid);
-                var deliveryNote = _uow.OrderConfirmationRepository.OrderConfirmationToDeliveryNote(orderConfirmation);
+                var deliveryNote = await _uow.OrderConfirmationRepository.OrderConfirmationToDeliveryNote(orderConfirmation);
                 await _uow.SaveChangesAsync();
                 return Ok(deliveryNote);
             }

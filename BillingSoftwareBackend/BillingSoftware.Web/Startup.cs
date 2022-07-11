@@ -112,6 +112,8 @@ namespace BillingSoftware.Web
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BillingSoftware.Web v1"));
 
