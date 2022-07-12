@@ -420,24 +420,24 @@ namespace CommonBase.DocumentCreators
                     if(item.Discount > 0)
                     {
                         var discountSymbol = "%";
-                        switch (item.TypeOfDiscount)
+                        if(item.TypeOfDiscount == BillingSoftware.Core.Enums.TypeOfDiscount.Euro)
                         {
-                            case BillingSoftware.Core.Enums.TypeOfDiscount.Percent:
-                                discountSymbol = "%";
-                                break;
-                            case BillingSoftware.Core.Enums.TypeOfDiscount.Euro:
-                                discountSymbol = "€";
-                                break;
-                            default:
-                                break;
+                            discountSymbol = "€";
                         }
-                        articleDescRun.Append(new Break(),new Text("Rabatt: " + item.Discount + " " + discountSymbol));
+                        RunProperties runProperties1 = new RunProperties();
+                        FontSize fontSize1 = new FontSize() { Val = "16" };
+                        runProperties1.Append(fontSize1);
+                        var discountRun = new DocumentFormat.OpenXml.Wordprocessing.Run();
+                        discountRun.Append(runProperties1);
+                        discountRun.Append(new Break(), new Text("Rabatt: " + item.Discount + " " + discountSymbol + " pro Stück"));
+
+                        articleDescRun.Append(discountRun);
                     }
 
                     TableCell tcData2 = new TableCell(new Paragraph(articleDescRun));
                     TableCell tcData3 = new TableCell(new Paragraph(new Run(new Text(item.Quantity.ToString()))));
                     TableCell tcData4 = new TableCell(new Paragraph(new Run(new Text(item.Product.Unit.ToString()))));
-                    TableCell tcData5 = new TableCell(new Paragraph(new Run(new Text(item.Product.SellingPriceNet.ToString()))));
+                    TableCell tcData5 = new TableCell(new Paragraph(new Run(new Text(item.ProductPriceNet.ToString()))));
                     TableCell tcData6 = new TableCell(new Paragraph(new Run(new Text(item.TotalPriceNet.ToString()))));
                     tcData1.Append(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "1000" }));
                     tcData2.Append(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "4000" }));
