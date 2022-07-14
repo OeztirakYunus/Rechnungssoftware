@@ -455,7 +455,23 @@ namespace CommonBase.DocumentCreators
                 Run run = new Run();
                 RunProperties runProperties = run.AppendChild(new RunProperties());
                 runProperties.AppendChild(bold);
+                
+                Run valuesRun = new Run();
+                if(documentInformation.TotalDiscount > 0)
+                {
+                    run.Append(new Text($"Rabatt"), new Break());
+
+                    var discountSymbol = "%";
+                    if(documentInformation.TypeOfDiscount == BillingSoftware.Core.Enums.TypeOfDiscount.Euro)
+                    {
+                        discountSymbol = "€";
+                    }
+
+                    valuesRun.Append(new Text($"{discountSymbol} {documentInformation.TotalDiscount}"), new Break());
+                }
+                
                 run.Append(new Text($"Summe Netto"), new Break(), new Text($"USt {documentInformation.Tax}%"), new Break(), new Text("Gesamt"));
+                valuesRun.Append(new Text($"€ {documentInformation.TotalPriceNet}"), new Break(), new Text($"€ {documentInformation.TotalPriceNet * (documentInformation.Tax / 100)}"), new Break(), new Text($"€ {documentInformation.TotalPriceGross}"));
 
                 TableRow tr3 = new TableRow();
                 TableCell tcSumNet1 = new TableCell(new Paragraph(new Run(new Text(""))));
@@ -463,7 +479,7 @@ namespace CommonBase.DocumentCreators
                 TableCell tcSumNet3 = new TableCell(new Paragraph(new Run(new Text(""))));
                 TableCell tcSumNet4 = new TableCell(new Paragraph(run));
                 TableCell tcSumNet5 = new TableCell(new Paragraph(new Run(new Text(""))));
-                TableCell tcSumNet6 = new TableCell(new Paragraph(new Run(new Text($"€ {documentInformation.TotalPriceNet}"), new Break(), new Text($"€ {documentInformation.TotalPriceNet * (documentInformation.Tax / 100)}"), new Break(), new Text($"€ {documentInformation.TotalPriceGross}"))));
+                TableCell tcSumNet6 = new TableCell(new Paragraph(valuesRun));
                 tcSumNet1.Append(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "1000" }));
                 tcSumNet2.Append(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "4000" }));
                 tcSumNet3.Append(new TableCellProperties(new TableCellWidth() { Type = TableWidthUnitValues.Dxa, Width = "900" }));
