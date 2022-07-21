@@ -131,15 +131,15 @@ class _LoginState extends State<Login> {
                     ),
                     MaterialButton(
                       onPressed: () async {
-                        int statusCode =
+                        /*int statusCode =
                             await loginUser(userMail.text, userPsw.text);
-                        if (statusCode == 200) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Categories()),
-                          );
-                        }
+                        if (statusCode == 200) {*/
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Categories()),
+                        );
+                        //}
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(100)),
@@ -176,6 +176,7 @@ class _LoginState extends State<Login> {
   }
 
   Future<int> loginUser(String email, String password) async {
+    // url muss nach backend.invoicer.at geändert werden!
     String url = "http://invoicer.at:8080/api/Auth/login";
     Uri uri = Uri.parse(url);
 
@@ -184,6 +185,7 @@ class _LoginState extends State<Login> {
 
     final response = await http
         .get(uri, headers: {"Authorization": "Basic " + encodedAuthorization});
+
     print(response.statusCode);
     print(response.body);
 

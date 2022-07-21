@@ -36,6 +36,16 @@ class _ProductsState extends State<Product> {
           itemBuilder: _itemBuilder,
           itemCount:
               _products.getMatchingCategoryCount(widget.productCategory)),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddProduct()),
+          );
+        },
+        backgroundColor: Colors.purple,
+        child: const Icon(Icons.add),
+      ),
     ));
   }
 

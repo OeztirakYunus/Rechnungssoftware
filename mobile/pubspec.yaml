@@ -44,6 +44,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   document_scanner: ^0.2.1
   permission_handler: ^9.2.0
+  select_form_field: ^2.2.0
 
 dev_dependencies:
   flutter_test:
