@@ -1,3 +1,5 @@
+import 'package:demo5/home/home.dart';
+import 'package:demo5/products/addProduct.dart';
 import 'package:demo5/products/categoryList.dart';
 import 'package:demo5/products/product.dart';
 import 'package:demo5/authentication/signup.dart';
@@ -6,6 +8,8 @@ import 'package:flutter/gestures.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:demo5/network/networkHandler.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -18,6 +22,12 @@ class _LoginState extends State<Login> {
   bool? changed = false;
   TextEditingController userMail = TextEditingController();
   TextEditingController userPsw = TextEditingController();
+  bool _passwordVisible = true;
+
+  @override
+  void initState() {
+    _passwordVisible = true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,17 +84,26 @@ class _LoginState extends State<Login> {
                     TextFormField(
                       controller: userPsw,
                       autofocus: false,
-                      obscureText: true,
+                      obscureText: !_passwordVisible,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(100.0)),
                         hintText: 'Passwort eingeben',
                         hintStyle: const TextStyle(fontSize: 20.00),
-                        prefixIcon: const Padding(
-                          padding:
-                              EdgeInsets.only(top: 0, right: 12, bottom: 0),
-                          child: Icon(Icons.remove_red_eye,
-                              size: 22, color: Colors.grey),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            // Based on passwordVisible state choose the icon
+                            _passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Theme.of(context).primaryColorDark,
+                          ),
+                          onPressed: () {
+                            // Update the state i.e. toogle the state of passwordVisible variable
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            });
+                          },
                         ),
                       ),
                       style: const TextStyle(fontSize: 20.00),
@@ -131,15 +150,15 @@ class _LoginState extends State<Login> {
                     ),
                     MaterialButton(
                       onPressed: () async {
-                        /*int statusCode =
+                        int statusCode =
                             await loginUser(userMail.text, userPsw.text);
-                        if (statusCode == 200) {*/
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Categories()),
-                        );
-                        //}
+                        if (statusCode == 200) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Categories()),
+                          );
+                        }
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(100)),
@@ -176,8 +195,7 @@ class _LoginState extends State<Login> {
   }
 
   Future<int> loginUser(String email, String password) async {
-    // url muss nach backend.invoicer.at geändert werden!
-    String url = "http://invoicer.at:8080/api/Auth/login";
+    String url = "https://backend.invoicer.at/api/Auth/login";
     Uri uri = Uri.parse(url);
 
     String authorization = email + ":" + password;
@@ -188,6 +206,14 @@ class _LoginState extends State<Login> {
 
     print(response.statusCode);
     print(response.body);
+    var responseString = json.decode(response.body);
+    var responseStatus = responseString["status"];
+    print("Response: $responseStatus");
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.toString());
+      //NetworkHandler.storeToken(data["token"]);
+    }
 
     return response.statusCode;
   }

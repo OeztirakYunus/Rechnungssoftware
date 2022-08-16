@@ -51,12 +51,12 @@ class _ProductsState extends State<Product> {
 
   Widget _itemBuilder(BuildContext context, int index) {
     return InkWell(
-      onTap: () {
+      /*onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const AddProduct()),
         );
-      },
+      },*/
       child: Card(
         child: ListTile(
           leading: Text(_products.getNameByCategory(index)),
