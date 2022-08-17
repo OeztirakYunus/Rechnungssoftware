@@ -204,15 +204,16 @@ class _LoginState extends State<Login> {
     final response = await http
         .get(uri, headers: {"Authorization": "Basic " + encodedAuthorization});
 
-    print(response.statusCode);
-    print(response.body);
-    var responseString = json.decode(response.body);
-    var responseStatus = responseString["status"];
-    print("Response: $responseStatus");
-
     if (response.statusCode == 200) {
-      var data = json.decode(response.toString());
-      //NetworkHandler.storeToken(data["token"]);
+      var responseString = json.decode(response.body);
+      var responseToken = responseString["auth_token"];
+      NetworkHandler.storeToken(responseToken);
+      print("Token: $responseToken");
+      var readToken = await NetworkHandler.getToken();
+      readToken = readToken.toString();
+      if (readToken.isNotEmpty) {
+        print("READ TOKEN $readToken");
+      }
     }
 
     return response.statusCode;

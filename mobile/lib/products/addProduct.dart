@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:select_form_field/select_form_field.dart';
+import 'dart:convert';
 
 class AddProduct extends StatelessWidget {
   const AddProduct({Key? key}) : super(key: key);
@@ -13,6 +14,27 @@ class AddProduct extends StatelessWidget {
       {'value': '0', 'label': 'Getränk'},
       {'value': 1, 'label': 'Obst'},
     ];
+
+    final List<Map<String, dynamic>> _units = [
+      {'value': 0, 'label': 'Stück'},
+      {'value': 1, 'label': 'Quadratmeter'},
+      {'value': 2, 'label': 'Meter'},
+      {'value': 3, 'label': 'Kilogram'},
+      {'value': 4, 'label': 'Tonnen'},
+      {'value': 5, 'label': 'Pauschal'},
+      {'value': 6, 'label': 'Kubikmeter'},
+      {'value': 7, 'label': 'Stunden'},
+      {'value': 8, 'label': 'Kilometer'},
+      {'value': 9, 'label': 'Prozent'},
+      {'value': 10, 'label': 'Tage'},
+      {'value': 11, 'label': 'Liter'},
+    ];
+
+    TextEditingController articleNumber = TextEditingController();
+    TextEditingController productName = TextEditingController();
+    TextEditingController sellingPriceNet = TextEditingController();
+    TextEditingController productCategory = TextEditingController();
+    TextEditingController unit = TextEditingController();
 
     return SafeArea(
         child: Scaffold(
@@ -39,6 +61,7 @@ class AddProduct extends StatelessWidget {
                         ),
                       ),
                       TextFormField(
+                        controller: articleNumber,
                         autofocus: false,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
@@ -56,6 +79,7 @@ class AddProduct extends StatelessWidget {
                             style: TextStyle(fontSize: 20.00)),
                       ),
                       TextFormField(
+                        controller: productName,
                         autofocus: false,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
@@ -73,6 +97,7 @@ class AddProduct extends StatelessWidget {
                             style: TextStyle(fontSize: 20.00)),
                       ),
                       TextFormField(
+                        controller: sellingPriceNet,
                         autofocus: false,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -91,6 +116,7 @@ class AddProduct extends StatelessWidget {
                             style: TextStyle(fontSize: 20.00)),
                       ),
                       SelectFormField(
+                        controller: productCategory,
                         type: SelectFormFieldType.dropdown,
                         labelText: 'Produktkategorie',
                         items: _items,
@@ -99,8 +125,9 @@ class AddProduct extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(100.0)),
                             hintText: 'Produktkategorie auswählen',
                             hintStyle: const TextStyle(fontSize: 20.00)),
-                        onChanged: (val) => print(val),
-                        onSaved: (val) => print(val),
+                        onChanged: (val) => productCategory.text = val,
+                        onSaved: (val) =>
+                            val!.isNotEmpty ? productCategory.text = val : val,
                       ),
                       const SizedBox(
                         height: 25.00,
@@ -108,20 +135,21 @@ class AddProduct extends StatelessWidget {
                       const Align(
                         alignment: Alignment(-0.95, 1),
                         child:
-                            Text('Anzahl', style: TextStyle(fontSize: 20.00)),
+                            Text('Einheit', style: TextStyle(fontSize: 20.00)),
                       ),
-                      TextFormField(
-                        autofocus: false,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
+                      SelectFormField(
+                        controller: unit,
+                        type: SelectFormFieldType.dropdown,
+                        labelText: 'Einheit',
+                        items: _units,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(100.0)),
-                            hintText: 'Anzahl eingeben',
+                            hintText: 'Produkteinheit auswählen',
                             hintStyle: const TextStyle(fontSize: 20.00)),
-                        style: const TextStyle(fontSize: 20.00),
+                        onChanged: (val) => unit.text = val,
+                        onSaved: (val) =>
+                            val!.isNotEmpty ? unit.text = val : val,
                       ),
                       const SizedBox(
                         height: 10.00,
@@ -133,6 +161,8 @@ class AddProduct extends StatelessWidget {
                           ),
                           MaterialButton(
                             onPressed: () async {
+                              addProduct(articleNumber.text, productName.text,
+                                  sellingPriceNet.text, productCategory.text);
                               /*Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -158,5 +188,15 @@ class AddProduct extends StatelessWidget {
         ),
       ),
     ));
+  }
+
+  Future<int> addProduct(String articleNumber, String productName,
+      String sellingPriceNet, String productCategory) async {
+    var sellingPrice = double.parse(sellingPriceNet);
+    print("ARCTICLENUMBER: $articleNumber");
+    print("PRODUCTNAME: $productName");
+    print("SELLINGPRICENET: $sellingPrice");
+    print("PRODUCTCATEGORY: $productCategory");
+    return 0;
   }
 }
