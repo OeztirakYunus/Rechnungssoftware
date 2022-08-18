@@ -1,0 +1,18 @@
+.style-success {
+    color: green;
+    background-color: blue;
+  }
+  
+  .style-success .mat-simple-snackbar-action {
+    color: green;
+  }
+  
+  .style-error {
+    color: red;
+    background-color: blue;
+  }
+  
+  .style-error .mat-simple-snackbar-action {
+    color: red;
+  }
+  

@@ -1,0 +1,40 @@
+<mat-toolbar color="warn">
+    <mat-toolbar-row>
+      <button mat-icon-button>
+        <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
+      </button>
+      <h1>Rechnungssoftware</h1>
+      <span class="menu-spacer"></span>
+      <ng-container>
+        <button *ngIf="!this.isLoggedIn()" [routerLink]="'/login'" mat-button>
+            <mat-icon>login</mat-icon>
+        </button>
+        <button *ngIf="this.isLoggedIn()" (click)="logout()" [routerLink]="''" mat-button>
+            <mat-icon>logout</mat-icon>
+          </button>
+
+        <button [routerLink]="'/register'" mat-button>
+            <mat-icon>supervisor_account</mat-icon>
+        </button>
+
+      </ng-container>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  
+  <mat-drawer-container autosize>
+    <mat-drawer #sidenav mode="side">
+      <mat-nav-list>
+        <a mat-list-item  [routerLink]="''" (click)="sidenav.toggle()">Startseite</a>
+        <!-- <a mat-list-item  [routerLink]="'/login'" (click)="sidenav.toggle()">Login</a>
+        <a mat-list-item  [routerLink]="'/register'" (click)="sidenav.toggle()">Register</a> -->
+        <a mat-list-item  [routerLink]="'/deliverynotes'" (click)="sidenav.toggle()">Delivery Notes</a>
+        <a mat-list-item  [routerLink]="'/contacts'" (click)="sidenav.toggle()">Contacts</a>
+        <a mat-list-item  [routerLink]="'/files'" (click)="sidenav.toggle()">Files</a>
+        <a mat-list-item  [routerLink]="'/invoices'" (click)="sidenav.toggle()">Invoices</a>
+        <a mat-list-item  [routerLink]="'/offers'" (click)="sidenav.toggle()">Offers</a>
+        <a mat-list-item  [routerLink]="'/orderconfirmation'" (click)="sidenav.toggle()">Order Confirmation</a>
+        <a mat-list-item  [routerLink]="'/products'" (click)="sidenav.toggle()">Products</a>
+      </mat-nav-list>
+    </mat-drawer>
+    <ng-content></ng-content>
+  </mat-drawer-container>

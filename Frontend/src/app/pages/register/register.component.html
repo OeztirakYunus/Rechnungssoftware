@@ -1,0 +1,117 @@
+<mat-stepper #stepper>
+  <mat-step [stepControl]="firstFormGroup">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel>Company</ng-template>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Company Name</mat-label>
+        <input matInput placeholder="Company Name" formControlName="firstCtrl" required>
+      </mat-form-field>
+
+
+      <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput placeholder="Email" formControlName="firstCtrl" required>
+      </mat-form-field>
+
+
+      <mat-form-field appearance="fill">
+        <mat-label>Phonenumber</mat-label>
+        <input matInput placeholder="Phonenumber" formControlName="firstCtrl" required>
+      </mat-form-field>
+
+
+      <mat-form-field appearance="fill">
+        <mat-label>Ust Number</mat-label>
+        <input matInput placeholder="Ust Number" formControlName="firstCtrl" required>
+      </mat-form-field>
+
+      <br> 
+
+      <mat-form-field appearance="fill">
+        <mat-label>Street</mat-label>
+        <input matInput placeholder="Street" formControlName="firstCtrl" required>
+      </mat-form-field>
+
+
+      <mat-form-field appearance="fill">
+        <mat-label>Zip Code</mat-label>
+        <input matInput placeholder="Zip Code" formControlName="firstCtrl" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>City</mat-label>
+        <input matInput placeholder="City" formControlName="firstCtrl" required>
+      </mat-form-field>
+
+
+      <mat-form-field appearance="fill">
+        <mat-label>Country</mat-label>
+        <input matInput placeholder="Country" formControlName="firstCtrl" required>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step [stepControl]="secondFormGroup" label="Bank Information">
+    <form [formGroup]="secondFormGroup">
+      <mat-form-field appearance="fill">
+        <mat-label>Bank Name</mat-label>
+        <input matInput formControlName="secondCtrl" placeholder="Bank Name" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>IBAN</mat-label>
+        <input matInput formControlName="secondCtrl" placeholder="IBAN" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Bic</mat-label>
+        <input matInput formControlName="secondCtrl" placeholder="Bic" required>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step [stepControl]="secondFormGroup" label="User">
+    <form [formGroup]="secondFormGroup">
+      <mat-form-field appearance="fill">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="secondCtrl" placeholder="Max" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="secondCtrl" placeholder="Mustermann" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="secondCtrl" placeholder="maxmustermann@gmail.com" required>
+      </mat-form-field>
+
+
+      <mat-form-field appearance="fill">
+        <mat-label>Password</mat-label>
+        <input matInput formControlName="secondCtrl" placeholder="MaxMustermann123" required>
+      </mat-form-field>
+
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperNext>Next</button>
+        <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
+        <button mat-button [disabled]="!formControl.valid" [mat-dialog-close]="1"
+          (click)="confirmAdd()">Save</button>
+      </div>
+    </form>
+  </mat-step>
+</mat-stepper>
+
+
+
+

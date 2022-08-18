@@ -1,0 +1,11 @@
+mat-drawer-container {
+    height: 100%;
+}
+
+mat-nav-list{
+    margin-left: 0%;
+}
+
+.menu-spacer {
+    flex: 1 1 auto;
+}
