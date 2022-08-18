@@ -203,6 +203,7 @@ class _LoginState extends State<Login> {
 
     final response = await http
         .get(uri, headers: {"Authorization": "Basic " + encodedAuthorization});
+    print(response.statusCode);
 
     if (response.statusCode == 200) {
       var responseString = json.decode(response.body);

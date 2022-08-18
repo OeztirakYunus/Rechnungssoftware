@@ -73,8 +73,8 @@ class Category {
   List<Category> categoryList = [];
 
   void initializeCategoryImageList() {
-    categoryList.add(Category("Obst", "lib/assets/fruit.png"));
-    categoryList.add(Category("Getränk", "lib/assets/drink.jpg"));
+    categoryList.add(Category("Artikel", "lib/assets/fruit.png"));
+    categoryList.add(Category("Dienstleistungen", "lib/assets/drink.jpg"));
   }
 
   String getProductCategoryImage(int index) {

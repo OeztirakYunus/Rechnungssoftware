@@ -1,7 +1,10 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
+import 'package:demo5/network/networkHandler.dart';
 import 'package:demo5/products/addProduct.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import '../NavBar.dart';
+import 'dart:convert';
 
 class Product extends StatefulWidget {
   final String productCategory;
@@ -13,7 +16,12 @@ class Product extends StatefulWidget {
 }
 
 class _ProductsState extends State<Product> {
-  final Products _products = Products("", "", "", "", 0.0);
+  late final Products _products = Products(
+      productName: "",
+      category: "",
+      description: "",
+      articleNumber: "",
+      sellingPriceNet: "0");
 
   @override
   void initState() {
@@ -22,7 +30,6 @@ class _ProductsState extends State<Product> {
 
   @override
   Widget build(BuildContext context) {
-    _products.getList();
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
@@ -32,10 +39,35 @@ class _ProductsState extends State<Product> {
         centerTitle: true,
       ),
       drawer: NavBar(),
-      body: ListView.builder(
-          itemBuilder: _itemBuilder,
-          itemCount:
-              _products.getMatchingCategoryCount(widget.productCategory)),
+      body: FutureBuilder<List<String>>(
+          future: getProducts(),
+          builder: (context, AsyncSnapshot snapshot) {
+            if (snapshot.hasData &&
+                snapshot.connectionState == ConnectionState.done) {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  return Text(snapshot.data?[index] ?? "got null");
+                },
+              );
+              /*ListView.builder(
+                  itemCount: _products.getList(),
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, int index) {
+                    return InkWell(
+                      child: Card(
+                        child: ListTile(
+                          leading: Text(_products.getNameByCategory(index)),
+                        ),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0)),
+                      ),
+                    );
+                  });*/
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -49,64 +81,100 @@ class _ProductsState extends State<Product> {
     ));
   }
 
-  Widget _itemBuilder(BuildContext context, int index) {
-    return InkWell(
-      /*onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const AddProduct()),
-        );
-      },*/
-      child: Card(
-        child: ListTile(
-          leading: Text(_products.getNameByCategory(index)),
-        ),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      ),
-    );
+  Future<List<String>> getProducts() async {
+    String url = "https://backend.invoicer.at/api/Products";
+    Uri uri = Uri.parse(url);
+
+    String? token = await NetworkHandler.getToken();
+
+    if (token!.isNotEmpty) {
+      token = token.toString();
+
+      final response = await http.get(uri, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        "Authorization": "Bearer $token"
+      });
+      print(response.statusCode);
+      List data = await json.decode(response.body) as List;
+      List<String> productNames = [];
+      for (var element in data) {
+        Map obj = element;
+        String articleNumber = obj['articleNumber'];
+        String productName = obj['productName'];
+        String sellingPriceNet = obj['sellingPriceNet'].toString();
+        String category = obj['category'].toString();
+        String description = obj['description'];
+        Products products = Products(
+            articleNumber: articleNumber,
+            category: category,
+            description: description,
+            productName: productName,
+            sellingPriceNet: sellingPriceNet);
+        productNames.add(productName);
+        print(articleNumber);
+        print(productName);
+        print(sellingPriceNet);
+        print(category);
+      }
+      return productNames;
+    }
+    return [];
   }
 }
 
 class Products {
-  Products(this.productName, this.category, this.description,
-      this.articleNumber, this.sellingPriceNet);
-
   final String productName;
   final String description;
   final String articleNumber;
-  final double sellingPriceNet;
+  final String sellingPriceNet;
   final String category;
+
+  Products(
+      {required this.articleNumber,
+      required this.category,
+      required this.description,
+      required this.productName,
+      required this.sellingPriceNet});
+
   int categoryProductsCount = 0;
 
-  List<Products> productsList = [];
-  List<Products> matchingCategory = [];
+  Future<List<Products>> productsList = [] as Future<List<Products>>;
+  Future<List<Products>> matchingCategory = [] as Future<List<Products>>;
 
-  void getList() {
-    productsList.add(
-        Products("Red Bull", "Getränk", "Koffeinhalitges Getränk", "", 1.20));
-    productsList
-        .add(Products("Äpfel", "Obst", "Frische Äpfel aus Spanien", "", 1));
-    productsList
-        .add(Products("Eistee", "Getränk", "Zuckerhalitges Getränk", "", 2));
-    productsList.add(
-        Products("Birnen", "Obst", "Frische Birnen aus Deutschland", "", 1));
-    productsList
-        .add(Products("Fanta", "Getränk", "Zuckerhalitges Getränk", "", 2));
+  Future<void> addToList(Products products) async {
+    await productsList.then((value) => value.add(products));
   }
 
-  String getName(int index) {
-    return productsList[index].productName;
+  Future<List<Products>> getList() async {
+    return await productsList;
   }
 
-  String getNameByCategory(int index) {
-    return matchingCategory[index].productName;
+  Future<String> getName(int index) async {
+    return await productsList
+        .then((value) => value.elementAt(index).productName);
   }
 
-  int getMatchingCategoryCount(String category) {
-    for (int i = 0; i < productsList.length; i++) {
-      if (productsList[i].category == category) {
-        matchingCategory.add(productsList[i]);
+  Future<void> getNameByCatgry(int index) async {
+    List<Products> matchingCatgry =
+        await matchingCategory.then((value) => value.toList());
+
+    getNameByCategory(matchingCatgry.elementAt(index).productName);
+  }
+
+  String getNameByCategory(String productName) {
+    return productName;
+  }
+
+  Future<int> getMatchingCategoryCount(String category) async {
+    List<Products> products =
+        await productsList.then((value) => value.toList());
+    List<Products> matchingCatgry =
+        await matchingCategory.then((value) => value.toList());
+
+    for (int i = 0; i < products.length; i++) {
+      if (products[i].category == category) {
+        matchingCatgry.add(products[i]);
         categoryProductsCount++;
       }
     }
@@ -116,7 +184,16 @@ class Products {
     throw Exception("Kategorie ist nicht vorhanden");
   }
 
-  int getProductListLength() {
-    return productsList.length;
+  Future<int> getProductListLength() async {
+    return await productsList.then((value) => value.length);
+  }
+
+  factory Products.fromJson(Map<String, dynamic> json) {
+    return Products(
+        productName: json['productName'] as String,
+        category: json['category'] as String,
+        description: json['description'] as String,
+        articleNumber: json['articleNumber'] as String,
+        sellingPriceNet: json['sellingPriceNet'] as String);
   }
 }

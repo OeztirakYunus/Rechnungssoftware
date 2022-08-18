@@ -1,9 +1,11 @@
 // ignore_for_file: file_names
 
+import 'package:demo5/network/networkHandler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:select_form_field/select_form_field.dart';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class AddProduct extends StatelessWidget {
   const AddProduct({Key? key}) : super(key: key);
@@ -11,8 +13,8 @@ class AddProduct extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> _items = [
-      {'value': '0', 'label': 'Getränk'},
-      {'value': 1, 'label': 'Obst'},
+      {'value': '0', 'label': 'Artikel'},
+      {'value': 1, 'label': 'Dienstleistungen'},
     ];
 
     final List<Map<String, dynamic>> _units = [
@@ -35,6 +37,7 @@ class AddProduct extends StatelessWidget {
     TextEditingController sellingPriceNet = TextEditingController();
     TextEditingController productCategory = TextEditingController();
     TextEditingController unit = TextEditingController();
+    TextEditingController description = TextEditingController();
 
     return SafeArea(
         child: Scaffold(
@@ -62,6 +65,11 @@ class AddProduct extends StatelessWidget {
                       ),
                       TextFormField(
                         controller: articleNumber,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Artikelnummer darf nicht leer sein!";
+                          }
+                        },
                         autofocus: false,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
@@ -80,6 +88,11 @@ class AddProduct extends StatelessWidget {
                       ),
                       TextFormField(
                         controller: productName,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Produktname darf nicht leer sein!";
+                          }
+                        },
                         autofocus: false,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
@@ -98,6 +111,11 @@ class AddProduct extends StatelessWidget {
                       ),
                       TextFormField(
                         controller: sellingPriceNet,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Verkaufspreis-Netto darf nicht leer sein!";
+                          }
+                        },
                         autofocus: false,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -117,6 +135,11 @@ class AddProduct extends StatelessWidget {
                       ),
                       SelectFormField(
                         controller: productCategory,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Produktkategorie darf nicht leer sein!";
+                          }
+                        },
                         type: SelectFormFieldType.dropdown,
                         labelText: 'Produktkategorie',
                         items: _items,
@@ -139,6 +162,11 @@ class AddProduct extends StatelessWidget {
                       ),
                       SelectFormField(
                         controller: unit,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Einheit darf nicht leer sein!";
+                          }
+                        },
                         type: SelectFormFieldType.dropdown,
                         labelText: 'Einheit',
                         items: _units,
@@ -152,6 +180,24 @@ class AddProduct extends StatelessWidget {
                             val!.isNotEmpty ? unit.text = val : val,
                       ),
                       const SizedBox(
+                        height: 25.00,
+                      ),
+                      const Align(
+                        alignment: Alignment(-0.95, 1),
+                        child: Text('Beschreibung (optional)',
+                            style: TextStyle(fontSize: 20.00)),
+                      ),
+                      TextFormField(
+                        controller: description,
+                        autofocus: false,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(100.0)),
+                            hintText: 'Beschreibung eingeben',
+                            hintStyle: const TextStyle(fontSize: 20.00)),
+                        style: const TextStyle(fontSize: 20.00),
+                      ),
+                      const SizedBox(
                         height: 10.00,
                       ),
                       Column(
@@ -161,8 +207,13 @@ class AddProduct extends StatelessWidget {
                           ),
                           MaterialButton(
                             onPressed: () async {
-                              addProduct(articleNumber.text, productName.text,
-                                  sellingPriceNet.text, productCategory.text);
+                              addProduct(
+                                  articleNumber.text,
+                                  productName.text,
+                                  sellingPriceNet.text,
+                                  productCategory.text,
+                                  unit.text,
+                                  description.text);
                               /*Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -190,13 +241,52 @@ class AddProduct extends StatelessWidget {
     ));
   }
 
-  Future<int> addProduct(String articleNumber, String productName,
-      String sellingPriceNet, String productCategory) async {
-    var sellingPrice = double.parse(sellingPriceNet);
-    print("ARCTICLENUMBER: $articleNumber");
-    print("PRODUCTNAME: $productName");
-    print("SELLINGPRICENET: $sellingPrice");
-    print("PRODUCTCATEGORY: $productCategory");
+  Future<int> addProduct(
+      String articleNumber,
+      String productName,
+      String sellingPriceNet,
+      String productCategory,
+      String unit,
+      String description) async {
+    String url = "https://backend.invoicer.at/api/Companies/add-product";
+    Uri uri = Uri.parse(url);
+
+    String? token = await NetworkHandler.getToken();
+
+    if (token!.isNotEmpty) {
+      token = token.toString();
+
+      var sellingPrice = double.parse(sellingPriceNet);
+      var category = int.parse(productCategory);
+      var productUnit = int.parse(unit);
+
+      var body = {};
+      body["articleNumber"] = articleNumber;
+      body["productName"] = productName;
+      body["sellingPriceNet"] = sellingPrice;
+      body["category"] = category;
+      body["unit"] = productUnit;
+      body["description"] = description;
+      var jsonBody = json.encode(body);
+      print(token);
+      print(jsonBody);
+
+      /*print("ARCTICLENUMBER: $articleNumber");
+      print("PRODUCTNAME: $productName");
+      print("SELLINGPRICENET: $sellingPrice");
+      print("PRODUCTCATEGORY: $productCategory");
+      print("UNIT: $unit");*/
+
+      final response = await http.put(uri,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+          body: jsonBody);
+      print(response.statusCode);
+      print(response.body);
+    }
     return 0;
   }
 }
