@@ -44,7 +44,7 @@ class _CategoriesState extends State<Categories> {
           context,
           MaterialPageRoute(
               builder: (context) => Product(
-                    productCategory: _products.getProductCategoryName(index),
+                    categoryIndex: index,
                   )),
         );
       },

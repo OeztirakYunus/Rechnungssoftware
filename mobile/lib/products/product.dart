@@ -7,21 +7,21 @@ import '../NavBar.dart';
 import 'dart:convert';
 
 class Product extends StatefulWidget {
-  final String productCategory;
+  final int categoryIndex;
 
-  const Product({Key? key, required this.productCategory}) : super(key: key);
+  const Product({Key? key, required this.categoryIndex}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _ProductsState();
 }
 
 class _ProductsState extends State<Product> {
-  late final Products _products = Products(
+  /*late final Products _products = Products(
       productName: "",
       category: "",
       description: "",
       articleNumber: "",
-      sellingPriceNet: "0");
+      sellingPriceNet: "0");*/
 
   @override
   void initState() {
@@ -47,7 +47,15 @@ class _ProductsState extends State<Product> {
               return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
-                  return Text(snapshot.data?[index] ?? "got null");
+                  return Card(
+                    child: ListTile(
+                      leading: Text(
+                        snapshot.data?[index] ?? "got null",
+                      ),
+                    ),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0)),
+                  );
                 },
               );
               /*ListView.builder(
@@ -86,7 +94,7 @@ class _ProductsState extends State<Product> {
     Uri uri = Uri.parse(url);
 
     String? token = await NetworkHandler.getToken();
-
+    List<String> productNames = [];
     if (token!.isNotEmpty) {
       token = token.toString();
 
@@ -97,29 +105,31 @@ class _ProductsState extends State<Product> {
       });
       print(response.statusCode);
       List data = await json.decode(response.body) as List;
-      List<String> productNames = [];
+
       for (var element in data) {
         Map obj = element;
         String articleNumber = obj['articleNumber'];
         String productName = obj['productName'];
         String sellingPriceNet = obj['sellingPriceNet'].toString();
-        String category = obj['category'].toString();
+        int category = int.parse(obj['category'].toString());
         String description = obj['description'];
-        Products products = Products(
+        /*Products products = Products(
             articleNumber: articleNumber,
             category: category,
             description: description,
             productName: productName,
-            sellingPriceNet: sellingPriceNet);
-        productNames.add(productName);
+            sellingPriceNet: sellingPriceNet);*/
+        if (widget.categoryIndex == category) {
+          productNames.add(productName);
+        }
+
         print(articleNumber);
         print(productName);
         print(sellingPriceNet);
         print(category);
       }
-      return productNames;
     }
-    return [];
+    return productNames;
   }
 }
 
@@ -130,12 +140,8 @@ class Products {
   final String sellingPriceNet;
   final String category;
 
-  Products(
-      {required this.articleNumber,
-      required this.category,
-      required this.description,
-      required this.productName,
-      required this.sellingPriceNet});
+  Products(this.productName, this.category, this.description,
+      this.articleNumber, this.sellingPriceNet);
 
   int categoryProductsCount = 0;
 
@@ -188,12 +194,12 @@ class Products {
     return await productsList.then((value) => value.length);
   }
 
-  factory Products.fromJson(Map<String, dynamic> json) {
+  /*factory Products.fromJson(Map<String, dynamic> json) {
     return Products(
         productName: json['productName'] as String,
         category: json['category'] as String,
         description: json['description'] as String,
         articleNumber: json['articleNumber'] as String,
         sellingPriceNet: json['sellingPriceNet'] as String);
-  }
+  }*/
 }
