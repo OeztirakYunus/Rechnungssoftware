@@ -16,18 +16,7 @@ namespace BillingSoftware.Core.Entities
         {
             get
             {
-                if(Product == null)
-                {
-                    return 0;
-                }
-                else if(TypeOfDiscount == TypeOfDiscount.Percent)
-                {
-                    return Math.Round(Product.SellingPriceNet * (1 - (Discount / 100)) * Quantity, 2);
-                }
-                else
-                {
-                    return Math.Round((Product.SellingPriceNet - Discount) * Quantity, 2);
-                }
+                return Math.Round(ProductPriceNet * Quantity, 2);
             }
         }
 
