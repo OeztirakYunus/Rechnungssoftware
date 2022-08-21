@@ -13,6 +13,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
 using Microsoft.AspNetCore.HttpOverrides;
+using Newtonsoft.Json.Converters;
 
 namespace BillingSoftware.Web
 {
@@ -66,7 +67,12 @@ namespace BillingSoftware.Web
             });
 
             services.AddControllersWithViews()
-                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                });
+            services.AddSwaggerGenNewtonsoftSupport();
 
             services.AddIdentity<User, IdentityRole>(config =>
             {
