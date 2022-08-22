@@ -16,7 +16,7 @@ class NavBar extends StatelessWidget {
     switch (index) {
       case 0:
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => const Categories()));
+            .push(MaterialPageRoute(builder: (context) => Categories()));
         return;
       case 1:
         Navigator.of(context)

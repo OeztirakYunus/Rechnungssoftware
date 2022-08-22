@@ -1,5 +1,4 @@
-// ignore_for_file: file_names
-
+// ignore: file_names
 import 'package:demo5/network/networkHandler.dart';
 import 'package:demo5/products/categoryList.dart';
 import 'package:demo5/products/product.dart';
@@ -9,8 +8,22 @@ import 'package:select_form_field/select_form_field.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class AddProduct extends StatelessWidget {
-  const AddProduct({Key? key}) : super(key: key);
+class EditProduct extends StatelessWidget {
+  final String productName;
+  final String description;
+  final String articleNumber;
+  final String sellingPriceNet;
+  final String category;
+  final String unit;
+  const EditProduct(
+      {Key? key,
+      required this.productName,
+      required this.description,
+      required this.articleNumber,
+      required this.sellingPriceNet,
+      required this.category,
+      required this.unit})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +46,16 @@ class AddProduct extends StatelessWidget {
       {'value': 10, 'label': 'Tage'},
       {'value': 11, 'label': 'Liter'},
     ];
-
     TextEditingController articleNumber = TextEditingController();
     TextEditingController productName = TextEditingController();
     TextEditingController sellingPriceNet = TextEditingController();
     TextEditingController productCategory = TextEditingController();
     TextEditingController unit = TextEditingController();
     TextEditingController description = TextEditingController();
+    articleNumber.text = this.articleNumber;
+    productName.text = this.productName;
+    sellingPriceNet.text = this.sellingPriceNet;
+    description.text = this.description;
 
     return SafeArea(
         child: Scaffold(
@@ -139,7 +155,8 @@ class AddProduct extends StatelessWidget {
                         controller: productCategory,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Produktkategorie darf nicht leer sein!";
+                            value = category;
+                            return category;
                           }
                         },
                         type: SelectFormFieldType.dropdown,
@@ -148,7 +165,7 @@ class AddProduct extends StatelessWidget {
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(100.0)),
-                            hintText: 'Produktkategorie auswählen',
+                            hintText: category,
                             hintStyle: const TextStyle(fontSize: 20.00)),
                         onChanged: (val) => productCategory.text = val,
                         onSaved: (val) =>
@@ -166,7 +183,8 @@ class AddProduct extends StatelessWidget {
                         controller: unit,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Einheit darf nicht leer sein!";
+                            value = this.unit;
+                            return value;
                           }
                         },
                         type: SelectFormFieldType.dropdown,
@@ -175,11 +193,11 @@ class AddProduct extends StatelessWidget {
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(100.0)),
-                            hintText: 'Produkteinheit auswählen',
+                            hintText: this.unit,
                             hintStyle: const TextStyle(fontSize: 20.00)),
                         onChanged: (val) => unit.text = val,
                         onSaved: (val) =>
-                            val!.isNotEmpty ? unit.text = val : val,
+                            val!.isEmpty ? unit.text = this.unit : val,
                       ),
                       const SizedBox(
                         height: 25.00,
@@ -209,7 +227,7 @@ class AddProduct extends StatelessWidget {
                           ),
                           MaterialButton(
                             onPressed: () async {
-                              int categoryIndex = await addProduct(
+                              int categoryIndex = await editProduct(
                                   articleNumber.text,
                                   productName.text,
                                   sellingPriceNet.text,
@@ -227,7 +245,7 @@ class AddProduct extends StatelessWidget {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(100)),
                             color: Colors.purpleAccent[700],
-                            child: const Text('Hinzufügen',
+                            child: const Text('Speichern',
                                 style:
                                     TextStyle(fontSize: 22.00, height: 1.35)),
                             textColor: Colors.white,
@@ -245,14 +263,14 @@ class AddProduct extends StatelessWidget {
     ));
   }
 
-  Future<int> addProduct(
+  Future<int> editProduct(
       String articleNumber,
       String productName,
       String sellingPriceNet,
       String productCategory,
       String unit,
       String description) async {
-    String url = "https://backend.invoicer.at/api/Companies/add-product";
+    String url = "https://backend.invoicer.at/api/Products";
     Uri uri = Uri.parse(url);
 
     String? token = await NetworkHandler.getToken();
@@ -270,14 +288,13 @@ class AddProduct extends StatelessWidget {
       }
 
       var sellingPrice = double.parse(sellingPriceNet);
-      var productUnit = int.parse(unit);
 
       var body = {};
       body["articleNumber"] = articleNumber;
       body["productName"] = productName;
       body["sellingPriceNet"] = sellingPrice;
       body["category"] = categoriesEn[categoryIndex];
-      body["unit"] = productUnit;
+      body["unit"] = unit;
       body["description"] = description;
       var jsonBody = json.encode(body);
 

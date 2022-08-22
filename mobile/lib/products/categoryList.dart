@@ -4,20 +4,17 @@ import 'package:flutter/material.dart';
 
 import '../NavBar.dart';
 
-class Categories extends StatefulWidget {
+/*class Categories extends StatefulWidget {
   const Categories({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _CategoriesState();
-}
+}*/
 
-class _CategoriesState extends State<Categories> {
+class Categories extends StatelessWidget {
   final Category _products = Category("", "");
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  Categories({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
