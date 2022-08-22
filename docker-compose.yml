@@ -50,7 +50,7 @@ services:
 
   backend:
     environment:
-      - DB_CONNECTION_STRING=Server=dbserver,1433;Database=BillingSoftwareDb;User Id=sa;Password=BillingSoftware20222022!
+      - DB_CONNECTION_STRING=Server=dbserver,1433;Database=BillingSoftwareDb;User Id=sa;Password=BillingSoftware20222022!;Connection Timeout=60
     build: ./BillingSoftwareBackend/.
     links:
       - dbserver
