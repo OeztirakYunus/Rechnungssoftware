@@ -41,20 +41,46 @@ class _ProductsState extends State<Product> {
               return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
+                  AlertDialog alert;
                   return Card(
                     child: ListTile(
                       title: Text(
                         snapshot.data?[index].productName,
                       ),
                       subtitle: Text(
-                        "Preis: ${snapshot.data?[index].sellingPriceNet}€    Artikelnummer: ${snapshot.data?[index].articleNumber}",
+                        "Preis: ${snapshot.data?[index].sellingPriceNet}€  Art.-Nr.: ${snapshot.data?[index].articleNumber}",
                       ),
                       trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                         OutlinedButton(
-                          onPressed: () async => {
-                            await deleteProduct(
-                                snapshot.data?[index].productId),
-                            setState(() {})
+                          onPressed: () => {
+                            alert = AlertDialog(
+                              title: Text("Achtung!"),
+                              content: Text(
+                                  "Möchten Sie wirklich dieses Produkt löschen?"),
+                              actions: [
+                                TextButton(
+                                  child: Text("Löschen"),
+                                  onPressed: () async {
+                                    await deleteProduct(
+                                        snapshot.data?[index].productId);
+                                    Navigator.of(context).pop();
+                                    setState(() {});
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text("Abbrechen"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                )
+                              ],
+                            ),
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return alert;
+                              },
+                            )
                           },
                           child: Icon(Icons.delete),
                         ),
@@ -74,7 +100,11 @@ class _ProductsState extends State<Product> {
                                             .data?[index].sellingPriceNet,
                                         category:
                                             snapshot.data?[index].category,
-                                        unit: snapshot.data?[index].unit,
+                                        unitOld: snapshot.data?[index].unit,
+                                        productId:
+                                            snapshot.data?[index].productId,
+                                        companyId:
+                                            snapshot.data?[index].companyId,
                                       )),
                             )
                           },
@@ -122,7 +152,6 @@ class _ProductsState extends State<Product> {
       print(response.statusCode);
 
       List data = await json.decode(response.body) as List;
-      int productIndex = 0;
 
       for (var element in data) {
         Map obj = element;
@@ -132,17 +161,20 @@ class _ProductsState extends State<Product> {
         String category = obj['category'].toString();
         String description = obj['description'];
         String unit = obj['unit'];
-        List<dynamic> productList = obj['company']['products'];
-        if (productIndex < productList.length) {
-          String productId = obj['company']['products'][productIndex]['id'];
-          productIndex++;
-
-          Products product = Products(productName, category.toString(),
-              description, articleNumber, sellingPriceNet, productId, unit);
-          print(productId);
-          if (categories[widget.categoryIndex] == category) {
-            products.add(product);
-          }
+        String productId = obj['id'];
+        String companyId = obj['companyId'];
+        Products product = Products(
+            productName,
+            category.toString(),
+            description,
+            articleNumber,
+            sellingPriceNet,
+            productId,
+            unit,
+            companyId);
+        print(productId);
+        if (categories[widget.categoryIndex] == category) {
+          products.add(product);
         }
       }
     }
@@ -177,7 +209,15 @@ class Products {
   final String category;
   final String productId;
   final String unit;
+  final String companyId;
 
-  Products(this.productName, this.category, this.description,
-      this.articleNumber, this.sellingPriceNet, this.productId, this.unit);
+  Products(
+      this.productName,
+      this.category,
+      this.description,
+      this.articleNumber,
+      this.sellingPriceNet,
+      this.productId,
+      this.unit,
+      this.companyId);
 }

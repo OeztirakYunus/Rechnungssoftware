@@ -14,7 +14,9 @@ class EditProduct extends StatelessWidget {
   final String articleNumber;
   final String sellingPriceNet;
   final String category;
-  final String unit;
+  final String unitOld;
+  final String productId;
+  final String companyId;
   const EditProduct(
       {Key? key,
       required this.productName,
@@ -22,7 +24,9 @@ class EditProduct extends StatelessWidget {
       required this.articleNumber,
       required this.sellingPriceNet,
       required this.category,
-      required this.unit})
+      required this.unitOld,
+      required this.productId,
+      required this.companyId})
       : super(key: key);
 
   @override
@@ -153,12 +157,6 @@ class EditProduct extends StatelessWidget {
                       ),
                       SelectFormField(
                         controller: productCategory,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            value = category;
-                            return category;
-                          }
-                        },
                         type: SelectFormFieldType.dropdown,
                         labelText: 'Produktkategorie',
                         items: _items,
@@ -181,23 +179,17 @@ class EditProduct extends StatelessWidget {
                       ),
                       SelectFormField(
                         controller: unit,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            value = this.unit;
-                            return value;
-                          }
-                        },
                         type: SelectFormFieldType.dropdown,
                         labelText: 'Einheit',
                         items: _units,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(100.0)),
-                            hintText: this.unit,
+                            hintText: unitOld,
                             hintStyle: const TextStyle(fontSize: 20.00)),
                         onChanged: (val) => unit.text = val,
                         onSaved: (val) =>
-                            val!.isEmpty ? unit.text = this.unit : val,
+                            val!.isNotEmpty ? unit.text = val : val,
                       ),
                       const SizedBox(
                         height: 25.00,
@@ -278,6 +270,14 @@ class EditProduct extends StatelessWidget {
     List<String> categoriesEn = ["Article", "Service"];
     int categoryIndex = 0;
 
+    if (productCategory.isEmpty) {
+      productCategory = category;
+    }
+
+    if (unit.isEmpty) {
+      unit = unitOld;
+    }
+
     if (token!.isNotEmpty) {
       token = token.toString();
 
@@ -296,6 +296,9 @@ class EditProduct extends StatelessWidget {
       body["category"] = categoriesEn[categoryIndex];
       body["unit"] = unit;
       body["description"] = description;
+      body['companyId'] = companyId;
+      body["id"] = productId;
+
       var jsonBody = json.encode(body);
 
       final response = await http.put(uri,
