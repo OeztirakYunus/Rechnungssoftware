@@ -5,6 +5,7 @@ namespace BillingSoftware.Core.DataTransferObjects
 {
     public class ContactDto
     {
+        public Guid Id { get; set; }
         public TypeOfContact TypeOfContactEnum { get; set; }
         public Gender Gender { get; set; }
         public string Title { get; set; }

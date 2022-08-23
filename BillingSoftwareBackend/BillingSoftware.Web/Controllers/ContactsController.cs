@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
+using BillingSoftware.Core.DataTransferObjects;
 using BillingSoftware.Core.Entities;
 using CommonBase.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -61,17 +62,17 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> PutContact(Contact contact)
+        public async Task<IActionResult> PutContact(ContactDto contactDto)
         {
             try
             {
-                if (!await CheckAuthorization(contact.Id))
+                if (!await CheckAuthorization(contactDto.Id))
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to edit this contact!" });
                 }
 
-                var entity = await _uow.ContactRepository.GetByIdAsync(contact.Id);
-                contact.CopyProperties(entity);
+                var entity = await _uow.ContactRepository.GetByIdAsync((Guid)contactDto.Id);
+                contactDto.CopyProperties(entity);
                 await _uow.ContactRepository.Update(entity);
                 await _uow.SaveChangesAsync();
                 return Ok(new { Status = "Success", Message = "Contact updated." });

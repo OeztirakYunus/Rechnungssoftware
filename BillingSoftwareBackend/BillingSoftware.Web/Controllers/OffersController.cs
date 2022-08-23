@@ -158,8 +158,9 @@ namespace BillingSoftware.Web.Controllers
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this offer as word!" });
                 }
-                var offer = await _uow.OfferRepository.GetByIdAsync(guid);          
-                var (bytes, path) = await DocxCreator.CreateWordForOffer(offer);          
+                var offer = await _uow.OfferRepository.GetByIdAsync(guid);
+                var company = await _uow.CompanyRepository.GetByIdAsync(offer.CompanyId);
+                var (bytes, path) = await DocxCreator.CreateWordForOffer(offer, company);          
                 return File(bytes, "application/docx", Path.GetFileName(path));
             }
             catch (Exception ex)
@@ -179,7 +180,8 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this offer as pdf!" });
                 }
                 var offer = await _uow.OfferRepository.GetByIdAsync(guid);
-                var (bytes, path) = await PdfCreator.CreatePdfForOffer(offer);
+                var company = await _uow.CompanyRepository.GetByIdAsync(offer.CompanyId);
+                var (bytes, path) = await PdfCreator.CreatePdfForOffer(offer, company);
                 return File(bytes, "application/pdf", Path.GetFileName(path));
             }
             catch (Exception ex)
