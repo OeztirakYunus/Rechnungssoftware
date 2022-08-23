@@ -4,6 +4,7 @@ using BillingSoftware.Core.Enums;
 using CommonBase.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -50,6 +51,39 @@ namespace BillingSoftware.Persistence.Repository
             return await _context.Offers
                 .IncludeAllRecursively()
                 .SingleOrDefaultAsync(i => i.Id == id);
+        }
+
+        public override async Task Update(Offer entity)
+        {
+            var docInfoRep = new Repository<DocumentInformations>(_context);
+            var positionRepo = new Repository<Position>(_context);
+
+            var docInfo = await docInfoRep.GetByIdAsync(entity.DocumentInformationId);
+            if(docInfo != null)
+            {
+                entity.DocumentInformation.CopyProperties(docInfo);
+                
+                var positions = new List<Position>();
+                foreach (var item in docInfo.Positions)
+                {
+                    var position = await positionRepo.GetByIdAsync(item.Id);
+                    if (position != null)
+                    {
+                        item.CopyProperties(position);
+                        positions.Add(position);
+                        await positionRepo.Update(position);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+                docInfo.Positions = positions;
+
+                await docInfoRep.Update(docInfo);
+                await _context.SaveChangesAsync();
+
+                entity.DocumentInformation = docInfo;
+            }
+            
+            await base.Update(entity);
         }
     }
 }
