@@ -28,7 +28,8 @@ namespace CommonBase.Extensions
                     {
                         continue;
                     }
-                    PropertyInfo targetProperty = typeDest.GetProperty(srcProp.Name);
+                    PropertyInfo targetProperty = typeDest.GetProperty(srcProp.Name);                  
+
                     if (targetProperty == null)
                     {
                         continue;

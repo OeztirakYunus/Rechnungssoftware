@@ -14,10 +14,10 @@ namespace CommonBase.DocumentCreators
         private static string TEMPLATE_DIRECTORY = Globals.TEMPLATE_DIRECTORY;
         private static string SEP = Globals.SEPARATOR;
 
-        public async static Task<(byte[], string)> CreateWordForOffer(Offer offer, bool deleteWordAfterReturn = true)
+        public async static Task<(byte[], string)> CreateWordForOffer(Offer offer, Company company, bool deleteWordAfterReturn = true)
         {
             var templateFile = TEMPLATE_DIRECTORY + "offer_template.docx";
-            var path = Globals.OFFER_PATH + $"{offer.CompanyId}{SEP}";
+            var path = Globals.OFFER_PATH + $"{company.Id}{SEP}";
 
             if (!Directory.Exists(path))
             {
@@ -30,7 +30,7 @@ namespace CommonBase.DocumentCreators
             }
             System.IO.File.Copy(templateFile, filePath);
 
-            CreateBasics(filePath, offer.Company, offer.DocumentInformation);
+            CreateBasics(filePath, company, offer.DocumentInformation);
             CreateBodyForOffer(filePath, offer);
             var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
             if (deleteWordAfterReturn)
@@ -40,10 +40,10 @@ namespace CommonBase.DocumentCreators
             return (bytes, filePath);
         }
 
-        public async static Task<(byte[], string)> CreateWordForOrderConfirmation(OrderConfirmation orderConfirmation, bool deleteWordAfterReturn = true)
+        public async static Task<(byte[], string)> CreateWordForOrderConfirmation(OrderConfirmation orderConfirmation, Company company, bool deleteWordAfterReturn = true)
         {
             var templateFile = TEMPLATE_DIRECTORY + "order_confirmation_template.docx";
-            var path = Globals.OC_PATH + $"{orderConfirmation.CompanyId}{SEP}";
+            var path = Globals.OC_PATH + $"{company.Id}{SEP}";
 
             if (!Directory.Exists(path))
             {
@@ -56,7 +56,7 @@ namespace CommonBase.DocumentCreators
             }
             System.IO.File.Copy(templateFile, filePath);
 
-            CreateBasics(filePath, orderConfirmation.Company, orderConfirmation.DocumentInformation);
+            CreateBasics(filePath, company, orderConfirmation.DocumentInformation);
             CreateBodyForOrderConfirmation(filePath, orderConfirmation);
             var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
             if (deleteWordAfterReturn)
@@ -66,10 +66,10 @@ namespace CommonBase.DocumentCreators
             return (bytes, filePath);
         }
 
-        public async static Task<(byte[], string)> CreateWordForInvoice(Invoice invoice, bool deleteWordAfterReturn = true)
+        public async static Task<(byte[], string)> CreateWordForInvoice(Invoice invoice, Company company, bool deleteWordAfterReturn = true)
         {
             var templateFile = TEMPLATE_DIRECTORY + "invoice_template.docx";
-            var path = Globals.INVOICE_PATH + $"{invoice.CompanyId}{SEP}";
+            var path = Globals.INVOICE_PATH + $"{company.Id}{SEP}";
 
             if (!Directory.Exists(path))
             {
@@ -82,7 +82,7 @@ namespace CommonBase.DocumentCreators
             }
             System.IO.File.Copy(templateFile, filePath);
 
-            CreateBasics(filePath, invoice.Company, invoice.DocumentInformation);
+            CreateBasics(filePath, company, invoice.DocumentInformation);
             CreateBodyForInvoice(filePath, invoice);
             var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
             if (deleteWordAfterReturn)
@@ -92,10 +92,10 @@ namespace CommonBase.DocumentCreators
             return (bytes, filePath);
         }
 
-        public async static Task<(byte[], string)> CreateWordForDeliveryNote(DeliveryNote deliveryNote, bool deleteWordAfterReturn = true)
+        public async static Task<(byte[], string)> CreateWordForDeliveryNote(DeliveryNote deliveryNote, Company company, bool deleteWordAfterReturn = true)
         {
             var templateFile = TEMPLATE_DIRECTORY + "delivery_note_template.docx";
-            var path = Globals.DN_PATH + $"{deliveryNote.CompanyId}{SEP}";
+            var path = Globals.DN_PATH + $"{company.Id}{SEP}";
 
             if (!Directory.Exists(path))
             {
@@ -108,7 +108,7 @@ namespace CommonBase.DocumentCreators
             }
             System.IO.File.Copy(templateFile, filePath);
 
-            CreateBasics(filePath, deliveryNote.Company, deliveryNote.DocumentInformations);
+            CreateBasics(filePath, company, deliveryNote.DocumentInformations);
             CreateBodyForDeliveryNote(filePath, deliveryNote);
             var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
             if (deleteWordAfterReturn)

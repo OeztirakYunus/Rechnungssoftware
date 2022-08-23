@@ -38,7 +38,7 @@ namespace BillingSoftware.Web.Controllers
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -57,14 +57,14 @@ namespace BillingSoftware.Web.Controllers
 
                 if (file == null)
                 {
-                    return NotFound();
+                    return NotFound(new { Status = "Not Found", Message = "File not found" });
                 }
 
                 return File(file.Bytes, file.ContentType, file.FileName);
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -77,7 +77,7 @@ namespace BillingSoftware.Web.Controllers
                 var companyId = await GetCompanyIdForUser();
                 if (companyId.Equals(Guid.Empty))
                 {
-                    return BadRequest("No Company found!");
+                    return BadRequest(new { Status = "Error", Message = "Company not found" });
                 }
 
                 var company = await _uow.CompanyRepository.GetByIdAsync(companyId);
@@ -85,14 +85,14 @@ namespace BillingSoftware.Web.Controllers
 
                 if(file == null)
                 {
-                    return NotFound();
+                    return NotFound(new { Status = "Not Found", Message = "File not found" });
                 }
 
                 return File(file.Bytes, file.ContentType, file.FileName);
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -104,9 +104,9 @@ namespace BillingSoftware.Web.Controllers
                 var companyId = await GetCompanyIdForUser();
                 if (companyId.Equals(Guid.Empty))
                 {
-                    return BadRequest("No Company found!");
+                    return BadRequest(new { Status = "Error", Message = "Company not found" });
                 }
-               
+
                 if (file.Length > 0)
                 {
                     var fileEntity = new BSFile();
@@ -125,11 +125,11 @@ namespace BillingSoftware.Web.Controllers
                     await _uow.SaveChangesAsync();
                 }
 
-                return Ok($"File \"{file.FileName}\" saved.");
+                return Ok(new { Status = "Ok", Message = $"File \"{file.FileName}\" saved." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 
@@ -142,7 +142,7 @@ namespace BillingSoftware.Web.Controllers
                 var companyId = await GetCompanyIdForUser();
                 if (companyId.Equals(Guid.Empty))
                 {
-                    return BadRequest("No Company found!");
+                    return BadRequest(new { Status = "Error", Message = "Company not found" });
                 }
                 var company = await _uow.CompanyRepository.GetByIdAsync(companyId);
                 var file = company.Files.Where(i => i.Id.Equals(guid)).FirstOrDefault();
@@ -154,11 +154,11 @@ namespace BillingSoftware.Web.Controllers
 
                 await _uow.BSFileRepository.Remove(guid);
                 await _uow.SaveChangesAsync();
-                return Ok($"File deleted.");
+                return Ok(new { Status = "Ok", Message = "File deleted." });
             }
             catch (System.Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Status = "Error", Message = ex.Message });
             }
         }
 

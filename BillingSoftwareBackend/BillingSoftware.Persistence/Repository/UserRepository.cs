@@ -46,5 +46,20 @@ namespace BillingSoftware.Persistence.Repository
                 .SingleOrDefaultAsync(i => i.Id == id);
             return user;
         }
+
+        public async Task<string> GetRolesForUserAsync(User user)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            var rolesString = "";
+            for (int i = 0; i < roles.Count; i++)
+            {
+                rolesString += roles[i];
+                if(i + 1 < roles.Count)
+                {
+                    rolesString += ", ";
+                }
+            }
+            return rolesString;
+        }
     }
 }

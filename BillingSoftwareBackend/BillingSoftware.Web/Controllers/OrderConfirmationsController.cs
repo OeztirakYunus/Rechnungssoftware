@@ -180,7 +180,8 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this order confirmation as word!" });
                 }
                 var orderConfirmation = await _uow.OrderConfirmationRepository.GetByIdAsync(guid);
-                var (bytes, path) = await DocxCreator.CreateWordForOrderConfirmation(orderConfirmation);
+                var company = await _uow.CompanyRepository.GetByIdAsync(orderConfirmation.CompanyId);
+                var (bytes, path) = await DocxCreator.CreateWordForOrderConfirmation(orderConfirmation, company);
                 return File(bytes, "application/docx", Path.GetFileName(path));
             }
             catch (Exception ex)
@@ -200,7 +201,8 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this order confirmation as pdf!" });
                 }
                 var orderConfirmation = await _uow.OrderConfirmationRepository.GetByIdAsync(guid);
-                var (bytes, path) = await PdfCreator.CreatePdfForOrderConfirmation(orderConfirmation);
+                var company = await _uow.CompanyRepository.GetByIdAsync(orderConfirmation.CompanyId);
+                var (bytes, path) = await PdfCreator.CreatePdfForOrderConfirmation(orderConfirmation, company);
                 return File(bytes, "application/pdf", Path.GetFileName(path));
             }
             catch (Exception ex)

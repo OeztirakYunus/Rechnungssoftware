@@ -157,7 +157,8 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this invoice as word!" });
                 }
                 var invoice = await _uow.InvoiceRepository.GetByIdAsync(guid);
-                var (bytes, path) = await DocxCreator.CreateWordForInvoice(invoice);
+                var company = await _uow.CompanyRepository.GetByIdAsync(invoice.CompanyId);
+                var (bytes, path) = await DocxCreator.CreateWordForInvoice(invoice, company);
                 return File(bytes, "application/docx", Path.GetFileName(path));
             }
             catch (Exception ex)
@@ -177,7 +178,8 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this invoice as pdf!" });
                 }
                 var invoice = await _uow.InvoiceRepository.GetByIdAsync(guid);
-                var (bytes, path) = await PdfCreator.CreatePdfForInvoice(invoice);
+                var company = await _uow.CompanyRepository.GetByIdAsync(invoice.CompanyId);
+                var (bytes, path) = await PdfCreator.CreatePdfForInvoice(invoice, company);
                 return File(bytes, "application/pdf", Path.GetFileName(path));
             }
             catch (Exception ex)

@@ -31,7 +31,10 @@ namespace BillingSoftware.Web.Controllers
                 var users = await _uow.UserRepository.GetAllUsersAsync();
                 users = users.Where(i => i.CompanyId.Equals(companyId)).ToArray();
                 var usersDto = new List<UserDto>();
-                users.ToList().ForEach(x => usersDto.Add(MapUserToUserDto(x)));
+                foreach (var user in users)
+                {
+                    usersDto.Add(await MapUserToUserDto(user));
+                }
                 return Ok(usersDto.ToArray());
             }
             catch (System.Exception ex)
@@ -52,7 +55,7 @@ namespace BillingSoftware.Web.Controllers
                 {
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this user!" });
                 }
-                return Ok(MapUserToUserDto(user));
+                return Ok(await MapUserToUserDto(user));
             }
             catch (System.Exception ex)
             {
@@ -60,15 +63,17 @@ namespace BillingSoftware.Web.Controllers
             }
         }
 
-        private UserDto MapUserToUserDto(User user)
+        private async Task<UserDto> MapUserToUserDto(User user)
         {
+            var role = await _uow.UserRepository.GetRolesForUserAsync(user);
             return new UserDto()
             {
                 Company = user.Company,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                Id = user.Id
+                Id = user.Id,
+                Role = role
             };
         }
 

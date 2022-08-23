@@ -135,7 +135,8 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this delivery note as word!" });
                 }
                 var deliveryNote = await _uow.DeliveryNoteRepository.GetByIdAsync(guid);
-                var (bytes, path) = await DocxCreator.CreateWordForDeliveryNote(deliveryNote);
+                var company = await _uow.CompanyRepository.GetByIdAsync(deliveryNote.CompanyId);
+                var (bytes, path) = await DocxCreator.CreateWordForDeliveryNote(deliveryNote, company);
                 return File(bytes, "application/docx", Path.GetFileName(path));
             }
             catch (Exception ex)
@@ -155,7 +156,8 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to get this delivery note as pdf!" });
                 }
                 var deliveryNote = await _uow.DeliveryNoteRepository.GetByIdAsync(guid);
-                var (bytes, path) = await PdfCreator.CreatePdfForDeliveryNote(deliveryNote);
+                var company = await _uow.CompanyRepository.GetByIdAsync(deliveryNote.CompanyId);
+                var (bytes, path) = await PdfCreator.CreatePdfForDeliveryNote(deliveryNote, company);
                 return File(bytes, "application/pdf", Path.GetFileName(path));
             }
             catch (Exception ex)
