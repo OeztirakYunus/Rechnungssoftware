@@ -22,6 +22,6 @@ namespace BillingSoftware.Core.Entities
 
         //Navigation Properties
         public virtual DocumentInformations DocumentInformation { get; set; }
-        public virtual Company Company { get; set; }
+        //public virtual Company Company { get; set; }
     }
 }
