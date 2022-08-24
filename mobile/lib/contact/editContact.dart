@@ -1,15 +1,37 @@
-// ignore: file_names
 import 'dart:convert';
 
 import 'package:demo5/address/address.dart';
 import 'package:demo5/contact/contacts.dart';
 import 'package:demo5/network/networkHandler.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:select_form_field/select_form_field.dart';
+import 'package:http/http.dart' as http;
 
-class AddContact extends StatelessWidget {
-  const AddContact({Key? key}) : super(key: key);
+class EditContact extends StatelessWidget {
+  final String typeOfContact;
+  final String gender;
+  final String? title;
+  final String firstName;
+  final String lastName;
+  final String nameOfOrganisation;
+  final String phoneNumber;
+  final String email;
+  final String contactId;
+  final Address address;
+
+  const EditContact(
+      {Key? key,
+      required this.contactId,
+      required this.typeOfContact,
+      required this.gender,
+      this.title,
+      required this.firstName,
+      required this.lastName,
+      required this.nameOfOrganisation,
+      required this.phoneNumber,
+      required this.email,
+      required this.address})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +61,16 @@ class AddContact extends StatelessWidget {
     TextEditingController zipCode = TextEditingController();
     TextEditingController city = TextEditingController();
     TextEditingController country = TextEditingController();
+    title.text = this.title!;
+    firstName.text = this.firstName;
+    lastName.text = this.lastName;
+    nameOfOrganisation.text = this.nameOfOrganisation;
+    phoneNumber.text = this.phoneNumber;
+    email.text = this.email;
+    street.text = address.street;
+    zipCode.text = address.zipCode;
+    city.text = address.city;
+    country.text = address.country;
 
     return SafeArea(
         child: Scaffold(
@@ -75,7 +107,7 @@ class AddContact extends StatelessWidget {
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
-                              hintText: 'Konaktart auswählen',
+                              hintText: this.typeOfContact,
                               hintStyle: const TextStyle(fontSize: 20.00)),
                           onChanged: (val) => typeOfContact.text = val,
                           onSaved: (val) =>
@@ -102,7 +134,7 @@ class AddContact extends StatelessWidget {
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
-                              hintText: 'Geschlecht auswählen',
+                              hintText: this.gender,
                               hintStyle: const TextStyle(fontSize: 20.00)),
                           onChanged: (val) => gender.text = val,
                           onSaved: (val) =>
@@ -326,7 +358,8 @@ class AddContact extends StatelessWidget {
                               onPressed: () async {
                                 Address address = Address(street.text,
                                     zipCode.text, city.text, country.text);
-                                int categoryIndex = await addContact(
+                                int categoryIndex = await editContact(
+                                    contactId,
                                     typeOfContact.text,
                                     gender.text,
                                     title.text,
@@ -347,7 +380,7 @@ class AddContact extends StatelessWidget {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(100)),
                               color: Colors.purpleAccent[700],
-                              child: const Text('Hinzufügen',
+                              child: const Text('Speichern',
                                   style:
                                       TextStyle(fontSize: 22.00, height: 1.35)),
                               textColor: Colors.white,
@@ -364,17 +397,18 @@ class AddContact extends StatelessWidget {
     ));
   }
 
-  Future<int> addContact(
-      final String typeOfContact,
-      final String gender,
-      final String? title,
-      final String firstName,
-      final String lastName,
-      final String nameOfOrganisation,
-      final String phoneNumber,
-      final String email,
-      final Address address) async {
-    String url = "https://backend.invoicer.at/api/Companies/add-contact";
+  Future<int> editContact(
+      String contactId,
+      String typeOfContact,
+      String gender,
+      String? title,
+      String firstName,
+      String lastName,
+      String nameOfOrganisation,
+      String phoneNumber,
+      String email,
+      Address address) async {
+    String url = "https://backend.invoicer.at/api/Contacts";
     Uri uri = Uri.parse(url);
 
     List<String> typeOfContacts = [
@@ -385,6 +419,13 @@ class AddContact extends StatelessWidget {
       "NoTargetGroup"
     ];
     int categoryIndex = 0;
+
+    if (typeOfContact.isEmpty) {
+      typeOfContact = this.typeOfContact;
+    }
+    if (gender.isEmpty) {
+      gender = this.gender;
+    }
 
     String? token = await NetworkHandler.getToken();
     if (token!.isNotEmpty) {
@@ -398,6 +439,7 @@ class AddContact extends StatelessWidget {
       }
 
       var body = {};
+      body["id"] = contactId;
       body["typeOfContactEnum"] = typeOfContact;
       body["gender"] = gender;
       body["title"] = title;

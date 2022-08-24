@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:demo5/address/address.dart';
 import 'package:demo5/contact/addContact.dart';
+import 'package:demo5/contact/editContact.dart';
 import 'package:demo5/navbar.dart';
 import 'package:demo5/network/networkHandler.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _ContactsState extends State<Contacts> {
 
   @override
   Widget build(BuildContext context) {
+    setState(() {});
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -32,7 +34,7 @@ class _ContactsState extends State<Contacts> {
                   height: 1.00, fontSize: 25.00, color: Colors.white)),
           centerTitle: true,
         ),
-        drawer: NavBar(),
+        drawer: const NavBar(),
         body: FutureBuilder<List<Contact>>(
             future: getContacts(),
             builder: (context, AsyncSnapshot snapshot) {
@@ -54,6 +56,75 @@ class _ContactsState extends State<Contacts> {
                         subtitle: Text(
                           snapshot.data?[index].email,
                         ),
+                        trailing:
+                            Row(mainAxisSize: MainAxisSize.min, children: [
+                          OutlinedButton(
+                            onPressed: () => {
+                              alert = AlertDialog(
+                                title: const Text("Achtung!"),
+                                content: const Text(
+                                    "Möchten Sie wirklich diesen Kontakt löschen?"),
+                                actions: [
+                                  TextButton(
+                                    child: const Text("Löschen"),
+                                    onPressed: () async {
+                                      await deleteContact(
+                                          snapshot.data?[index].contactId);
+                                      Navigator.of(context).pop();
+                                      setState(() {});
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: const Text("Abbrechen"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  )
+                                ],
+                              ),
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return alert;
+                                },
+                              )
+                            },
+                            child: const Icon(Icons.delete),
+                          ),
+                          OutlinedButton(
+                            onPressed: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditContact(
+                                        contactId:
+                                            snapshot.data?[index].contactId,
+                                        typeOfContact:
+                                            snapshot.data?[index].typeOfContact,
+                                        gender: snapshot.data?[index].gender,
+                                        title: snapshot.data?[index].title,
+                                        firstName:
+                                            snapshot.data?[index].firstName,
+                                        lastName:
+                                            snapshot.data?[index].lastName,
+                                        nameOfOrganisation: snapshot
+                                            .data?[index].nameOfOrganisation,
+                                        phoneNumber:
+                                            snapshot.data?[index].phoneNumber,
+                                        email: snapshot.data?[index].email,
+                                        address: Address(
+                                            snapshot
+                                                .data?[index].address.street,
+                                            snapshot
+                                                .data?[index].address.zipCode,
+                                            snapshot.data?[index].address.city,
+                                            snapshot.data?[index].address
+                                                .country))),
+                              )
+                            },
+                            child: const Icon(Icons.edit),
+                          ),
+                        ]),
                       ),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0)),
@@ -61,7 +132,7 @@ class _ContactsState extends State<Contacts> {
                   },
                 );
               } else {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
             }),
         floatingActionButton: FloatingActionButton(
@@ -114,13 +185,23 @@ class _ContactsState extends State<Contacts> {
         String nameOfOrganisation = obj["nameOfOrganisation"];
         String phoneNumber = obj["phoneNumber"];
         String email = obj["email"];
+        String contactId = obj["id"];
         Address address = Address(
             obj["address"]["street"],
             obj["address"]["zipCode"],
             obj["address"]["city"],
             obj["address"]["country"]);
-        Contact contact = Contact(typeOfContact, gender, title, firstName,
-            lastName, nameOfOrganisation, phoneNumber, email, address);
+        Contact contact = Contact(
+            contactId,
+            typeOfContact,
+            gender,
+            title,
+            firstName,
+            lastName,
+            nameOfOrganisation,
+            phoneNumber,
+            email,
+            address);
         if (typeOfContacts[widget.categoryIndex] == typeOfContact) {
           contacts.add(contact);
         }
@@ -128,9 +209,29 @@ class _ContactsState extends State<Contacts> {
     }
     return contacts;
   }
+
+  Future<int> deleteContact(String contactId) async {
+    String url =
+        "https://backend.invoicer.at/api/Companies/delete-contact/" + contactId;
+    Uri uri = Uri.parse(url);
+
+    String? token = await NetworkHandler.getToken();
+    if (token!.isNotEmpty) {
+      token = token.toString();
+      final response = await http.put(uri, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token'
+      });
+      print(response.statusCode);
+    }
+
+    return 0;
+  }
 }
 
 class Contact {
+  final String contactId;
   final String typeOfContact;
   final String gender;
   final String? title;
@@ -142,6 +243,7 @@ class Contact {
   final Address address;
 
   Contact(
+      this.contactId,
       this.typeOfContact,
       this.gender,
       this.title,
