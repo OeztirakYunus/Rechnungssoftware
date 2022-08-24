@@ -1,4 +1,5 @@
-﻿using BillingSoftware.Core.Entities;
+﻿using BillingSoftware.Core.DataTransferObjects.UpdateDtos;
+using BillingSoftware.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace BillingSoftware.Core.Contracts.Repository
     public interface IOfferRepository : IRepository<Offer>
     {
         public Task<OrderConfirmation> OfferToOrderConfirmation(Offer offer);
+        public Task UpdateWithDto(UpdateOfferDto dto);
     }
 }

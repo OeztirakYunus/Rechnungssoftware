@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
+using BillingSoftware.Core.DataTransferObjects.UpdateDtos;
 using BillingSoftware.Core.Entities;
 using CommonBase.DocumentCreators;
 using CommonBase.Extensions;
@@ -63,7 +64,7 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> PutOrderConfirmation(OrderConfirmation orderConfirmation)
+        public async Task<IActionResult> PutOrderConfirmation(UpdateOrderConfirmationDto orderConfirmation)
         {
             try
             {
@@ -72,9 +73,7 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to update this order confirmation!" });
                 }
 
-                var entity = await _uow.OrderConfirmationRepository.GetByIdAsync(orderConfirmation.Id);
-                orderConfirmation.CopyProperties(entity);
-                await _uow.OrderConfirmationRepository.Update(entity);
+                await _uow.OrderConfirmationRepository.UpdateWithDto(orderConfirmation);
                 await _uow.SaveChangesAsync();
                 return Ok(new { Status = "Success", Message = "Invoice updated." });
             }

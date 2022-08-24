@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
+using BillingSoftware.Core.DataTransferObjects.UpdateDtos;
 using BillingSoftware.Core.Entities;
 using CommonBase.DocumentCreators;
 using CommonBase.Extensions;
@@ -64,7 +65,7 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> PutOffer(Offer offer)
+        public async Task<IActionResult> PutOffer(UpdateOfferDto offer)
         {
             try
             {
@@ -73,9 +74,7 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to update this offer!" });
                 }
 
-                var entity = await _uow.OfferRepository.GetByIdAsync(offer.Id);
-                offer.CopyProperties(entity);
-                await _uow.OfferRepository.Update(entity);
+                await _uow.OfferRepository.UpdateWithDto(offer);
                 await _uow.SaveChangesAsync();
                 return Ok(new { Status = "Success", Message = "Offer updated." });
             }
