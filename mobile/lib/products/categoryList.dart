@@ -4,13 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../NavBar.dart';
 
-/*class Categories extends StatefulWidget {
-  const Categories({Key? key}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => _CategoriesState();
-}*/
-
 class Categories extends StatelessWidget {
   final Category _products = Category("", "");
 

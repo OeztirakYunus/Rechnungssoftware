@@ -1,11 +1,8 @@
-// ignore_for_file: avoid_returning_null_for_void
-
 import 'package:demo5/companies/companies.dart';
-import 'package:demo5/contact/contacts.dart';
+import 'package:demo5/contact/categoryContact.dart';
 import 'package:demo5/invoice/invoice.dart';
 import 'package:demo5/products/categoryList.dart';
 import 'deliveryNote/delivery_note.dart';
-import 'package:demo5/products/product.dart';
 import 'package:flutter/material.dart';
 
 class NavBar extends StatelessWidget {
@@ -20,7 +17,7 @@ class NavBar extends StatelessWidget {
         return;
       case 1:
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => const Contacts()));
+            .push(MaterialPageRoute(builder: (context) => CategoryContact()));
         return;
       case 2:
         Navigator.of(context)
