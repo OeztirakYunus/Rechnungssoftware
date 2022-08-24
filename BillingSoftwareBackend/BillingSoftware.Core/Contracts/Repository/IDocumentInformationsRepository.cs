@@ -1,4 +1,5 @@
-﻿using BillingSoftware.Core.Entities;
+﻿using BillingSoftware.Core.DataTransferObjects.UpdateDtos;
+using BillingSoftware.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace BillingSoftware.Core.Contracts.Repository
         Task AddPosition(Guid documentInformationId, Position position);
         Task AddPositions(Guid documentInformationId, ICollection<Position> positions);
         Task DeletePosition(Guid documentInformationId, Guid positionId);
+        public Task UpdateWithDto(UpdateDocumentInformationDto dto);
     }
 }

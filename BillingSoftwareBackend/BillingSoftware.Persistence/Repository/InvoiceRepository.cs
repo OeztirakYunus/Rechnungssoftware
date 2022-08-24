@@ -1,5 +1,7 @@
 ﻿using BillingSoftware.Core.Contracts.Repository;
+using BillingSoftware.Core.DataTransferObjects.UpdateDtos;
 using BillingSoftware.Core.Entities;
+using CommonBase.Exceptions;
 using CommonBase.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -49,37 +51,21 @@ namespace BillingSoftware.Persistence.Repository
                 .SingleOrDefaultAsync(i => i.Id == id);
         }
 
-        public override async Task Update(Invoice entity)
+        public async Task UpdateWithDto(UpdateInvoiceDto dto)
         {
-            var docInfoRep = new Repository<DocumentInformations>(_context);
-            var positionRepo = new Repository<Position>(_context);
-
-            var docInfo = await docInfoRep.GetByIdAsync(entity.DocumentInformationId);
-            if (docInfo != null)
+            var entity = await GetByIdAsync(dto.Id);
+            if (entity != null)
             {
-                entity.DocumentInformation.CopyProperties(docInfo);
-
-                var positions = new List<Position>();
-                foreach (var item in docInfo.Positions)
-                {
-                    var position = await positionRepo.GetByIdAsync(item.Id);
-                    if (position != null)
-                    {
-                        item.CopyProperties(position);
-                        positions.Add(position);
-                        await positionRepo.Update(position);
-                        await _context.SaveChangesAsync();
-                    }
-                }
-                docInfo.Positions = positions;
-
-                await docInfoRep.Update(docInfo);
-                await _context.SaveChangesAsync();
-
-                entity.DocumentInformation = docInfo;
+                DocumentInformationsRepository documentInformationsRepository = new DocumentInformationsRepository(_context);
+                dto.DocumentInformation.Id = dto.DocumentInformationId;
+                await documentInformationsRepository.UpdateWithDto(dto.DocumentInformation);
+                dto.CopyProperties(entity);
+                await Update(entity);
             }
-
-            await base.Update(entity);
+            else
+            {
+                throw new EntityNotFoundException("DeliveryNote not found");
+            }
         }
     }
 }

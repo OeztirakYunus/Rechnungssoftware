@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
+using BillingSoftware.Core.DataTransferObjects.UpdateDtos;
 using BillingSoftware.Core.Entities;
 using CommonBase.DocumentCreators;
 using CommonBase.Extensions;
@@ -62,7 +63,7 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> PutInvoice(Invoice invoice)
+        public async Task<IActionResult> PutInvoice(UpdateInvoiceDto invoice)
         {
             try
             {
@@ -71,9 +72,7 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to update this invoice!" });
                 }
 
-                var entity = await _uow.InvoiceRepository.GetByIdAsync(invoice.Id);
-                invoice.CopyProperties(entity);
-                await _uow.InvoiceRepository.Update(entity);
+                await _uow.InvoiceRepository.UpdateWithDto(invoice);
                 await _uow.SaveChangesAsync();
                 return Ok(new { Status = "Success", Message = "Invoice updated." });
             }

@@ -1,4 +1,5 @@
-﻿using BillingSoftware.Core.Entities;
+﻿using BillingSoftware.Core.DataTransferObjects.UpdateDtos;
+using BillingSoftware.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace BillingSoftware.Core.Contracts.Repository
     {
         public Task<Invoice> OrderConfirmationToInvoice(OrderConfirmation orderConfirmation);
         public Task<DeliveryNote> OrderConfirmationToDeliveryNote(OrderConfirmation orderConfirmation);
+        public Task UpdateWithDto(UpdateOrderConfirmationDto dto);
     }
 }

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using BillingSoftware.Core.DataTransferObjects.UpdateDtos;
 
 namespace BillingSoftware.Persistence.Repository
 {
@@ -69,6 +70,42 @@ namespace BillingSoftware.Persistence.Repository
             return await _context.DocumentInformations
                 .IncludeAllRecursively()
                 .SingleOrDefaultAsync(i => i.Id == id);
+        }
+
+        public async Task UpdateWithDto(UpdateDocumentInformationDto dto)
+        {
+            DocumentInformations entity = null;
+            if (dto.Id != null && Guid.Empty != dto.Id)
+            {
+                var guidString = dto.Id.ToString();
+                var guid = Guid.Parse(guidString);
+                entity = await GetByIdAsync(guid);
+                if (entity != null)
+                {
+                    PositionRepository positionRepository = new PositionRepository(_context);
+                    foreach (var item in entity.Positions)
+                    {
+                        if(!dto.Positions.Select(i => i.Id).ToList().Contains(item.Id))
+                        {
+                            await positionRepository.Remove(item.Id);
+                        }
+                    }
+                    
+                    foreach (var item in dto.Positions)
+                    {
+                        await positionRepository.UpdateWithDto(item, guid);
+                    }
+
+                    entity = await GetByIdAsync(guid);
+                    dto.CopyProperties(entity);
+                    await Update(entity);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                throw new Exception("Id cannot be null");
+            }
         }
     }
 }

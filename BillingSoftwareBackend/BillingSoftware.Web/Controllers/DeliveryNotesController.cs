@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BillingSoftware.Core.Contracts;
+using BillingSoftware.Core.DataTransferObjects.UpdateDtos;
 using BillingSoftware.Core.Entities;
 using CommonBase.DocumentCreators;
 using CommonBase.Extensions;
@@ -62,7 +63,7 @@ namespace BillingSoftware.Web.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> PutDeliveryNote(DeliveryNote deliveryNote)
+        public async Task<IActionResult> PutDeliveryNote(UpdateDeliveryNoteDto deliveryNote)
         {
             try
             {
@@ -71,9 +72,7 @@ namespace BillingSoftware.Web.Controllers
                     return Unauthorized(new { Status = "Error", Message = $"You are not allowed to update this delivery note!" });
                 }
 
-                var entity = await _uow.DeliveryNoteRepository.GetByIdAsync(deliveryNote.Id);
-                deliveryNote.CopyProperties(entity);
-                await _uow.DeliveryNoteRepository.Update(entity);
+                await _uow.DeliveryNoteRepository.UpdateWithDto(deliveryNote);
                 await _uow.SaveChangesAsync();
                 return Ok(new { Status = "Success", Message = "Delivery Note updated." });
             }
