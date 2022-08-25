@@ -424,13 +424,14 @@ class SignUp extends StatelessWidget {
     Company company =
         Company(companyName, companyMail, companyPhoneNumber, address);
 
-    User user = User(firstName, lastName, userMail, company);
+    //User user = User(firstName, lastName, userMail, company);
 
     //print(jsonEncode({"user": user.toJson(), "password": userPsw}));
 
     var response = await http.post(uri,
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"user": user.toJson(), "password": userPsw}));
+        //body: jsonEncode({"user": user.toJson(), "password": userPsw})
+    );
 
     //print(response.statusCode);
     //print(response.body);

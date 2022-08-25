@@ -92,14 +92,12 @@ class _LoginState extends State<Login> {
                         hintStyle: const TextStyle(fontSize: 20.00),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            // Based on passwordVisible state choose the icon
                             _passwordVisible
                                 ? Icons.visibility
                                 : Icons.visibility_off,
                             color: Theme.of(context).primaryColorDark,
                           ),
                           onPressed: () {
-                            // Update the state i.e. toogle the state of passwordVisible variable
                             setState(() {
                               _passwordVisible = !_passwordVisible;
                             });
@@ -208,12 +206,15 @@ class _LoginState extends State<Login> {
     if (response.statusCode == 200) {
       var responseString = json.decode(response.body);
       var responseToken = responseString["auth_token"];
+      String userRole = responseString["userRoles"];
       NetworkHandler.storeToken(responseToken);
+      NetworkHandler.storeRole(userRole);
       print("Token: $responseToken");
       var readToken = await NetworkHandler.getToken();
       readToken = readToken.toString();
       if (readToken.isNotEmpty) {
         print("READ TOKEN $readToken");
+        print(responseString["role"]);
       }
     }
 
