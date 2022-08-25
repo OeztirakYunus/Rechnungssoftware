@@ -99,7 +99,6 @@ namespace BillingSoftware.Persistence.Repository
                     entity = await GetByIdAsync(guid);
                     dto.CopyProperties(entity);
                     await Update(entity);
-                    await _context.SaveChangesAsync();
                 }
             }
             else
