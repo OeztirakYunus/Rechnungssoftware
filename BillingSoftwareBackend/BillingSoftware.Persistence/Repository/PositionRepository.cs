@@ -45,7 +45,6 @@ namespace BillingSoftware.Persistence.Repository
                 entity.DocumentInformationId = documentInformationId;
                 entity.TypeOfDiscount = dto.TypeOfDiscount;
                 await AddAsync(entity);
-                await _context.SaveChangesAsync();
             }
             else
             {
