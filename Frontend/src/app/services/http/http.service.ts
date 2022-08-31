@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { SnackbarComponent } from 'src/app/components/snackbar/snackbar/snackbar.component';
-import { DeliveryNote } from 'src/app/model/delivery-note.model';
 import { environment } from 'src/environments/environment';
 import { AppCookieService } from '../cookie/app-cookie.service';
+import {DeliveryNote} from "../../../../client";
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class HttpService {
   private url = environment.apiUrl;
   private httpClient: HttpClient;
   public deliveryNotes?: DeliveryNote[];
-  
+
   constructor(http: HttpClient, private cookieService: AppCookieService, private snackBar: SnackbarComponent) {
     this.httpClient = http;
   }

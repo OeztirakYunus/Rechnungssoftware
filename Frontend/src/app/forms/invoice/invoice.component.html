@@ -1,0 +1,52 @@
+<div [formGroup]="invoiceForm">
+  <div class="form-group mb-3">
+    <label for="headerText">Rechnungsnummer (*)</label>
+    <input type="text" class="form-control" [ngClass]="{'is-invalid': (invoiceNumber?.invalid && (invoiceNumber?.dirty || invoiceNumber?.touched))}" formControlName="invoiceNumber" id="invoiceNumber" placeholder="">
+    <div class="invalid-feedback">
+      Geben Sie eine Rechnungsnummer an.
+    </div>
+  </div>
+
+  <app-date label="Datum (*)" inputId="invoiceDate" formControlName="invoiceDate"></app-date>
+  <app-date label="Zahlungsfrist (*)" inputId="paymentTerm" formControlName="paymentTerm"></app-date>
+
+  <div class="form-group mb-3">
+    <label for="headerText">Bezeichnung (*)</label>
+    <input type="text" class="form-control" [ngClass]="{'is-invalid': (headerText?.invalid && (headerText?.dirty || headerText?.touched))}" formControlName="headerText" id="headerText" placeholder="">
+    <div class="invalid-feedback">
+      Geben Sie eine Bezeichnung an.
+    </div>
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="subject">Thema (*)</label>
+    <input type="text" class="form-control" [ngClass]="{'is-invalid': (subject?.invalid && (subject?.dirty || subject?.touched))}" formControlName="subject" id="subject" placeholder="">
+    <div class="invalid-feedback">
+      Geben Sie ein Thema ein.
+    </div>
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="subject">Fließtext (*)</label>
+    <textarea type="text" class="form-control" [ngClass]="{'is-invalid': (flowText?.invalid && (flowText?.dirty || flowText?.touched))}" formControlName="flowText" id="flowText" rows="5" placeholder="">
+
+    </textarea>
+    <div class="invalid-feedback">
+      Geben Sie einen Fließtext ein.
+    </div>
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="subject">Status (*)</label>
+    <select class="form-control" [ngClass]="{'is-invalid': (status?.invalid && (status?.dirty || status?.touched))}" formControlName="status" id="status">
+      <option value="undefined">Bitte auswählen</option>
+      <option value="OPEN">geöffnet</option>
+      <option value="CLOSED">geschlossen</option>
+    </select>
+    <div class="invalid-feedback">
+      Treffen Sie bitte eine Auswahl!
+    </div>
+  </div>
+
+  <app-document-information formControlName="documentInformation" #documentInformation></app-document-information>
+</div>

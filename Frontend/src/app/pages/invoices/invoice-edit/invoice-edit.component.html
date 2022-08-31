@@ -1,0 +1,7 @@
+<h1>Rechnung bearbeiten</h1>
+
+<app-invoice [ngModelOptions]="{standalone: true}" [(ngModel)]="invoice" #invoiceElement></app-invoice>
+  <br>
+  <div class="d-flex justify-content-end">
+    <button class="btn mt-5" (click)="addInvoice()">Rechnung aktualisieren</button>
+  </div>

@@ -1,0 +1,7 @@
+<h1>Auftragsbestätigung anlegen</h1>
+
+<app-orderconfirmation [ngModelOptions]="{standalone: true}" [(ngModel)]="orderConfirmation" #orderconfirmationElement></app-orderconfirmation>
+  <br>
+  <div class="d-flex justify-content-end">
+    <button class="btn mt-5" (click)="addOrderConfirmation()">Auftragsbestätigung anlegen</button>
+  </div>

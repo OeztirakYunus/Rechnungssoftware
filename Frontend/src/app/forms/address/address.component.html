@@ -1,0 +1,33 @@
+<div [formGroup]="addressForm">
+  <div class="form-group mb-3">
+    <label for="street">Straße (*)</label>
+    <input type="text" class="form-control" [ngClass]="{'is-invalid': (street?.invalid && (street?.dirty || street?.touched))}" formControlName="street" id="street" placeholder="">
+    <div class="invalid-feedback">
+      Geben Sie eine Straße an.
+    </div>
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="zipCode">PLZ (*)</label>
+    <input type="text" class="form-control" [ngClass]="{'is-invalid': (zipCode?.invalid && (zipCode?.dirty || zipCode?.touched))}" formControlName="zipCode" id="zipCode" placeholder="">
+    <div class="invalid-feedback">
+      Geben Sie eine PLZ an.
+    </div>
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="city">Stadt (*)</label>
+    <input type="text" class="form-control" [ngClass]="{'is-invalid': (city?.invalid && (city?.dirty || city?.touched))}" formControlName="city" id="city" placeholder="">
+    <div class="invalid-feedback">
+      Geben Sie eine Stadt an.
+    </div>
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="country">Land (*)</label>
+    <input type="text" class="form-control" [ngClass]="{'is-invalid': (country?.invalid && (country?.dirty || country?.touched))}" formControlName="country" id="country" placeholder="">
+    <div class="invalid-feedback">
+      Geben Sie ein Land an.
+    </div>
+  </div>
+</div>

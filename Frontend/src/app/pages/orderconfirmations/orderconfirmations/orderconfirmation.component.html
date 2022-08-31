@@ -1,0 +1,39 @@
+<a class="btn" [routerLink]="['/orderconfirmation/create']">Auftragsbestätigung anlegen</a>
+
+<h1 class="mt-5">Auflistung aller Auftragsbestätigungen</h1>
+<div *ngIf="orderConfirmations">
+  <div class="mb-3 row">
+    <label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Volltextsuche:</label>
+    <div class="col-xs-3 col-sm-auto">
+      <input id="table-complete-search" type="text" class="form-control" name="searchTerm" [(ngModel)]="searchTerm">
+    </div>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope="col">Nummer</th>
+      <th scope="col">Status</th>
+      <th scope="col">Thema</th>
+      <th scope="col">Aktionen</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let orderConfirmation of orderConfirmations | filter: searchTerm : 'orderConfirmationNumber'">
+      <td>{{ orderConfirmation.orderConfirmationNumber }}</td>
+      <td>{{ orderConfirmation.status == status.OPEN ? 'Geöffnet' : 'Geschlossen' }}</td>
+      <td>{{ orderConfirmation.subject }}</td>
+      <td class="actions">
+        <img src="/assets/icons/285666_pdf_file_icon.png" class="icon" (click)="createPdf(orderConfirmation.id)"/>
+        <img src="/assets/icons/4375147_logo_word_icon.png" class="icon" (click)="createWord(orderConfirmation.id)"/>
+        <a [routerLink]="['/orderconfirmation/edit/', orderConfirmation.id]" *ngIf="orderConfirmation.status == status.OPEN">
+          <img class="icon" src="/assets/icons/1814074_draw_edit_pencile_write_icon.png"/>
+        </a>
+        <img class="icon" src="/assets/icons/1646012_cancel_delete_error_exit_remove_icon.png" (click)="delete(orderConfirmation.id)"/>
+        <a style="cursor: pointer" (click)="createInvoice(orderConfirmation.id)">Rechnung erzeugen</a>
+        <a style="cursor: pointer" (click)="createDeliverynote(orderConfirmation.id)">Lieferschein erzeugen</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

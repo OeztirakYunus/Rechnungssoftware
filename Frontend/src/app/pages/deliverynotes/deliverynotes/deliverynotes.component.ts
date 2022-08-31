@@ -1,11 +1,8 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import {MatPaginator} from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
-import { Router } from '@angular/router';
-import { DeliveryNote } from 'src/app/model/delivery-note.model';
-import { HttpService } from 'src/app/services/http/http.service';
+import {Component, Inject, OnInit, Optional} from '@angular/core';
+import {BASE_PATH, CompaniesService, DeliveryNote, DeliveryNotesService, Status} from "../../../../../client";
+import {DialogService} from "../../../services/dialog.service";
+import {CommonHttpErrorHandlingService} from "../../../common-http-error-handling.service";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-deliverynotes',
@@ -14,41 +11,61 @@ import { HttpService } from 'src/app/services/http/http.service';
 })
 
 
-export class DeliverynotesComponent implements AfterViewInit, OnInit {
-  displayedColumns: string[] = ['DeliveryNoteNumber', 'DeliveryNoteDate', 'Status'];
-  // dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+export class DeliverynotesComponent implements OnInit {
+  deliveryNotes: DeliveryNote[] = [];
+  searchTerm: string = '';
+  public status: typeof Status = Status;
 
-  dataSource!: MatTableDataSource<DeliveryNote>;
+  constructor(
+    private deliveryNotesService: DeliveryNotesService,
+    private companiesService: CompaniesService,
+    private dialogService: DialogService,
+    private httpClient: HttpClient,
+    @Optional()@Inject(BASE_PATH) private basePath: string,
+    private commonHttpErrorHandling: CommonHttpErrorHandlingService
+  ) { }
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-
-  public constructor(private httpService : HttpService){
-  }
-  async ngOnInit() {
-    await this.httpService.getDeliveryNotes();
-    console.log(this.httpService.deliveryNotes);
-    this.dataSource = new MatTableDataSource(this.httpService.deliveryNotes);
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
+  loadData(){
+    this.deliveryNotesService.apiDeliveryNotesGet().pipe(this.commonHttpErrorHandling.catchError()).subscribe(x => {
+      this.deliveryNotes = x;
+    });
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+  ngOnInit(): void {
+    this.loadData();
   }
 
-  //@ViewChild(MatPaginator) paginator!: MatPaginator;
+  delete(id: string) {
+    this.companiesService.apiCompaniesDeleteDeliveryNoteDeliveryNoteIdPut(id).pipe(this.commonHttpErrorHandling.catchError()).subscribe(x => {
+      this.dialogService.open('Erfolgreich gelöscht', `Der Lieferschein wurde erfolgreich gelöscht`, () => this.loadData());
+    });
+  }
 
-//   ngAfterViewInit() {
-//     this.dataSource.paginator = this.paginator;
-//   }
+
+  createPdf(id: string) {
+    const config = { responseType: 'blob' as 'blob'};
+    this.httpClient.get(`${this.basePath}/api/DeliveryNotes/get-as-pdf/${encodeURIComponent(id)}`, config).pipe(this.commonHttpErrorHandling.catchError()).subscribe(blob => {
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      const url = window.URL.createObjectURL(blob);
+      a.href = url;
+      a.download = `${id}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  }
+
+  createWord(id: string) {
+    const config = { responseType: 'blob' as 'blob'};
+    this.httpClient.get(`${this.basePath}/api/DeliveryNotes/get-as-word/${encodeURIComponent(id)}`, config).pipe(this.commonHttpErrorHandling.catchError()).subscribe(blob => {
+      const a = document.createElement('a');
+      document.body.appendChild(a);
+      const url = window.URL.createObjectURL(blob);
+      a.href = url;
+      a.download = `${id}.docx`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  }
 }
 

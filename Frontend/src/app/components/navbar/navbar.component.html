@@ -1,9 +1,13 @@
-<mat-toolbar color="warn">
+<mat-toolbar color="warn" style="
+    position: fixed;
+    top: 0px;
+    margin-bottom: 200px;
+    z-index: 1000;">
     <mat-toolbar-row>
       <button mat-icon-button>
         <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
       </button>
-      <h1>Rechnungssoftware</h1>
+      <h1>Invoicer</h1>
       <span class="menu-spacer"></span>
       <ng-container>
         <button *ngIf="!this.isLoggedIn()" [routerLink]="'/login'" mat-button>
@@ -20,9 +24,9 @@
       </ng-container>
     </mat-toolbar-row>
   </mat-toolbar>
-  
+
   <mat-drawer-container autosize>
-    <mat-drawer #sidenav mode="side">
+    <mat-drawer #sidenav mode="side" style="padding-top: 70px;">
       <mat-nav-list>
         <a mat-list-item  [routerLink]="''" (click)="sidenav.toggle()">Startseite</a>
         <!-- <a mat-list-item  [routerLink]="'/login'" (click)="sidenav.toggle()">Login</a>
@@ -34,7 +38,10 @@
         <a mat-list-item  [routerLink]="'/offers'" (click)="sidenav.toggle()">Offers</a>
         <a mat-list-item  [routerLink]="'/orderconfirmation'" (click)="sidenav.toggle()">Order Confirmation</a>
         <a mat-list-item  [routerLink]="'/products'" (click)="sidenav.toggle()">Products</a>
+        <a mat-list-item  [routerLink]="'/users'" (click)="sidenav.toggle()">Users</a>
       </mat-nav-list>
     </mat-drawer>
-    <ng-content></ng-content>
+    <div class="container-lg" style="padding-top: 100px;padding-bottom: 100px;">
+      <ng-content></ng-content>
+    </div>
   </mat-drawer-container>

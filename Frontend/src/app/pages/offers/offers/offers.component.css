@@ -1,0 +1,12 @@
+.actions .btn{
+  margin-left: 5px;
+}
+
+@media(max-width:850px){
+  .actions .btn{
+    padding: 0px;
+    background-color: transparent !important;
+    color: black;
+    text-decoration: underline;
+  }
+}

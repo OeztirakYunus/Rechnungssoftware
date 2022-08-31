@@ -1,0 +1,7 @@
+<h1>Lieferschein anlegen</h1>
+
+<app-deliverynote [ngModelOptions]="{standalone: true}" [(ngModel)]="deliveryNote" #deliverynoteElement></app-deliverynote>
+  <br>
+  <div class="d-flex justify-content-end">
+    <button class="btn mt-5" (click)="add()">Lieferschein anlegen</button>
+  </div>

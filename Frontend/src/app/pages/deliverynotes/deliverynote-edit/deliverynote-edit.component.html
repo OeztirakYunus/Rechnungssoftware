@@ -1,0 +1,8 @@
+<h1>Lieferschein bearbeiten</h1>
+
+<app-deliverynote [ngModelOptions]="{standalone: true}" [(ngModel)]="deliveryNote" #deliverynoteElement></app-deliverynote>
+
+  <br>
+  <div class="d-flex justify-content-end">
+    <button class="btn mt-5" (click)="update()">Lieferschein aktualisieren</button>
+  </div>

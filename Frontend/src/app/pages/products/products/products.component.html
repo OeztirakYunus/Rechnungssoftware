@@ -1,1 +1,49 @@
-<p>products works!</p>
+
+
+<a class="btn" [routerLink]="['/products/create']">Produkt anlegen</a>
+<h1 class="mt-5">Auflistung aller Produkte</h1>
+  <div *ngIf="products">
+    <div class="mb-3 row">
+      <label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Volltextsuche:</label>
+      <div class="col-xs-3 col-sm-auto">
+        <input id="table-complete-search" type="text" class="form-control" name="searchTerm" [(ngModel)]="searchTerm">
+      </div>
+    </div>
+
+    <table class="table table-striped">
+      <colgroup>
+        <col class="col-1">
+        <col class="col-2">
+        <col class="col-2">
+        <col class="col-1">
+        <col class="col-3">
+        <col class="col-1">
+        <col class="col-1">
+      </colgroup>
+      <thead>
+      <tr>
+        <th scope="col">Artikelnummer</th>
+        <th scope="col">Bezeichnung</th>
+        <th scope="col">Kategorie</th>
+        <th scope="col">Nettopreis</th>
+        <th scope="col">Beschreibung</th>
+        <th scope="col">Aktionen</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let product of products | filter: searchTerm : 'articleNumber'">
+        <td>{{ product.articleNumber }}</td>
+        <td>{{ product.productName }}</td>
+        <td>{{ product.category == productCategory.Service ? 'Dienstleistung' : 'Artikel' }}</td>
+        <td>{{ product.sellingPriceNet | myDecimal }} €</td>
+        <td>{{ product.description }}</td>
+        <td class="actions">
+          <a [routerLink]="['/products/edit/', product.id]">
+            <img class="icon" src="/assets/icons/1814074_draw_edit_pencile_write_icon.png"/>
+          </a>
+          <img class="icon" src="/assets/icons/1646012_cancel_delete_error_exit_remove_icon.png" (click)="delete(product.id)"/>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>

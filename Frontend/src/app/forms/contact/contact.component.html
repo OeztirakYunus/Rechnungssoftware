@@ -1,0 +1,82 @@
+<div [formGroup]="contactForm">
+  <div class="form-group mb-3">
+    <label for="typeOfContactEnum">Typ</label>
+    <select type="text" class="form-control" [ngClass]="{'is-invalid': (typeOfContactEnum?.invalid && (typeOfContactEnum?.dirty || typeOfContactEnum?.touched))}" formControlName="typeOfContactEnum" id="typeOfContactEnum">
+      <option value="undefined">Bitte auswählen</option>
+      <option value="Supplier">Anbieter</option>
+      <option value="Client">Kunde</option>
+      <option value="Partner">Partner</option>
+      <option value="ProspectiveClient">Möglicher Kunde</option>
+      <option value="NoTargetGroup">Keine Zielgruppe</option>
+    </select>
+    <div class="invalid-feedback">
+      Treffen Sie eine Auswahl.
+    </div>
+  </div>
+
+
+  <div class="form-group mb-3">
+    <label for="gender">Geschlecht</label>
+    <select type="text" class="form-control" [ngClass]="{'is-invalid': (gender?.invalid && (gender?.dirty || gender?.touched))}" formControlName="gender" id="gender">
+      <option value="undefined">Bitte auswählen</option>
+      <option value="Male">Männlich</option>
+      <option value="Female">Weiblich</option>
+      <option value="Others">Anders</option>
+    </select>
+    <div class="invalid-feedback">
+      Treffen Sie eine Auswahl.
+    </div>
+  </div>
+
+
+  <div class="form-group mb-3">
+    <label for="title">Titel</label>
+    <input type="text" class="form-control" [ngClass]="{'is-invalid': (title?.invalid && (title?.dirty || title?.touched))}" formControlName="title" id="title" placeholder="">
+    <div class="invalid-feedback">
+      Geben Sie einen Titel ein.
+    </div>
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="firstName">Vorname (*)</label>
+    <input type="text" class="form-control" [ngClass]="{'is-invalid': (firstName?.invalid && (firstName?.dirty || firstName?.touched))}" formControlName="firstName" id="firstName" placeholder="">
+    <div class="invalid-feedback">
+      Geben Sie einen Nachnamen ein.
+    </div>
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="lastName">Nachname (*)</label>
+    <input type="text" class="form-control" [ngClass]="{'is-invalid': (lastName?.invalid && (lastName?.dirty || lastName?.touched))}" formControlName="lastName" id="lastName" placeholder="">
+    <div class="invalid-feedback">
+      Geben Sie einen Nachnamen ein.
+    </div>
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="nameOfOrganisation">Organisationsname</label>
+    <input type="text" class="form-control" [ngClass]="{'is-invalid': (nameOfOrganisation?.invalid && (nameOfOrganisation?.dirty || nameOfOrganisation?.touched))}" formControlName="nameOfOrganisation" id="nameOfOrganisation" placeholder="">
+    <div class="invalid-feedback">
+      Geben Sie einen Organisationsname ein.
+    </div>
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="phoneNumber">Telefonnummer</label>
+    <input type="text" class="form-control" [ngClass]="{'is-invalid': (phoneNumber?.invalid && (phoneNumber?.dirty || phoneNumber?.touched))}" formControlName="phoneNumber" id="phoneNumber">
+    <div class="invalid-feedback">
+      Geben Sie eine gültige Telefonnummer ein.
+    </div>
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="email">E-Mail</label>
+    <input type="text" class="form-control" [ngClass]="{'is-invalid': (email?.invalid && (email?.dirty || email?.touched))}" formControlName="email" id="email">
+    <div class="invalid-feedback">
+      Geben Sie eine gültige E-Mail ein.
+    </div>
+  </div>
+
+  <app-address formControlName="address" #address></app-address>
+
+</div>

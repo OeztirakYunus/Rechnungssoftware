@@ -1,0 +1,7 @@
+<h1>Angebot bearbeiten</h1>
+
+<app-offer [ngModelOptions]="{standalone: true}" [(ngModel)]="this.offer" #offerElement></app-offer>
+<br>
+<div class="d-flex justify-content-end">
+  <button class="btn mt-5" (click)="updateOffer()">Angebot aktualisieren</button>
+</div>

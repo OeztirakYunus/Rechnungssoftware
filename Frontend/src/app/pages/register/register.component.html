@@ -1,117 +1,133 @@
-<mat-stepper #stepper>
-  <mat-step [stepControl]="firstFormGroup">
-    <form [formGroup]="firstFormGroup">
-      <ng-template matStepLabel>Company</ng-template>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Company Name</mat-label>
-        <input matInput placeholder="Company Name" formControlName="firstCtrl" required>
-      </mat-form-field>
-
-
-      <mat-form-field appearance="fill">
-        <mat-label>Email</mat-label>
-        <input matInput placeholder="Email" formControlName="firstCtrl" required>
-      </mat-form-field>
-
-
-      <mat-form-field appearance="fill">
-        <mat-label>Phonenumber</mat-label>
-        <input matInput placeholder="Phonenumber" formControlName="firstCtrl" required>
-      </mat-form-field>
-
-
-      <mat-form-field appearance="fill">
-        <mat-label>Ust Number</mat-label>
-        <input matInput placeholder="Ust Number" formControlName="firstCtrl" required>
-      </mat-form-field>
-
-      <br> 
-
-      <mat-form-field appearance="fill">
-        <mat-label>Street</mat-label>
-        <input matInput placeholder="Street" formControlName="firstCtrl" required>
-      </mat-form-field>
-
-
-      <mat-form-field appearance="fill">
-        <mat-label>Zip Code</mat-label>
-        <input matInput placeholder="Zip Code" formControlName="firstCtrl" required>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>City</mat-label>
-        <input matInput placeholder="City" formControlName="firstCtrl" required>
-      </mat-form-field>
-
-
-      <mat-form-field appearance="fill">
-        <mat-label>Country</mat-label>
-        <input matInput placeholder="Country" formControlName="firstCtrl" required>
-      </mat-form-field>
-      <div>
-        <button mat-button matStepperNext>Next</button>
+<div [formGroup]="userForm">
+  <h2>Benutzer</h2>
+  <ng-container formGroupName="user">
+    <div class="form-group mb-3">
+      <label for="firstName">Vorname (*)</label>
+      <input type="text" class="form-control" [ngClass]="{'is-invalid': (firstName?.invalid && (firstName?.dirty || firstName?.touched))}" formControlName="firstName" id="firstName" placeholder="">
+      <div class="invalid-feedback">
+        Geben Sie einen Vornamen ein.
       </div>
-    </form>
-  </mat-step>
-
-  <mat-step [stepControl]="secondFormGroup" label="Bank Information">
-    <form [formGroup]="secondFormGroup">
-      <mat-form-field appearance="fill">
-        <mat-label>Bank Name</mat-label>
-        <input matInput formControlName="secondCtrl" placeholder="Bank Name" required>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>IBAN</mat-label>
-        <input matInput formControlName="secondCtrl" placeholder="IBAN" required>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Bic</mat-label>
-        <input matInput formControlName="secondCtrl" placeholder="Bic" required>
-      </mat-form-field>
-      <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext>Next</button>
+    </div>
+    <div class="form-group mb-3">
+      <label for="lastName">Nachname (*)</label>
+      <input type="text" class="form-control" [ngClass]="{'is-invalid': (lastName?.invalid && (lastName?.dirty || lastName?.touched))}" formControlName="lastName" id="lastName" placeholder="">
+      <div class="invalid-feedback">
+        Geben Sie einen Nachnamen ein.
       </div>
-    </form>
-  </mat-step>
-
-  <mat-step [stepControl]="secondFormGroup" label="User">
-    <form [formGroup]="secondFormGroup">
-      <mat-form-field appearance="fill">
-        <mat-label>First Name</mat-label>
-        <input matInput formControlName="secondCtrl" placeholder="Max" required>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Last Name</mat-label>
-        <input matInput formControlName="secondCtrl" placeholder="Mustermann" required>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Email</mat-label>
-        <input matInput formControlName="secondCtrl" placeholder="maxmustermann@gmail.com" required>
-      </mat-form-field>
-
-
-      <mat-form-field appearance="fill">
-        <mat-label>Password</mat-label>
-        <input matInput formControlName="secondCtrl" placeholder="MaxMustermann123" required>
-      </mat-form-field>
-
-      <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext>Next</button>
-        <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
-        <button mat-button [disabled]="!formControl.valid" [mat-dialog-close]="1"
-          (click)="confirmAdd()">Save</button>
+    </div>
+    <div class="form-group mb-3">
+      <label for="email">E-Mail (*)</label>
+      <input type="text" class="form-control" [ngClass]="{'is-invalid': (email?.invalid && (email?.dirty || email?.touched))}" formControlName="email" id="email" placeholder="">
+      <div class="invalid-feedback" *ngIf="email?.errors?.['required']">
+        Geben Sie eine E-Mail Adresse ein.
       </div>
-    </form>
-  </mat-step>
-</mat-stepper>
+      <div class="invalid-feedback" *ngIf="email?.errors?.['email']">
+      Geben Sie eine gültige E-Mail Adresse ein.
+    </div>
+    </div>
+    <div class="form-group mb-3">
+      <label for="password">Passwort (*)</label>
+      <input type="password" class="form-control" [ngClass]="{'is-invalid': (password?.invalid && (password?.dirty || password?.touched))}" formControlName="password" id="password" placeholder="">
+      <div class="invalid-feedback">
+        Geben Sie ein Passwort ein.
+      </div>
+    </div>
+  </ng-container>
 
 
+  <h2>Firma</h2>
+  <ng-container formGroupName="company">
 
+    <div class="form-group mb-3">
+      <label for="companyName">Firmenname (*)</label>
+      <input type="text" class="form-control" [ngClass]="{'is-invalid': (companyName?.invalid && (companyName?.dirty || companyName?.touched))}" formControlName="companyName" id="companyName" placeholder="">
+      <div class="invalid-feedback">
+        Geben Sie einen Firmennamen ein.
+      </div>
+    </div>
+    <div class="form-group mb-3">
+      <label for="companyEmail">Email (*)</label>
+      <input type="text" class="form-control" [ngClass]="{'is-invalid': (companyEmail?.invalid && (companyEmail?.dirty || companyEmail?.touched))}" formControlName="email" id="companyEmail" placeholder="">
+      <div class="invalid-feedback" *ngIf="companyEmail?.errors?.['required']">
+        Geben Sie eine E-Mail Adresse ein.
+      </div>
+      <div class="invalid-feedback" *ngIf="companyEmail?.errors?.['email']">
+        Geben Sie eine gültige E-Mail Adresse ein.
+      </div>
+    </div>
+    <div class="form-group mb-3">
+      <label for="phoneNumber">Telefonnummer (*)</label>
+      <input type="text" class="form-control" [ngClass]="{'is-invalid': (phoneNumber?.invalid && (phoneNumber?.dirty || phoneNumber?.touched))}" formControlName="phoneNumber" id="phoneNumber" placeholder="">
+      <div class="invalid-feedback">
+        Geben Sie eine Telefonnummer ein.
+      </div>
+    </div>
+    <div class="form-group mb-3">
+      <label for="ustNumber">UST (*)</label>
+      <input type="text" class="form-control" [ngClass]="{'is-invalid': (ustNumber?.invalid && (ustNumber?.dirty || ustNumber?.touched))}" formControlName="ustNumber" id="ustNumber" placeholder="">
+      <div class="invalid-feedback">
+        Geben Sie eine UST ein.
+      </div>
+    </div>
 
+    <h3>Adresse</h3>
+    <ng-container formGroupName="address">
+      <div class="form-group mb-3">
+        <label for="street">Straße (*)</label>
+        <input type="text" class="form-control" [ngClass]="{'is-invalid': (street?.invalid && (street?.dirty || street?.touched))}" formControlName="street" id="street" placeholder="">
+        <div class="invalid-feedback">
+          Geben Sie eine Straße ein.
+        </div>
+      </div>
+      <div class="form-group mb-3">
+      <label for="zipCode">PLZ (*)</label>
+      <input type="text" class="form-control" [ngClass]="{'is-invalid': (zipCode?.invalid && (zipCode?.dirty || zipCode?.touched))}" formControlName="zipCode" id="zipCode" placeholder="">
+      <div class="invalid-feedback">
+        Geben Sie eine PLZ ein.
+      </div>
+    </div>
+      <div class="form-group mb-3">
+        <label for="city">Stadt (*)</label>
+        <input type="text" class="form-control" [ngClass]="{'is-invalid': (city?.invalid && (city?.dirty || city?.touched))}" formControlName="city" id="city" placeholder="">
+        <div class="invalid-feedback">
+          Geben Sie eine Stadt ein.
+        </div>
+      </div>
+      <div class="form-group mb-3">
+        <label for="country">Land (*)</label>
+        <input type="text" class="form-control" [ngClass]="{'is-invalid': (country?.invalid && (country?.dirty || country?.touched))}" formControlName="country" id="country" placeholder="">
+        <div class="invalid-feedback">
+          Geben Sie ein Land ein.
+        </div>
+      </div>
+    </ng-container>
+
+    <h3>Bankinformation</h3>
+    <ng-container formGroupName="bankInformation">
+      <div class="form-group mb-3">
+        <label for="bankName">Bankname (*)</label>
+        <input type="text" class="form-control" [ngClass]="{'is-invalid': (bankName?.invalid && (bankName?.dirty || bankName?.touched))}" formControlName="bankName" id="bankName" placeholder="">
+        <div class="invalid-feedback">
+          Geben Sie einen Banknamen ein.
+        </div>
+      </div> <div class="form-group mb-3">
+      <label for="iban">IBAN (*)</label>
+      <input type="text" class="form-control" [ngClass]="{'is-invalid': (iban?.invalid && (iban?.dirty || iban?.touched))}" formControlName="iban" id="iban" placeholder="">
+      <div class="invalid-feedback">
+        Geben Sie eine IBAN Nummer ein.
+      </div>
+    </div> <div class="form-group mb-3">
+      <label for="bic">BIC (*)</label>
+      <input type="text" class="form-control" [ngClass]="{'is-invalid': (bic?.invalid && (bic?.dirty || bic?.touched))}" formControlName="bic" id="bic" placeholder="">
+      <div class="invalid-feedback">
+        Geben Sie eine BIC Nummer ein.
+      </div>
+    </div>
+    </ng-container>
+  </ng-container>
+
+  <div class="d-flex justify-content-end">
+    <button class="btn mt-5" (click)="register()">Registrieren</button>
+  </div>
+
+</div>
