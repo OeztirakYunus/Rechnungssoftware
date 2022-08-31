@@ -15,7 +15,8 @@ export class AuthService {
   constructor(private httpClient: HttpClient, private router: Router, private cookieService: AppCookieService, private snackBar: SnackbarComponent) { }
 
   async login(email: string, password: string): Promise<void> {
-    var path = 'Auth/login';
+    await this.logout();
+    var path = '/api/Auth/login';
     var headers = new HttpHeaders().set('Authorization', 'Basic ' + btoa(email + ':' + password));
     try {
       var response = await this.httpClient.get<IAuthResponse>(environment.apiUrl + path,
@@ -25,7 +26,7 @@ export class AuthService {
       }
     } catch (error: any) {
       this.snackBar.snackbarError("Error: " + error["error"]["message"]);
-      console.log(error);     
+      console.log(error);
     }
   }
 
@@ -55,12 +56,12 @@ export class AuthService {
   export interface IAuthResponse {
     auth_token: string
   }
-  
-  
+
+
   class User {
     email: string = "";
     password: string = "";
-  
+
     User(email: string, password: string) {
       this.email = email;
       this.password = password;

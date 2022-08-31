@@ -1,0 +1,7 @@
+<h1>Kontakt anlegen</h1>
+
+<app-contact [ngModelOptions]="{standalone: true}" [(ngModel)]="contact" #contactElement></app-contact>
+<br>
+<div class="d-flex justify-content-end">
+  <button class="btn mt-5" (click)="addContact()">Kontakt anlegen</button>
+</div>

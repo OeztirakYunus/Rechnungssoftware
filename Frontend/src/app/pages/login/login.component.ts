@@ -30,13 +30,14 @@ export class LoginComponent implements OnInit {
   get loginFormControls(){ return this.loginForm.controls;}
 
   async onSubmit() {
-    /** 
+    /**
      * User: office@invoicer.at
      * Pw: invoicer2022
      */
     let email : string = this.loginFormControls['email'].value;
     let password : string = this.loginFormControls['password'].value;
     console.log(email + password);
+
     await this.authService.login(email, password);
     this.router.navigate(['']);
   }

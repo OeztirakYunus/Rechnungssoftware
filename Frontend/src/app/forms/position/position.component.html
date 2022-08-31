@@ -1,0 +1,50 @@
+<div class="row row-cols-sm-4" [formGroup]="positionForm">
+  <div class="form-group">
+    <label for="article">Produkt</label>
+    <select class="form-control" id="article" formControlName="productId" [ngClass]="{ 'is-invalid': (productId?.invalid && (productId?.dirty || productId?.touched))}">
+      <option value="undefined">Bitte auswählen</option>
+      <option *ngFor="let product of products; let i = index;" [value]="product?.id">{{ product?.productName }}</option>
+    </select>
+    <div class="invalid-feedback">
+      Treffen Sie eine Auswahl.
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="quantity">Quantität (*)</label>
+    <input type="text" class="form-control" [ngClass]="{ 'is-invalid': (quantity?.invalid && (quantity?.dirty || quantity?.touched))}" formControlName="quantity" id="quantity" placeholder="">
+    <div class="invalid-feedback" *ngIf="quantity?.errors?.['required']">
+      Geben Sie bitte die Quantität an.
+    </div>
+    <div class="invalid-feedback" *ngIf="quantity?.errors?.['int']">
+      Geben Sie bitte eine gültige Zahl an.
+    </div>
+    <div class="invalid-feedback" *ngIf="quantity?.errors?.['min']">
+      Geben Sie bitte eine gültige Zahl größer 0 ein.
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="discount">Ermäßigung</label>
+    <input type="text" class="form-control" [ngClass]="{'is-invalid': (discount?.invalid && (discount?.dirty || discount?.touched))}" formControlName="discount" id="discount" placeholder="">
+    <div class="invalid-feedback" *ngIf="discount?.errors?.['required']">
+      Geben Sie bitte deine gültige Zahl ein.
+    </div>
+    <div class="invalid-feedback" *ngIf="discount?.errors?.['double']">
+      Geben Sie bitte eine gültige Zahl an.
+    </div>
+    <div class="invalid-feedback" *ngIf="discount?.errors?.['min']">
+      Geben Sie bitte eine gültige Zahl größer 0 ein.
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="typeOfDiscount">Ermäßigungstyp</label>
+    <select class="form-control" id="typeOfDiscount" formControlName="typeOfDiscount" [ngClass]="{ 'is-invalid': (typeOfDiscount?.invalid && (typeOfDiscount?.dirty || typeOfDiscount?.touched))}">
+      <option value="undefined">Bitte auswählen</option>
+      <option value="Euro">Euro</option>
+      <option value="Percent">Prozent</option>
+    </select>
+    <div class="invalid-feedback">
+      Treffen Sie eine Auswahl.
+    </div>
+  </div>
+</div>
+

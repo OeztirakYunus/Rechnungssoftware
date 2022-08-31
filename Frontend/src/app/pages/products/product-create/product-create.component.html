@@ -1,0 +1,8 @@
+<h1>Produkt anlegen</h1>
+
+<form class="mt-3" [formGroup]="productForm">
+  <app-product formControlName="product" #productElement></app-product>
+  <div class="d-flex justify-content-end">
+    <button class="btn mt-5" (click)="create()">Produkt anlegen</button>
+  </div>
+</form>

@@ -1,0 +1,75 @@
+<ng-container [formGroup]="invoiceForm">
+
+  <div class="form-group mb-3">
+    <label for="totalDiscount">Ermäßigung</label>
+    <input type="text" class="form-control" [ngClass]="{'is-invalid': (totalDiscount?.invalid && (totalDiscount?.dirty || totalDiscount?.touched))}" formControlName="totalDiscount" id="totalDiscount" placeholder="">
+    <div class="invalid-feedback" *ngIf="totalDiscount?.errors?.['required']">
+      Geben Sie bitte die Ermäßigung an.
+    </div>
+    <div class="invalid-feedback" *ngIf="totalDiscount?.errors?.['double']">
+      Geben Sie bitte eine gültige Zahl an.
+    </div>
+    <div class="invalid-feedback" *ngIf="totalDiscount?.errors?.['min']">
+      Geben Sie bitte eine gültige Zahl größer 0 ein.
+    </div>
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="typeOfDiscount">Ermäßigungstyp</label>
+    <select class="form-control" id="typeOfDiscount" formControlName="typeOfDiscount" [ngClass]="{'is-invalid': (typeOfDiscount?.invalid && (typeOfDiscount?.dirty || typeOfDiscount?.touched))}">
+      <option value="undefined">Bitte auswählen</option>
+      <option value="Euro">Euro</option>
+      <option value="Percent">Prozent</option>
+    </select>
+    <div class="invalid-feedback" *ngIf="typeOfDiscount?.errors?.['undefined']">
+      Treffen Sie eine Auswahl!
+    </div>
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="totalDiscount">Steuer (*)</label>
+    <input type="text" class="form-control" [ngClass]="{'is-invalid': (tax?.invalid && (tax?.dirty || tax?.touched))}" formControlName="tax" id="tax" placeholder="">
+    <div class="invalid-feedback" *ngIf="tax?.errors?.['required']">
+      Geben Sie bitte die Steuer an.
+    </div>
+    <div class="invalid-feedback" *ngIf="tax?.errors?.['double']">
+      Geben Sie bitte eine gültige Zahl an.
+    </div>
+    <div class="invalid-feedback" *ngIf="tax?.errors?.['min']">
+      Geben Sie bitte eine gültige Zahl größer 0 ein.
+    </div>
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="clientId">Kunde (*)</label>
+    <select class="form-control" id="clientId" formControlName="clientId" [ngClass]="{'is-invalid': (clientId?.invalid && (clientId?.dirty || clientId?.touched))}">
+      <option value="undefined">Bitte auswählen</option>
+      <option *ngFor="let contact of contacts" value="{{ contact.id }}">{{ contact.firstName }}  {{ contact.lastName }}</option>
+    </select>
+    <div class="invalid-feedback" *ngIf="clientId?.errors?.['undefined']">
+      Treffen Sie eine Auswahl!
+    </div>
+  </div>
+
+  <div class="form-group mb-3">
+    <label for="contactPersonId">Ansprechperson (*)</label>
+    <select class="form-control" id="contactPersonId" formControlName="contactPersonId" [ngClass]="{'is-invalid': (contactPersonId?.invalid && (contactPersonId?.dirty || contactPersonId?.touched))}">
+      <option value="undefined">Bitte auswählen</option>
+      <option *ngFor="let user of users" value="{{ user.id }}">{{ user.firstName }}  {{ user.lastName }}</option>
+    </select>
+    <div class="invalid-feedback" *ngIf="contactPersonId?.errors?.['undefined']">
+      Treffen Sie eine Auswahl!
+    </div>
+  </div>
+
+
+  <button class="btn" (click)="addPosition()">Position hinzufügen</button>
+
+  <div formArrayName="positions">
+    <div *ngFor="let position of positions.controls; let i=index">
+      <button class="mt-3" style="border: none;" (click)="deletePosition(i)">X</button>
+      <app-position [products]="products" [formControlName]="i" #positions></app-position>
+    </div>
+  </div>
+  <br>
+</ng-container>

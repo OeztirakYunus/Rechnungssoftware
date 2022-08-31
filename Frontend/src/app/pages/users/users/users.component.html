@@ -1,0 +1,39 @@
+
+<a class="btn" [routerLink]="['/users/create']">Benutzer anlegen</a>
+
+<div *ngIf="users">
+  <h1 class="mt-5">Auflistung der Benutzer</h1>
+  <div class="mb-3 row">
+    <label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Volltextsuche:</label>
+    <div class="col-xs-3 col-sm-auto">
+      <input id="table-complete-search" type="text" class="form-control" name="searchTerm" [(ngModel)]="searchTerm">
+    </div>
+  </div>
+
+  <table class="table table-striped">
+    <colgroup>
+      <col class="col-4">
+      <col class="col-4">
+      <col class="col-3">
+      <col class="col-2">
+    </colgroup>
+    <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Mail</th>
+      <th scope="col">Role</th>
+      <th scope="col">Aktionen</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let user of users | filter: searchTerm : 'lastName'">
+      <td>{{ user.firstName }} {{ user.lastName }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.role }}</td>
+      <td class="actions">
+        <img class="icon" src="/assets/icons/1646012_cancel_delete_error_exit_remove_icon.png" (click)="delete(user.id)"/>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

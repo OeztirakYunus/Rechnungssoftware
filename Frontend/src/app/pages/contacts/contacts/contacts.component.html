@@ -1,1 +1,35 @@
-<p>contacts works!</p>
+<a class="btn" [routerLink]="['/contacts/create']">Kontakt anlegen</a>
+
+<div *ngIf="contacts">
+  <h1 class="mt-5">Auflistung aller Kontakte</h1>
+  <div class="mb-3 row">
+    <label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Volltextsuche:</label>
+    <div class="col-xs-3 col-sm-auto">
+      <input id="table-complete-search" type="text" class="form-control" name="searchTerm" [(ngModel)]="searchTerm">
+    </div>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope="col">Vorname</th>
+      <th scope="col">Nachname</th>
+      <th scope="col">Email</th>
+      <th scope="col">Aktionen</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let contact of contacts | filter: searchTerm : 'lastName'">
+      <th scope="row">{{ contact.firstName }}</th>
+      <th scope="row">{{ contact.lastName }}</th>
+      <th scope="row">{{ contact.email }}</th>
+      <th scope="row" class="actions ">
+        <a [routerLink]="['/contacts/edit/', contact.id]">
+          <img class="icon" src="/assets/icons/1814074_draw_edit_pencile_write_icon.png"/>
+        </a>
+        <img class="icon" src="/assets/icons/1646012_cancel_delete_error_exit_remove_icon.png" (click)="delete(contact.id)"/>
+      </th>
+    </tr>
+    </tbody>
+  </table>
+</div>

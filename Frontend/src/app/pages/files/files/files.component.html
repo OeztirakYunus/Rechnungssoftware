@@ -1,1 +1,51 @@
-<p>files works!</p>
+
+<h1>Datei hochladen</h1>
+<form #uploadForm>
+  <div class="row">
+    <div class="mb-1">
+      <label class="">
+        <input type="file" (change)="selectFile($event)" />
+      </label>
+    </div>
+    <div>
+      <button class="btn" (click)="upload()">
+        Hochladen
+      </button>
+    </div>
+  </div>
+</form>
+
+
+<div *ngIf="files">
+  <h1 class="mt-5">Auflistung aller Dateien</h1>
+  <div class="mb-3 row">
+    <label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Volltextsuche:</label>
+    <div class="col-xs-3 col-sm-auto">
+      <input id="table-complete-search" type="text" class="form-control" name="searchTerm" [(ngModel)]="searchTerm">
+    </div>
+  </div>
+    <table class="table table-striped">
+      <colgroup>
+        <col class="col-7">
+        <col class="col-3">
+        <col class="col-2">
+      </colgroup>
+      <thead>
+      <tr>
+        <th scope="col">Dateiname</th>
+        <th scope="col">Datum</th>
+        <th scope="col">Aktionen</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let file of files | filter: searchTerm : 'fileName'">
+        <th scope="row">{{ file.fileName }}</th>
+        <th scope="row">{{ file.creationTime | date:'dd.MM.yyyy HH:mm' }}</th>
+        <th scope="row">
+          <img class="icon" src="/assets/icons/172461_download_arrow_icon.png" (click)="this.download(file)">
+          <img class="icon" src="/assets/icons/1646012_cancel_delete_error_exit_remove_icon.png" (click)="this.delete(file.id)"/>
+        </th>
+      </tr>
+      </tbody>
+    </table>
+  </div>

@@ -1,1 +1,46 @@
-<p>offers works!</p>
+<a class="btn" [routerLink]="['/offers/create']">Angebot anlegen</a>
+
+<div *ngIf="offers">
+  <h1 class="mt-5">Auflistung aller Angebote</h1>
+  <div class="mb-3 row">
+    <label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Volltextsuche:</label>
+    <div class="col-xs-3 col-sm-auto">
+      <input id="table-complete-search" type="text" class="form-control" name="searchTerm" [(ngModel)]="searchTerm">
+    </div>
+  </div>
+
+
+  <table class="table table-striped">
+    <colgroup>
+      <col class="col-3">
+      <col class="col-4">
+      <col class="col-3">
+      <col class="col-2">
+    </colgroup>
+    <thead>
+    <tr>
+      <th scope="col">Angebotsnummer</th>
+      <th scope="col">Betreff</th>
+      <th scope="col">Status</th>
+      <th scope="col">Aktionen</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let offer of offers | filter: searchTerm : 'offerNumber'">
+
+    <th scope="row">{{ offer.offerNumber }}</th>
+      <th scope="row">{{ offer.subject }}</th>
+      <th scope="row">{{ offer.status == status.OPEN ? 'Geöffnet' : 'Geschlossen' }}</th>
+      <th scope="row" class="actions">
+        <img src="/assets/icons/285666_pdf_file_icon.png" class="icon" (click)="createPdf(offer.id)"/>
+        <img src="/assets/icons/4375147_logo_word_icon.png" class="icon" (click)="createWord(offer.id)"/>
+        <a [routerLink]="['/offers/edit/', offer.id]" *ngIf="offer.status == status.OPEN">
+          <img class="icon" src="/assets/icons/1814074_draw_edit_pencile_write_icon.png"/>
+        </a>
+        <img class="icon" src="/assets/icons/1646012_cancel_delete_error_exit_remove_icon.png" (click)="delete(offer.id)"/>
+        <a style="cursor: pointer" (click)="createOrder(offer.id)">Auftragsbestätigung erzeugen</a>
+      </th>
+    </tr>
+    </tbody>
+  </table>
+</div>
