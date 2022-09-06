@@ -119,23 +119,6 @@ class _LoginState extends State<Login> {
                             controlAffinity: ListTileControlAffinity.leading,
                           ),
                         ),
-                        SizedBox(
-                          width: 350,
-                          child: RichText(
-                            textAlign: TextAlign.start,
-                            text: TextSpan(
-                                text: 'Passwort vergessen?',
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => SignUp())),
-                                style: const TextStyle(
-                                  color: Colors.blueAccent,
-                                  fontSize: 18,
-                                )),
-                          ),
-                        ),
                       ],
                     ),
                     const SizedBox(

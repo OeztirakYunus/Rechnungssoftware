@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:demo5/products/product.dart';
 import 'package:flutter/material.dart';
 
+import '../network/networkHandler.dart';
+
 class SignUp extends StatelessWidget {
   SignUp({Key? key}) : super(key: key);
   final formGlobalKey = GlobalKey<FormState>();
@@ -18,10 +20,14 @@ class SignUp extends StatelessWidget {
   TextEditingController companyName = TextEditingController();
   TextEditingController companyMail = TextEditingController();
   TextEditingController companyPhoneNumber = TextEditingController();
+  TextEditingController companyUst = TextEditingController();
   TextEditingController companyAddress = TextEditingController();
   TextEditingController companyPostalCode = TextEditingController();
   TextEditingController companyCity = TextEditingController();
   TextEditingController companyCountry = TextEditingController();
+  TextEditingController companyBankName = TextEditingController();
+  TextEditingController companyIban = TextEditingController();
+  TextEditingController companyBic = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -170,8 +176,8 @@ class SignUp extends StatelessWidget {
                       controller: companyName,
                       autofocus: false,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Bitte Firmenname eingeben";
+                        if (value == null) {
+                          companyName.text = "";
                         }
                         return null;
                       },
@@ -197,8 +203,9 @@ class SignUp extends StatelessWidget {
                       autofocus: false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Bitte Firmenmail eingeben";
-                        } else if (isEmailValid(value.toString())) {
+                          companyMail.text = "";
+                        } else if (value.isNotEmpty &&
+                            isEmailValid(value.toString())) {
                           return "Firmenmail ist nicht gültig";
                         }
                         return null;
@@ -226,7 +233,7 @@ class SignUp extends StatelessWidget {
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Bitte Firmentelefonnummer eingeben";
+                          companyPhoneNumber.text = "";
                         } else if (value.length < 4) {
                           return "Firmentelefonnummer muss mind. 8 Ziffern lang sein";
                         }
@@ -245,6 +252,32 @@ class SignUp extends StatelessWidget {
                     const Align(
                       alignment: Alignment(-0.95, 1),
                       child: Text(
+                        'UST',
+                        style: TextStyle(fontSize: 20.00),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: companyUst,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          companyPhoneNumber.text = "";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100.0)),
+                          hintText: 'UST eingeben',
+                          hintStyle: const TextStyle(fontSize: 20.00)),
+                      style: const TextStyle(fontSize: 20.00),
+                    ),
+                    const SizedBox(
+                      height: 25.00,
+                    ),
+                    const Align(
+                      alignment: Alignment(-0.95, 1),
+                      child: Text(
                         'Firmenadresse',
                         style: TextStyle(fontSize: 20.00),
                       ),
@@ -254,8 +287,9 @@ class SignUp extends StatelessWidget {
                       autofocus: false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Bitte Firmenadresse eingeben";
-                        } else if (!value.contains(RegExp(r'[0-9]'))) {
+                          companyAddress.text = "";
+                        } else if (value.isNotEmpty &&
+                            !value.contains(RegExp(r'[0-9]'))) {
                           return "Bitte Hausnummer eingeben";
                         }
                         return null;
@@ -282,8 +316,8 @@ class SignUp extends StatelessWidget {
                       autofocus: false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Bitte Postleitzahl eingeben";
-                        } else if (value.length != 4) {
+                          companyPostalCode.text = "";
+                        } else if (value.isNotEmpty && value.length != 4) {
                           return "Postleitzahl muss 4 Ziffern lang sein";
                         }
                         return null;
@@ -311,7 +345,7 @@ class SignUp extends StatelessWidget {
                       autofocus: false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Bitte Stadt eingeben";
+                          companyCity.text = "";
                         }
                         return null;
                       },
@@ -337,7 +371,7 @@ class SignUp extends StatelessWidget {
                       autofocus: false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Bitte Land eingeben";
+                          companyCountry.text = "";
                         }
                         return null;
                       },
@@ -351,13 +385,90 @@ class SignUp extends StatelessWidget {
                     const SizedBox(
                       height: 25.00,
                     ),
+                    const Align(
+                      alignment: Alignment(-0.95, 1),
+                      child: Text(
+                        'Bankname',
+                        style: TextStyle(fontSize: 20.00),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: companyBankName,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          companyBankName.text = "";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100.0)),
+                          hintText: 'Bankname eingeben',
+                          hintStyle: const TextStyle(fontSize: 20.00)),
+                      style: const TextStyle(fontSize: 20.00),
+                    ),
+                    const SizedBox(
+                      height: 25.00,
+                    ),
+                    const Align(
+                      alignment: Alignment(-0.95, 1),
+                      child: Text(
+                        'IBAN',
+                        style: TextStyle(fontSize: 20.00),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: companyIban,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          companyIban.text = "";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100.0)),
+                          hintText: 'IBAN eingeben',
+                          hintStyle: const TextStyle(fontSize: 20.00)),
+                      style: const TextStyle(fontSize: 20.00),
+                    ),
+                    const SizedBox(
+                      height: 25.00,
+                    ),
+                    const Align(
+                      alignment: Alignment(-0.95, 1),
+                      child: Text(
+                        'BIC',
+                        style: TextStyle(fontSize: 20.00),
+                      ),
+                    ),
+                    TextFormField(
+                      controller: companyBic,
+                      autofocus: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          companyBic.text = "";
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100.0)),
+                          hintText: 'BIC eingeben',
+                          hintStyle: const TextStyle(fontSize: 20.00)),
+                      style: const TextStyle(fontSize: 20.00),
+                    ),
+                    const SizedBox(
+                      height: 25.00,
+                    ),
                     MaterialButton(
                       onPressed: () async {
                         if (!formGlobalKey.currentState!.validate()) {
                           return;
                         }
-                        int statusCode =
-                            0; /*await registerUser(
+                        int statusCode = await registerUser(
                             firstName.text,
                             lastName.text,
                             userMail.text,
@@ -365,10 +476,14 @@ class SignUp extends StatelessWidget {
                             companyName.text,
                             companyMail.text,
                             companyPhoneNumber.text,
+                            companyUst.text,
                             companyAddress.text,
                             companyPostalCode.text,
                             companyCity.text,
-                            companyCountry.text);*/
+                            companyCountry.text,
+                            companyBankName.text,
+                            companyIban.text,
+                            companyBic.text);
                         if (statusCode == 200) {
                           Navigator.push(
                             context,
@@ -379,7 +494,7 @@ class SignUp extends StatelessWidget {
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(100)),
-                      color: Colors.purpleAccent[700],
+                      color: Colors.redAccent[700],
                       child: const Text('Registrieren',
                           style: TextStyle(fontSize: 22.00, height: 1.35)),
                       textColor: Colors.white,
@@ -403,47 +518,77 @@ class SignUp extends StatelessWidget {
     return regex.hasMatch(email);
   }
 
-  Future<void> registerUser(
+  Future<int> registerUser(
       String firstName,
       String lastName,
       String userMail,
       String userPsw,
-      String companyName,
-      String companyMail,
-      String companyPhoneNumber,
-      String companyAddress,
-      String companyPostalCode,
-      String companyCity,
-      String companyCountry) async {
+      String? companyName,
+      String? companyMail,
+      String? companyPhoneNumber,
+      String? ustNumber,
+      String? companyAddress,
+      String? companyPostalCode,
+      String? companyCity,
+      String? companyCountry,
+      String? bankName,
+      String? iban,
+      String? bic) async {
     String url = "https://backend.invoicer.at/api/Auth/register";
 
     Uri uri = Uri.parse(url);
 
-    Address address =
-        Address(companyAddress, companyPostalCode, companyCity, companyCountry);
-
-    Company company =
-        Company(companyName, companyMail, companyPhoneNumber, address);
-
     var body = {};
+    body["company"] = {
+      "companyName": companyName,
+      "email": companyMail,
+      "phoneNumber": companyPhoneNumber,
+      "ustNumber": ustNumber,
+      "address": {
+        "street": companyAddress,
+        "zipCode": companyPostalCode,
+        "city": companyCity,
+        "country": companyCountry
+      },
+      "bankInformation": {
+        "bankName": bankName,
+        "iban": iban,
+        "bic": bic,
+      }
+    };
+    body["user"] = {
+      "firstName": firstName,
+      "lastName": lastName,
+      "email": userMail,
+      "password": userPsw
+    };
+
     var jsonBody = json.encode(body);
 
-    /*final response = await http.put(uri,
+    final response = await http.post(uri,
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': 'Bearer' //$token'
         },
-        body: jsonBody);*/
-    var response = await http.post(
-      uri,
-      headers: {"Content-Type": "application/json"},
-      //body: jsonEncode({"user": user.toJson(), "password": userPsw})
-    );
+        body: jsonBody);
 
-    //print(response.statusCode);
-    //print(response.body);
-    
-    //return response.statusCode;
+    if (response.statusCode == 200) {
+      var responseString = json.decode(response.body);
+      String responseToken = responseString["message"].split(": ")[1];
+      //var userRole = responseString["userRoles"];
+      NetworkHandler.storeToken(responseToken);
+      NetworkHandler.storeRole("Admin");
+      print("Token: $responseToken");
+      var readToken = await NetworkHandler.getToken();
+      readToken = readToken.toString();
+      if (readToken.isNotEmpty) {
+        print("READ TOKEN $readToken");
+      }
+    }
+
+    print(response.statusCode);
+    print(response.body);
+
+    return response.statusCode;
   }
 }
