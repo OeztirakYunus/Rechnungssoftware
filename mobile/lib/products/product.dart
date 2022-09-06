@@ -5,7 +5,6 @@ import 'package:demo5/products/editProduct.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../NavBar.dart';
-import 'dart:convert';
 
 class Product extends StatefulWidget {
   final int categoryIndex;
@@ -24,6 +23,7 @@ class _ProductsState extends State<Product> {
 
   @override
   Widget build(BuildContext context) {
+    setState(() {});
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
@@ -128,57 +128,23 @@ class _ProductsState extends State<Product> {
             MaterialPageRoute(builder: (context) => const AddProduct()),
           );
         },
-        backgroundColor: Colors.purple,
+        backgroundColor: Colors.redAccent[700],
         child: const Icon(Icons.add),
       ),
     ));
   }
 
   Future<List<Products>> getProducts() async {
-    String url = "https://backend.invoicer.at/api/Products";
-    Uri uri = Uri.parse(url);
-
-    String? token = await NetworkHandler.getToken();
-    List<Products> products = [];
     List<String> categories = ["Article", "Service"];
-    if (token!.isNotEmpty) {
-      token = token.toString();
-
-      final response = await http.get(uri, headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        "Authorization": "Bearer $token"
-      });
-      print(response.statusCode);
-
-      List data = await json.decode(response.body) as List;
-
-      for (var element in data) {
-        Map obj = element;
-        String articleNumber = obj['articleNumber'];
-        String productName = obj['productName'];
-        String sellingPriceNet = obj['sellingPriceNet'].toString();
-        String category = obj['category'].toString();
-        String description = obj['description'];
-        String unit = obj['unit'];
-        String productId = obj['id'];
-        String companyId = obj['companyId'];
-        Products product = Products(
-            productName,
-            category.toString(),
-            description,
-            articleNumber,
-            sellingPriceNet,
-            productId,
-            unit,
-            companyId);
-        print(productId);
-        if (categories[widget.categoryIndex] == category) {
-          products.add(product);
-        }
+    List<Products> categoryProducts = [];
+    List<Products> productList = await NetworkHandler.getProducts();
+    for (int i = 0; i < productList.length; i++) {
+      if (categories[widget.categoryIndex] == productList[i].category) {
+        categoryProducts.add(productList[i]);
       }
     }
-    return products;
+
+    return categoryProducts;
   }
 
   Future<int> deleteProduct(String productId) async {

@@ -61,7 +61,12 @@ class EditContact extends StatelessWidget {
     TextEditingController zipCode = TextEditingController();
     TextEditingController city = TextEditingController();
     TextEditingController country = TextEditingController();
-    title.text = this.title!;
+    if (this.title == null || this.title!.isEmpty) {
+      title.text = "";
+    } else {
+      title.text = this.title!;
+    }
+
     firstName.text = this.firstName;
     lastName.text = this.lastName;
     nameOfOrganisation.text = this.nameOfOrganisation;
@@ -379,7 +384,7 @@ class EditContact extends StatelessWidget {
                               },
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(100)),
-                              color: Colors.purpleAccent[700],
+                              color: Colors.redAccent[700],
                               child: const Text('Speichern',
                                   style:
                                       TextStyle(fontSize: 22.00, height: 1.35)),

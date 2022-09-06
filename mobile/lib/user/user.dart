@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:demo5/network/networkHandler.dart';
 import 'package:demo5/user/addUser.dart';
 import 'package:flutter/material.dart';
@@ -108,7 +106,7 @@ class _UsersState extends State<Users> {
               MaterialPageRoute(builder: (context) => const AddUser()),
             );
           },
-          backgroundColor: Colors.purple,
+          backgroundColor: Colors.redAccent[700],
           child: const Icon(Icons.add),
         ),
       ),
@@ -116,39 +114,16 @@ class _UsersState extends State<Users> {
   }
 
   Future<List<User>> getUsers() async {
-    String url = "https://backend.invoicer.at/api/Users";
-    Uri uri = Uri.parse(url);
-
-    String? token = await NetworkHandler.getToken();
-    List<User> users = [];
     List<String> roles = ["Admin", "User"];
-
-    if (token!.isNotEmpty) {
-      token = token.toString();
-
-      final response = await http.get(uri, headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        "Authorization": "Bearer $token"
-      });
-
-      print(response.statusCode);
-
-      List data = await json.decode(response.body) as List;
-      for (var element in data) {
-        Map obj = element;
-        String firstName = obj["firstName"];
-        String lastName = obj["lastName"];
-        String email = obj["email"];
-        String role = obj["role"];
-        String userId = obj["id"];
-        User user = User(firstName, lastName, email, role, userId);
-        if (roles[widget.roleIndex] == user.role) {
-          users.add(user);
-        }
+    List<User> categoryUsers = [];
+    List<User> userList = await NetworkHandler.getUsers();
+    for (int i = 0; i < userList.length; i++) {
+      if (roles[widget.roleIndex] == userList[i].role) {
+        categoryUsers.add(userList[i]);
       }
     }
-    return users;
+
+    return categoryUsers;
   }
 
   Future<void> deleteUser(String userId) async {

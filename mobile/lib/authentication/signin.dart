@@ -25,11 +25,6 @@ class _LoginState extends State<Login> {
   bool _passwordVisible = true;
 
   @override
-  void initState() {
-    _passwordVisible = true;
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -160,7 +155,7 @@ class _LoginState extends State<Login> {
                       },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(100)),
-                      color: Colors.purpleAccent[700],
+                      color: Colors.redAccent[700],
                       child: const Text('Anmelden',
                           style: TextStyle(fontSize: 22.00, height: 1.35)),
                       textColor: Colors.white,

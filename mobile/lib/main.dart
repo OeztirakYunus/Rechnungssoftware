@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         for (int i = 1; i < 10; i++) {
           strengths.add(0.1 * i);
         }
-  
+
         for (var strength in strengths) {
           final double ds = 0.5 - strength;
           swatch[(strength * 1000).round()] = Color.fromRGBO(
@@ -36,7 +36,8 @@ class MyApp extends StatelessWidget {
       return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-              primarySwatch: createMaterialColor(const Color(0xFF7B1FA2))),
+              primarySwatch:
+                  createMaterialColor(const Color.fromARGB(255, 239, 5, 20))),
           home: const Login());
     });
   }

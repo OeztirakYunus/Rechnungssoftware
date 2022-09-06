@@ -1,9 +1,7 @@
 // ignore: file_names
 import 'package:demo5/network/networkHandler.dart';
-import 'package:demo5/products/categoryList.dart';
 import 'package:demo5/products/product.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:select_form_field/select_form_field.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -236,7 +234,7 @@ class EditProduct extends StatelessWidget {
                             },
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(100)),
-                            color: Colors.purpleAccent[700],
+                            color: Colors.redAccent[700],
                             child: const Text('Speichern',
                                 style:
                                     TextStyle(fontSize: 22.00, height: 1.35)),

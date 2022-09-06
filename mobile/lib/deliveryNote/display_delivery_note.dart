@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:demo5/document-scanner/scanner.dart';
+import 'package:demo5/network/networkHandler.dart';
 import 'package:flutter/material.dart';
 
 class Document extends StatelessWidget {
@@ -15,6 +17,16 @@ class Document extends StatelessWidget {
         title: Text(fileName),
       ),
       body: Image(image: FileImage(scannedDocument!)),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const Scanner()),
+            );
+          },
+          backgroundColor: Colors.purple,
+          child: const Icon(Icons.add),
+        ),
     ));
   }
 }

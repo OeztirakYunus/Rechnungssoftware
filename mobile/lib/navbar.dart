@@ -21,14 +21,10 @@ class NavBar extends StatelessWidget {
             .push(MaterialPageRoute(builder: (context) => CategoryContact()));
         return;
       case 2:
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => const Companies()));
-        return;
-      case 3:
         Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => const DeliveryNote()));
         return;
-      case 4:
+      case 3:
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => const Invoice()));
         return;
@@ -43,7 +39,7 @@ class NavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Material(
-          color: const Color.fromARGB(255, 190, 47, 252),
+          color: const Color.fromARGB(255, 239, 5, 20),
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             children: <Widget>[
@@ -78,18 +74,6 @@ class NavBar extends StatelessWidget {
               const SizedBox(height: 16),
               ListTile(
                 leading: Image.asset(
-                  "lib/assets/company.png",
-                  scale: 1.0,
-                  height: 35.0,
-                  width: 35.0,
-                ),
-                title: const Text('Unternehmen',
-                    style: TextStyle(color: Colors.white, fontSize: 18)),
-                onTap: () => selectedItem(context, 2),
-              ),
-              const SizedBox(height: 16),
-              ListTile(
-                leading: Image.asset(
                   "lib/assets/delivery_report.png",
                   scale: 2.0,
                   height: 35.0,
@@ -97,7 +81,7 @@ class NavBar extends StatelessWidget {
                 ),
                 title: const Text('Lieferscheine',
                     style: TextStyle(color: Colors.white, fontSize: 18)),
-                onTap: () => selectedItem(context, 3),
+                onTap: () => selectedItem(context, 2),
               ),
               const SizedBox(height: 16),
               ListTile(
@@ -109,7 +93,7 @@ class NavBar extends StatelessWidget {
                 ),
                 title: const Text('Rechnungen',
                     style: TextStyle(color: Colors.white, fontSize: 18)),
-                onTap: () => selectedItem(context, 4),
+                onTap: () => selectedItem(context, 3),
               ),
               const SizedBox(height: 16),
               ListTile(
@@ -121,7 +105,7 @@ class NavBar extends StatelessWidget {
                 ),
                 title: const Text('Dokumente',
                     style: TextStyle(color: Colors.white, fontSize: 18)),
-                onTap: () => selectedItem(context, 5),
+                onTap: () => selectedItem(context, 4),
               ),
               const SizedBox(height: 16),
               ListTile(
@@ -134,7 +118,7 @@ class NavBar extends StatelessWidget {
                 title: const Text('Auftrags-\nbestätigungen',
                     style: TextStyle(
                         color: Colors.white, fontSize: 18, height: 1.40)),
-                onTap: () => selectedItem(context, 6),
+                onTap: () => selectedItem(context, 5),
               ),
               const SizedBox(height: 16),
               ListTile(
@@ -148,18 +132,6 @@ class NavBar extends StatelessWidget {
                     style: TextStyle(color: Colors.white, fontSize: 18)),
                 onTap: () => selectedItem(context, 6),
               ),
-              const SizedBox(height: 16),
-              ListTile(
-                leading: Image.asset(
-                  "lib/assets/settings.png",
-                  scale: 2.0,
-                  height: 35.0,
-                  width: 35.0,
-                ),
-                title: const Text('Einstellungen',
-                    style: TextStyle(color: Colors.white, fontSize: 18)),
-                onTap: () => null,
-              )
             ],
           )),
     );

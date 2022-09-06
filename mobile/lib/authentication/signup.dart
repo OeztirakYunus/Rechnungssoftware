@@ -356,7 +356,8 @@ class SignUp extends StatelessWidget {
                         if (!formGlobalKey.currentState!.validate()) {
                           return;
                         }
-                        int statusCode = await registerUser(
+                        int statusCode =
+                            0; /*await registerUser(
                             firstName.text,
                             lastName.text,
                             userMail.text,
@@ -367,7 +368,7 @@ class SignUp extends StatelessWidget {
                             companyAddress.text,
                             companyPostalCode.text,
                             companyCity.text,
-                            companyCountry.text);
+                            companyCountry.text);*/
                         if (statusCode == 200) {
                           Navigator.push(
                             context,
@@ -402,7 +403,7 @@ class SignUp extends StatelessWidget {
     return regex.hasMatch(email);
   }
 
-  Future<int> registerUser(
+  Future<void> registerUser(
       String firstName,
       String lastName,
       String userMail,
@@ -414,7 +415,7 @@ class SignUp extends StatelessWidget {
       String companyPostalCode,
       String companyCity,
       String companyCountry) async {
-    String url = "http://invoicer.at:8080/api/Auth/register";
+    String url = "https://backend.invoicer.at/api/Auth/register";
 
     Uri uri = Uri.parse(url);
 
@@ -424,18 +425,25 @@ class SignUp extends StatelessWidget {
     Company company =
         Company(companyName, companyMail, companyPhoneNumber, address);
 
-    //User user = User(firstName, lastName, userMail, company);
+    var body = {};
+    var jsonBody = json.encode(body);
 
-    //print(jsonEncode({"user": user.toJson(), "password": userPsw}));
-
-    var response = await http.post(uri,
-        headers: {"Content-Type": "application/json"},
-        //body: jsonEncode({"user": user.toJson(), "password": userPsw})
+    /*final response = await http.put(uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer' //$token'
+        },
+        body: jsonBody);*/
+    var response = await http.post(
+      uri,
+      headers: {"Content-Type": "application/json"},
+      //body: jsonEncode({"user": user.toJson(), "password": userPsw})
     );
 
     //print(response.statusCode);
     //print(response.body);
-
-    return response.statusCode;
+    
+    //return response.statusCode;
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:demo5/document-scanner/display_document.dart';
+import 'package:demo5/deliveryNote/display_delivery_note.dart';
 import 'package:flutter/material.dart';
 
 class DocumentList extends StatefulWidget {

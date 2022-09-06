@@ -346,7 +346,7 @@ class AddContact extends StatelessWidget {
                               },
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(100)),
-                              color: Colors.purpleAccent[700],
+                              color: Colors.redAccent[700],
                               child: const Text('Hinzufügen',
                                   style:
                                       TextStyle(fontSize: 22.00, height: 1.35)),
