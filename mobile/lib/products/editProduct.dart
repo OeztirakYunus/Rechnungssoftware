@@ -62,7 +62,7 @@ class EditProduct extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: const Text('Produkt Hinzufügen',
+        title: const Text('Produkt Bearbeiten',
             style:
                 TextStyle(height: 1.00, fontSize: 25.00, color: Colors.white)),
         centerTitle: true,

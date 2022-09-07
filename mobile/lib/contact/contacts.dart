@@ -19,11 +19,6 @@ class Contacts extends StatefulWidget {
 
 class _ContactsState extends State<Contacts> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     setState(() {});
     return SafeArea(

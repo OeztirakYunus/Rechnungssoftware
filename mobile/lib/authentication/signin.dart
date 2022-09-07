@@ -23,6 +23,7 @@ class _LoginState extends State<Login> {
   TextEditingController userMail = TextEditingController();
   TextEditingController userPsw = TextEditingController();
   bool _passwordVisible = true;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -124,27 +125,36 @@ class _LoginState extends State<Login> {
                     const SizedBox(
                       height: 25.00,
                     ),
-                    MaterialButton(
-                      onPressed: () async {
-                        int statusCode =
-                            await loginUser(userMail.text, userPsw.text);
-                        if (statusCode == 200) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Categories()),
-                          );
-                        }
-                      },
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100)),
-                      color: Colors.redAccent[700],
-                      child: const Text('Anmelden',
-                          style: TextStyle(fontSize: 22.00, height: 1.35)),
-                      textColor: Colors.white,
-                      height: 50.00,
-                      minWidth: 477.00,
-                    ),
+                    isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : MaterialButton(
+                            onPressed: () async {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              int statusCode =
+                                  await loginUser(userMail.text, userPsw.text);
+                              if (statusCode == 200) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Categories()),
+                                );
+                              }
+                              setState(() {
+                                isLoading = false;
+                              });
+                            },
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100)),
+                            color: Colors.redAccent[700],
+                            child: const Text('Anmelden',
+                                style:
+                                    TextStyle(fontSize: 22.00, height: 1.35)),
+                            textColor: Colors.white,
+                            height: 50.00,
+                            minWidth: 477.00,
+                          ),
                   ],
                 ),
               ),

@@ -39,14 +39,9 @@ class Categories extends StatelessWidget {
         );
       },
       child: Card(
-        child: Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(_products.getProductCategoryImage(index)),
-                    fit: BoxFit.scaleDown)),
-            child: ListTile(
-              leading: Text(_products.getProductCategoryName(index)),
-            )),
+        child: ListTile(
+          leading: Text(_products.getProductCategoryName(index)),
+        ),
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       ),

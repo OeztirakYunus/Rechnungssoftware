@@ -14,11 +14,11 @@ class AddContact extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> _typeOfContacts = [
-      {'value': 0, 'label': 'Supplier'},
-      {'value': 1, 'label': 'Client'},
+      {'value': 0, 'label': 'Anbieter'},
+      {'value': 1, 'label': 'Kunde'},
       {'value': 2, 'label': 'Partner'},
-      {'value': 3, 'label': 'ProspectiveClient'},
-      {'value': 4, 'label': 'NoTargetGroup'}
+      {'value': 3, 'label': 'Möglicher Kunde'},
+      {'value': 4, 'label': 'Keine Zielgruppe'}
     ];
 
     List<Map<String, dynamic>> _genders = [

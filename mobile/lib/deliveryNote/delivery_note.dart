@@ -7,6 +7,11 @@ import 'package:demo5/network/networkHandler.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../contact/contacts.dart';
+import '../products/product.dart';
+import '../user/user.dart';
+import 'editDeliveryNote.dart';
+
 class DeliveryNote extends StatefulWidget {
   const DeliveryNote({Key? key}) : super(key: key);
 
@@ -43,10 +48,10 @@ class _DeliveryNotesState extends State<DeliveryNote> {
                   return Card(
                     child: ListTile(
                       title: Text(
-                        snapshot.data?[index].deliveryNoteNumber,
+                        snapshot.data?[index].delNoteNum,
                       ),
                       subtitle: Text(
-                        "Datum: ${snapshot.data?[index].deliveryNoteDate}  Status: ${snapshot.data?[index].status}",
+                        "Status: ${snapshot.data?[index].status}",
                       ),
                       trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                         OutlinedButton(
@@ -82,32 +87,43 @@ class _DeliveryNotesState extends State<DeliveryNote> {
                           },
                           child: const Icon(Icons.delete),
                         ),
-                        /*OutlinedButton(
+                        OutlinedButton(
                           onPressed: () => {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => EditProduct(
-                                        productName:
-                                            snapshot.data?[index].productName,
-                                        description:
-                                            snapshot.data?[index].description,
-                                        articleNumber:
-                                            snapshot.data?[index].articleNumber,
-                                        sellingPriceNet: snapshot
-                                            .data?[index].sellingPriceNet,
-                                        category:
-                                            snapshot.data?[index].category,
-                                        unitOld: snapshot.data?[index].unit,
-                                        productId:
-                                            snapshot.data?[index].productId,
-                                        companyId:
-                                            snapshot.data?[index].companyId,
-                                      )),
+                                  builder: (context) => EditDeliveryNote(
+                                      delNoteNum:
+                                          snapshot.data?[index].delNoteNum,
+                                      delNoteDate:
+                                          snapshot.data?[index].delNoteDate,
+                                      status: snapshot.data?[index].status,
+                                      subject: snapshot.data?[index].subject,
+                                      headerText:
+                                          snapshot.data?[index].headerText,
+                                      flowText: snapshot.data?[index].flowText,
+                                      totalDiscount:
+                                          snapshot.data?[index].totalDiscount,
+                                      typeOfDiscount:
+                                          snapshot.data?[index].typeOfDiscount,
+                                      tax: snapshot.data?[index].tax,
+                                      clientId: snapshot.data?[index].clientId,
+                                      contactPersonId:
+                                          snapshot.data?[index].contactPersonId,
+                                      quantityPosition: snapshot
+                                          .data?[index].quantityPosition,
+                                      discountPosition: snapshot
+                                          .data?[index].discountPosition,
+                                      typeOfDiscountPosition: snapshot
+                                          .data?[index].typeOfDiscountPosition,
+                                      productPosition:
+                                          snapshot.data?[index].productPosition,
+                                      products:
+                                          snapshot.data?[index].products)),
                             )
                           },
                           child: Icon(Icons.edit),
-                        ),*/
+                        ),
                       ]),
                     ),
                     shape: RoundedRectangleBorder(
@@ -149,15 +165,80 @@ class _DeliveryNotesState extends State<DeliveryNote> {
       print(response.statusCode);
 
       List data = await json.decode(response.body) as List;
-      for (var element in data) {
-        Map obj = element;
-        String deliveryNoteNumber = obj["deliveryNoteNumber"];
-        String id = obj["id"];
-        String deliveryNoteDate = obj["deliveryNoteDate"];
-        String status = obj["status"];
-        DeliveryNotes deliveryNote =
-            DeliveryNotes(id, deliveryNoteNumber, deliveryNoteDate, status);
-        deliveryNotes.add(deliveryNote);
+      List<String> quantityPosition = [];
+      List<String> discountPosition = [];
+      List<String> typeOfDiscountPosition = [];
+      List<String> productIdPosition = [];
+      List<String> productPosition = [];
+
+      List<Contact> contacts = await NetworkHandler.getContacts();
+      List<User> users = await NetworkHandler.getUsers();
+      List<Products> products = await NetworkHandler.getProducts();
+
+      String clientIdPos = "";
+      String contactIdPos = "";
+
+      if (response.statusCode == 200) {
+        for (var element in data) {
+          Map obj = element;
+          String id = obj["id"];
+          String deliveryNoteNumber = obj["deliveryNoteNumber"];
+          String deliveryNoteDate = obj["deliveryNoteDate"];
+          String status = obj["status"];
+          String subject = obj["subject"];
+          String headerText = obj["headerText"];
+          String flowText = obj["flowText"];
+          String totalDiscount =
+              obj["documentInformations"]["totalDiscount"].toString();
+          String typeOfDiscount =
+              obj["documentInformations"]["typeOfDiscount"].toString();
+          String tax = obj["documentInformations"]["tax"].toString();
+          String clientId = obj["documentInformations"]["clientId"];
+          String contactPersonId =
+              obj["documentInformations"]["contactPersonId"];
+          for (var position in obj["documentInformations"]["positions"]) {
+            quantityPosition.add(position["quantity"].toString());
+            discountPosition.add(position["discount"].toString());
+            typeOfDiscountPosition.add(position["typeOfDiscount"]);
+            productIdPosition.add(position["productId"]);
+          }
+          for (var id in productIdPosition) {
+            for (var product in products) {
+              if (id == product.productId) {
+                productPosition.add(product.productName);
+              }
+            }
+          }
+          for (var user in users) {
+            if (user.userId == contactPersonId) {
+              contactIdPos = "${user.firstName} ${user.lastName}";
+            }
+          }
+          for (var contact in contacts) {
+            if (contact.contactId == clientId) {
+              clientIdPos = "${contact.firstName} ${contact.lastName}";
+            }
+          }
+          DeliveryNotes deliveryNote = DeliveryNotes(
+              id,
+              deliveryNoteNumber,
+              deliveryNoteDate,
+              status,
+              subject,
+              headerText,
+              flowText,
+              totalDiscount,
+              typeOfDiscount,
+              tax,
+              clientIdPos,
+              contactIdPos,
+              quantityPosition,
+              discountPosition,
+              typeOfDiscountPosition,
+              productPosition,
+              products);
+          deliveryNotes.add(deliveryNote);
+        }
       }
     }
 
@@ -186,12 +267,41 @@ class _DeliveryNotesState extends State<DeliveryNote> {
 
 class DeliveryNotes {
   final String id;
-  final String deliveryNoteNumber;
-  final String deliveryNoteDate;
+  final String delNoteNum;
+  final String delNoteDate;
   final String status;
+  final String subject;
+  final String headerText;
+  final String flowText;
+  final String totalDiscount;
+  final String typeOfDiscount;
+  final String tax;
+  final String clientId;
+  final String contactPersonId;
+  final List<String> quantityPosition;
+  final List<String> discountPosition;
+  final List<String> typeOfDiscountPosition;
+  final List<String> productPosition;
+  final List<Products> products;
 
   DeliveryNotes(
-      this.id, this.deliveryNoteNumber, this.deliveryNoteDate, this.status);
+      this.id,
+      this.delNoteNum,
+      this.delNoteDate,
+      this.status,
+      this.subject,
+      this.headerText,
+      this.flowText,
+      this.totalDiscount,
+      this.typeOfDiscount,
+      this.tax,
+      this.clientId,
+      this.contactPersonId,
+      this.quantityPosition,
+      this.discountPosition,
+      this.typeOfDiscountPosition,
+      this.productPosition,
+      this.products);
 }
 
 

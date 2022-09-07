@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:demo5/contact/contacts.dart';
 import 'package:demo5/deliveryNote/delivery_note.dart';
+import 'package:demo5/deliveryNote/editDynamicWidget.dart';
 import 'package:demo5/network/networkHandler.dart';
 import 'package:demo5/products/product.dart';
 import 'package:demo5/user/user.dart';
@@ -9,20 +10,55 @@ import 'package:http/http.dart' as http;
 import 'package:select_form_field/select_form_field.dart';
 import 'dynamicWidget.dart';
 
-class AddDeliveryNote extends StatefulWidget {
-  const AddDeliveryNote({Key? key}) : super(key: key);
+class EditDeliveryNote extends StatefulWidget {
+  final String delNoteNum;
+  final String delNoteDate;
+  final String status;
+  final String subject;
+  final String headerText;
+  final String flowText;
+  final String totalDiscount;
+  final String typeOfDiscount;
+  final String tax;
+  final String clientId;
+  final String contactPersonId;
+  final List<String> quantityPosition;
+  final List<String> discountPosition;
+  final List<String> typeOfDiscountPosition;
+  final List<String> productPosition;
+  final List<Products> products;
+  const EditDeliveryNote(
+      {Key? key,
+      required this.delNoteNum,
+      required this.delNoteDate,
+      required this.status,
+      required this.subject,
+      required this.headerText,
+      required this.flowText,
+      required this.totalDiscount,
+      required this.typeOfDiscount,
+      required this.tax,
+      required this.clientId,
+      required this.contactPersonId,
+      required this.quantityPosition,
+      required this.discountPosition,
+      required this.typeOfDiscountPosition,
+      required this.productPosition,
+      required this.products})
+      : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _AddDeliveryNotesState();
+  State<StatefulWidget> createState() => _EditDeliveryNotesState();
 }
 
-class _AddDeliveryNotesState extends State<AddDeliveryNote> {
+class _EditDeliveryNotesState extends State<EditDeliveryNote> {
   String user = "";
   String user2 = "";
   String contact = "";
   String contact2 = "";
   int count = 0;
-  List<DynamicWidget> dynamicList = [];
+  List<EditDynamicWidget> dynamicList = [];
+  List<DynamicWidget> addDynamicList = [];
   List<String> productPosition = [];
   List<String> quantityPosition = [];
   List<String> discountPosition = [];
@@ -53,6 +89,32 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
       {'value': 1, 'label': 'Prozent'}
     ];
 
+    status.text = widget.status;
+    deliveryNoteNumber.text = widget.delNoteNum;
+    deliveryNoteDate.text = widget.delNoteDate;
+    headerText.text = widget.headerText;
+    flowText.text = widget.flowText;
+    subject.text = widget.subject;
+    typeOfDiscount.text = widget.typeOfDiscount;
+    totalDiscount.text = widget.totalDiscount;
+    tax.text = widget.tax;
+    user = widget.contactPersonId;
+    contact = widget.clientId;
+
+    for (int i = 0; i < widget.quantityPosition.length; i++) {
+      dynamicList.add(EditDynamicWidget(
+          products: widget.products,
+          pPosition: widget.productPosition[i],
+          qPosition: widget.quantityPosition[i],
+          dPosition: widget.discountPosition[i],
+          typePosition: widget.typeOfDiscountPosition[i]));
+
+      productPosition.add(widget.productPosition[i]);
+      quantityPosition.add(widget.quantityPosition[i]);
+      discountPosition.add(widget.discountPosition[i]);
+      typeOfDiscountPosition.add(widget.typeOfDiscountPosition[i]);
+    }
+
     Widget dynamicTextField = Container(
       width: 500,
       child: ListView.builder(
@@ -62,10 +124,19 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
       ),
     );
 
+    Widget addDynamicTextField = Container(
+      width: 500,
+      child: ListView.builder(
+        itemCount: addDynamicList.length,
+        shrinkWrap: true,
+        itemBuilder: (_, index) => addDynamicList[index],
+      ),
+    );
+
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
-              title: const Text('Lieferschein anlegen',
+              title: const Text('Lieferschein bearbeiten',
                   style: TextStyle(
                       height: 1.00, fontSize: 25.00, color: Colors.white)),
               centerTitle: true,
@@ -201,7 +272,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                           controller: status,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return "Status darf nicht leer sein!";
+                              value = widget.status;
                             }
                           },
                           type: SelectFormFieldType.dropdown,
@@ -210,7 +281,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
-                              hintText: 'Status auswählen',
+                              hintText: widget.status,
                               hintStyle: const TextStyle(fontSize: 20.00)),
                           onChanged: (val) => status.text = val,
                           onSaved: (val) =>
@@ -247,12 +318,17 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                         SelectFormField(
                           controller: typeOfDiscount,
                           type: SelectFormFieldType.dropdown,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              value = widget.typeOfDiscount;
+                            }
+                          },
                           labelText: 'Ermäßigungstyp',
                           items: _typeOfDiscount,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
-                              hintText: 'Ermäßigungstyp auswählen',
+                              hintText: widget.typeOfDiscount,
                               hintStyle: const TextStyle(fontSize: 20.00)),
                           onChanged: (val) => typeOfDiscount.text = val,
                           onSaved: (val) =>
@@ -420,13 +496,14 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                           height: 25.00,
                         ),
                         dynamicTextField,
+                        addDynamicTextField,
                         const SizedBox(
                           height: 25.00,
                         ),
                         MaterialButton(
                           onPressed: () async {
                             submitData();
-                            await addDeliveryNote(
+                            await editDeliveryNote(
                                 deliveryNoteNumber.text,
                                 deliveryNoteDate.text,
                                 status.text,
@@ -486,19 +563,15 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
       this.tax = tax;
       this.user = user;
       this.contact = contact;
+      dynamicList = [];
     });
-    dynamicList.add(DynamicWidget(
+    addDynamicList.add(DynamicWidget(
       products: products,
     ));
   }
 
   submitData() {
-    productPosition = [];
-    quantityPosition = [];
-    discountPosition = [];
-    typeOfDiscountPosition = [];
-
-    for (var widget in dynamicList) {
+    for (var widget in addDynamicList) {
       productPosition.add(widget.productPosition.text);
       quantityPosition.add(widget.quantityPosition.text);
       discountPosition.add(widget.discountPosition.text);
@@ -506,7 +579,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
     }
   }
 
-  Future<int> addDeliveryNote(
+  Future<int> editDeliveryNote(
       String delNoteNum,
       String delNoteDate,
       String status,
@@ -522,7 +595,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
       List<String> discountPosition,
       List<String> typeOfDiscountPosition,
       List<String> productPosition) async {
-    String url = "https://backend.invoicer.at/api/Companies/add-delivery-note";
+    String url = "https://backend.invoicer.at/api/DeliveryNotes";
     Uri uri = Uri.parse(url);
     List<Products> products = await NetworkHandler.getProducts();
     List<Contact> contacts = await NetworkHandler.getContacts();
@@ -623,10 +696,4 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
 
     return 0;
   }
-
-  /*Widget createWidget(int count) {
-    if (count > 0) {
-      textCtrlList.add(value)
-    }
-  }*/
 }

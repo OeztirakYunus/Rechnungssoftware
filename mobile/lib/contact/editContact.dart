@@ -35,12 +35,33 @@ class EditContact extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<String> typeOfContactsDE = [
+      "Anbieter",
+      "Kunde",
+      "Partner",
+      "Möglicher Kunde",
+      "Keine Zielgruppe"
+    ];
+
+    List<String> typeOfContactsEN = [
+      "Supplier",
+      "Client",
+      "Partner",
+      "ProspectiveClient",
+      "NoTargetGroup"
+    ];
+    int index = 0;
+    for (int i = 0; i < typeOfContactsEN.length; i++) {
+      if (typeOfContactsEN[i] == this.typeOfContact) {
+        index = i;
+      }
+    }
     List<Map<String, dynamic>> _typeOfContacts = [
-      {'value': 0, 'label': 'Supplier'},
-      {'value': 1, 'label': 'Client'},
+      {'value': 0, 'label': 'Anbieter'},
+      {'value': 1, 'label': 'Kunde'},
       {'value': 2, 'label': 'Partner'},
-      {'value': 3, 'label': 'ProspectiveClient'},
-      {'value': 4, 'label': 'NoTargetGroup'}
+      {'value': 3, 'label': 'Möglicher Kunde'},
+      {'value': 4, 'label': 'Keine Zielgruppe'}
     ];
 
     List<Map<String, dynamic>> _genders = [
@@ -80,7 +101,7 @@ class EditContact extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: const Text('Kontakt hinzufügen',
+        title: const Text('Kontakt bearbeiten',
             style:
                 TextStyle(height: 1.00, fontSize: 25.00, color: Colors.white)),
         centerTitle: true,
@@ -112,7 +133,7 @@ class EditContact extends StatelessWidget {
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
-                              hintText: this.typeOfContact,
+                              hintText: typeOfContactsDE[index],
                               hintStyle: const TextStyle(fontSize: 20.00)),
                           onChanged: (val) => typeOfContact.text = val,
                           onSaved: (val) =>

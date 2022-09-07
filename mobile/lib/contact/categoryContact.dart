@@ -55,11 +55,11 @@ class Category {
   List<Category> categoryList = [];
 
   void initializeCategory() {
-    categoryList.add(Category("Supplier"));
-    categoryList.add(Category("Client"));
+    categoryList.add(Category("Anbieter"));
+    categoryList.add(Category("Kunde"));
     categoryList.add(Category("Partner"));
-    categoryList.add(Category("ProspectiveClient"));
-    categoryList.add(Category("NoTargetGroup"));
+    categoryList.add(Category("Möglicher Kunde"));
+    categoryList.add(Category("Keine Zielgruppe"));
   }
 
   String getProductCategoryName(int index) {
