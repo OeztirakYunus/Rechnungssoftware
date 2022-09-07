@@ -1,11 +1,16 @@
 import 'dart:convert';
+import 'dart:isolate';
+import 'dart:ui';
 
 import 'package:demo5/NavBar.dart';
 import 'package:demo5/deliveryNote/addDeliveryNote.dart';
 import 'package:demo5/document-scanner/scanner.dart';
 import 'package:demo5/network/networkHandler.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../contact/contacts.dart';
 import '../products/product.dart';
@@ -20,10 +25,41 @@ class DeliveryNote extends StatefulWidget {
 }
 
 class _DeliveryNotesState extends State<DeliveryNote> {
+  final ReceivePort _port = ReceivePort();
   @override
   void initState() {
     super.initState();
+
+    IsolateNameServer.registerPortWithName(
+        _port.sendPort, 'downloader_send_port');
+    _port.listen((dynamic data) {
+      String id = data[0];
+      DownloadTaskStatus status = data[1];
+      int progress = data[2];
+      setState(() {});
+    });
+
+    FlutterDownloader.registerCallback(downloadCallback);
+
+    super.initState();
   }
+
+  @override
+  void dispose() {
+    IsolateNameServer.removePortNameMapping('downloader_send_port');
+    super.dispose();
+  }
+
+  @pragma('vm:entry-point')
+  static void downloadCallback(
+      String id, DownloadTaskStatus status, int progress) {
+    final SendPort? send =
+        IsolateNameServer.lookupPortByName('downloader_send_port');
+    send!.send([id, status, progress]);
+  }
+
+  List<String> statusEN = ['OPEN', 'CLOSED'];
+  List<String> statusDE = ['geöffnet', 'geschlossen'];
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +90,24 @@ class _DeliveryNotesState extends State<DeliveryNote> {
                         "Status: ${snapshot.data?[index].status}",
                       ),
                       trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                        OutlinedButton(
+                          onPressed: () async {
+                            await getAsWord(snapshot.data?[index].id);
+                          },
+                          child: Image.asset(
+                            "lib/assets/word.png",
+                            height: 25,
+                          ),
+                        ),
+                        OutlinedButton(
+                          onPressed: () async {
+                            await getAsPdf(snapshot.data?[index].id);
+                          },
+                          child: Image.asset(
+                            "lib/assets/pdf.png",
+                            height: 25,
+                          ),
+                        ),
                         OutlinedButton(
                           onPressed: () => {
                             alert = AlertDialog(
@@ -122,7 +176,7 @@ class _DeliveryNotesState extends State<DeliveryNote> {
                                           snapshot.data?[index].products)),
                             )
                           },
-                          child: Icon(Icons.edit),
+                          child: const Icon(Icons.edit),
                         ),
                       ]),
                     ),
@@ -185,6 +239,11 @@ class _DeliveryNotesState extends State<DeliveryNote> {
           String deliveryNoteNumber = obj["deliveryNoteNumber"];
           String deliveryNoteDate = obj["deliveryNoteDate"];
           String status = obj["status"];
+          if (status.isNotEmpty && status == "OPEN") {
+            status = "geöffnet";
+          } else if (status.isNotEmpty && status == "CLOSED") {
+            status = "geschlossen";
+          }
           String subject = obj["subject"];
           String headerText = obj["headerText"];
           String flowText = obj["flowText"];
@@ -262,6 +321,62 @@ class _DeliveryNotesState extends State<DeliveryNote> {
     }
 
     return 0;
+  }
+}
+
+Future getAsPdf(String deliveryNoteId) async {
+  var status = await Permission.storage.request();
+  if (status.isGranted) {
+    final baseStorage = await getExternalStorageDirectory();
+    String url = "https://backend.invoicer.at/api/DeliveryNotes/get-as-pdf/" +
+        deliveryNoteId;
+
+    Uri uri = Uri.parse(url);
+
+    String? token = await NetworkHandler.getToken();
+
+    if (token!.isNotEmpty) {
+      token = token.toString();
+
+      await FlutterDownloader.enqueue(
+        url: url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          "Authorization": "Bearer $token"
+        },
+        savedDir: baseStorage!.path,
+        showNotification: true,
+        openFileFromNotification: true,
+      );
+    }
+  }
+}
+
+Future getAsWord(String deliveryNoteId) async {
+  var status = await Permission.storage.request();
+  if (status.isGranted) {
+    final baseStorage = await getExternalStorageDirectory();
+    String url = "https://backend.invoicer.at/api/DeliveryNotes/get-as-word/" +
+        deliveryNoteId;
+
+    String? token = await NetworkHandler.getToken();
+
+    if (token!.isNotEmpty) {
+      token = token.toString();
+
+      await FlutterDownloader.enqueue(
+        url: url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          "Authorization": "Bearer $token"
+        },
+        savedDir: baseStorage!.path,
+        showNotification: true,
+        openFileFromNotification: true,
+      );
+    }
   }
 }
 
