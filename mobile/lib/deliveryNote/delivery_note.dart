@@ -147,6 +147,9 @@ class _DeliveryNotesState extends State<DeliveryNote> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => EditDeliveryNote(
+                                      id: snapshot.data?[index].id,
+                                      documentInformationId: snapshot
+                                          .data?[index].documentInformationId,
                                       delNoteNum:
                                           snapshot.data?[index].delNoteNum,
                                       delNoteDate:
@@ -247,6 +250,7 @@ class _DeliveryNotesState extends State<DeliveryNote> {
           String subject = obj["subject"];
           String headerText = obj["headerText"];
           String flowText = obj["flowText"];
+          String documentInformationId = obj["documentInformationsId"];
           String totalDiscount =
               obj["documentInformations"]["totalDiscount"].toString();
           String typeOfDiscount =
@@ -280,6 +284,7 @@ class _DeliveryNotesState extends State<DeliveryNote> {
           }
           DeliveryNotes deliveryNote = DeliveryNotes(
               id,
+              documentInformationId,
               deliveryNoteNumber,
               deliveryNoteDate,
               status,
@@ -382,6 +387,7 @@ Future getAsWord(String deliveryNoteId) async {
 
 class DeliveryNotes {
   final String id;
+  final String documentInformationId;
   final String delNoteNum;
   final String delNoteDate;
   final String status;
@@ -401,6 +407,7 @@ class DeliveryNotes {
 
   DeliveryNotes(
       this.id,
+      this.documentInformationId,
       this.delNoteNum,
       this.delNoteDate,
       this.status,

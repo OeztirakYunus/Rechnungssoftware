@@ -82,6 +82,7 @@ flutter:
     - lib/assets/avatar.png
     - lib/assets/pdf.png
     - lib/assets/word.png
+    - lib/assets/offer.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

@@ -11,6 +11,8 @@ import 'package:select_form_field/select_form_field.dart';
 import 'dynamicWidget.dart';
 
 class EditDeliveryNote extends StatefulWidget {
+  final String id;
+  final String documentInformationId;
   final String delNoteNum;
   final String delNoteDate;
   final String status;
@@ -29,6 +31,8 @@ class EditDeliveryNote extends StatefulWidget {
   final List<Products> products;
   const EditDeliveryNote(
       {Key? key,
+      required this.id,
+      required this.documentInformationId,
       required this.delNoteNum,
       required this.delNoteDate,
       required this.status,
@@ -88,6 +92,12 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
       {'value': 0, 'label': 'Euro'},
       {'value': 1, 'label': 'Prozent'}
     ];
+    String typeOfD = "";
+    if (widget.typeOfDiscount == "Percent") {
+      typeOfD = "Prozent";
+    } else {
+      typeOfD = "Euro";
+    }
 
     status.text = widget.status;
     deliveryNoteNumber.text = widget.delNoteNum;
@@ -95,7 +105,7 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
     headerText.text = widget.headerText;
     flowText.text = widget.flowText;
     subject.text = widget.subject;
-    typeOfDiscount.text = widget.typeOfDiscount;
+    typeOfDiscount.text = typeOfD;
     totalDiscount.text = widget.totalDiscount;
     tax.text = widget.tax;
     user = widget.contactPersonId;
@@ -320,7 +330,7 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                           type: SelectFormFieldType.dropdown,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              value = widget.typeOfDiscount;
+                              value = typeOfD;
                             }
                           },
                           labelText: 'Ermäßigungstyp',
@@ -328,7 +338,7 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
-                              hintText: widget.typeOfDiscount,
+                              hintText: typeOfD,
                               hintStyle: const TextStyle(fontSize: 20.00)),
                           onChanged: (val) => typeOfDiscount.text = val,
                           onSaved: (val) =>
@@ -504,6 +514,8 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                           onPressed: () async {
                             submitData();
                             await editDeliveryNote(
+                                widget.id,
+                                widget.documentInformationId,
                                 deliveryNoteNumber.text,
                                 deliveryNoteDate.text,
                                 status.text,
@@ -580,6 +592,8 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
   }
 
   Future<int> editDeliveryNote(
+      String id,
+      String documentInformationId,
       String delNoteNum,
       String delNoteDate,
       String status,
@@ -622,20 +636,19 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
 
     List<String> _status = ['OPEN', 'CLOSED'];
     List<String> _delTypeOfDiscount = ['Euro', 'Percent'];
-    int statusIndex = int.parse(status);
-    int typeOfDisIndex = int.parse(typeOfDiscount);
+
     String delStatus = "";
     String delTypeOfDiscount = "";
 
-    if (statusIndex == 0) {
+    if (status == "geöffnet") {
       delStatus = _status[0];
-    } else if (statusIndex == 1) {
+    } else if (status == "geschlossen") {
       delStatus = _status[1];
     }
 
-    if (typeOfDisIndex == 0) {
+    if (typeOfDiscount == _delTypeOfDiscount[0]) {
       delTypeOfDiscount = _delTypeOfDiscount[0];
-    } else if (typeOfDisIndex == 1) {
+    } else if (typeOfDiscount == "Prozent") {
       delTypeOfDiscount = _delTypeOfDiscount[1];
     }
 
@@ -644,20 +657,23 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
     Map<String, dynamic> _positions = {};
 
     for (int i = 0; i < quantityPosition.length; i++) {
-      int typeOfDisIndex = int.parse(typeOfDiscountPosition[i]);
-      int prodIndex = int.parse(productPosition[i]);
-      Products product = products.elementAt(prodIndex);
+      String productId = "";
+      for (var product in products) {
+        if (product.productName == productPosition[i]) {
+          productId = product.productId;
+        }
+      }
       String typeOfDis = "";
-      if (typeOfDisIndex == 0) {
+      if (_delTypeOfDiscount[0] == typeOfDiscountPosition[i]) {
         typeOfDis = _delTypeOfDiscount[0];
-      } else if (typeOfDisIndex == 1) {
+      } else if (typeOfDiscountPosition[i] == _delTypeOfDiscount[1]) {
         typeOfDis = _delTypeOfDiscount[1];
       }
       _positions.addAll({
         "quantity": quantityPosition[i],
         "discount": discountPosition[i],
         "typeOfDiscount": typeOfDis,
-        "productId": product.productId
+        "productId": productId
       });
     }
 
@@ -666,12 +682,14 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
       token = token.toString();
 
       var body = {};
+      body["id"] = id;
       body["deliveryNoteNumber"] = delNoteNum;
       body["deliveryNoteDate"] = delNoteDate;
       body["status"] = delStatus;
       body["subject"] = subject;
       body["headerText"] = headerText;
       body["flowText"] = flowText;
+      body["documentInformationsId"] = documentInformationId;
       body["documentInformations"] = {
         "totalDiscount": totalDiscount,
         "typeOfDiscount": delTypeOfDiscount,

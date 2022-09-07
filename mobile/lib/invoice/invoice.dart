@@ -186,6 +186,7 @@ class _InvoicesState extends State<Invoice> {
                                     MaterialPageRoute(
                                         builder: (context) => EditInvoice(
                                             id: snapshot.data?[index].id,
+                                            documentInformationId: snapshot.data?[index].documentInformationId,
                                             invoiceNum: snapshot
                                                 .data?[index].invoiceNum,
                                             invoiceDate: snapshot
@@ -266,11 +267,6 @@ class _InvoicesState extends State<Invoice> {
       print(response.statusCode);
 
       List data = await json.decode(response.body) as List;
-      List<String> quantityPosition = [];
-      List<String> discountPosition = [];
-      List<String> typeOfDiscountPosition = [];
-      List<String> productIdPosition = [];
-      List<String> productPosition = [];
 
       List<Contact> contacts = await NetworkHandler.getContacts();
       List<User> users = await NetworkHandler.getUsers();
@@ -281,6 +277,12 @@ class _InvoicesState extends State<Invoice> {
 
       if (response.statusCode == 200) {
         for (var element in data) {
+          List<String> quantityPosition = [];
+          List<String> discountPosition = [];
+          List<String> typeOfDiscountPosition = [];
+          List<String> productIdPosition = [];
+          List<String> productPosition = [];
+
           Map obj = element;
           String id = obj["id"];
           String invoiceNumber = obj["invoiceNumber"];
@@ -295,6 +297,7 @@ class _InvoicesState extends State<Invoice> {
           String subject = obj["subject"];
           String headerText = obj["headerText"];
           String flowText = obj["flowText"];
+          String documentInformationId = obj["documentInformationId"];
           String totalDiscount =
               obj["documentInformation"]["totalDiscount"].toString();
           String typeOfDiscount =
@@ -326,8 +329,9 @@ class _InvoicesState extends State<Invoice> {
               clientIdPos = "${contact.firstName} ${contact.lastName}";
             }
           }
-          Invoices deliveryNote = Invoices(
+          Invoices invoice = Invoices(
               id,
+              documentInformationId,
               invoiceNumber,
               invoiceDate,
               paymentTerm,
@@ -345,7 +349,7 @@ class _InvoicesState extends State<Invoice> {
               typeOfDiscountPosition,
               productPosition,
               products);
-          invoices.add(deliveryNote);
+          invoices.add(invoice);
         }
       }
     }
@@ -475,6 +479,7 @@ class _InvoicesState extends State<Invoice> {
 
 class Invoices {
   final String id;
+  final String documentInformationId;
   final String invoiceNum;
   final String invoiceDate;
   final String paymentTerm;
@@ -495,6 +500,7 @@ class Invoices {
 
   Invoices(
       this.id,
+      this.documentInformationId,
       this.invoiceNum,
       this.invoiceDate,
       this.paymentTerm,

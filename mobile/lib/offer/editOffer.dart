@@ -10,14 +10,14 @@ import 'package:http/http.dart' as http;
 import 'package:select_form_field/select_form_field.dart';
 import 'package:demo5/deliveryNote/dynamicWidget.dart';
 
-import 'invoice.dart';
+import 'offer.dart';
 
-class EditInvoice extends StatefulWidget {
+class EditOffer extends StatefulWidget {
   final String id;
   final String documentInformationId;
-  final String invoiceNum;
-  final String invoiceDate;
-  final String paymentTerm;
+  final String offerNum;
+  final String offerDate;
+  final String validUntil;
   final String status;
   final String subject;
   final String headerText;
@@ -32,13 +32,13 @@ class EditInvoice extends StatefulWidget {
   final List<String> typeOfDiscountPosition;
   final List<String> productPosition;
   final List<Products> products;
-  const EditInvoice(
+  const EditOffer(
       {Key? key,
       required this.id,
       required this.documentInformationId,
-      required this.invoiceNum,
-      required this.invoiceDate,
-      required this.paymentTerm,
+      required this.offerNum,
+      required this.offerDate,
+      required this.validUntil,
       required this.status,
       required this.subject,
       required this.headerText,
@@ -56,10 +56,10 @@ class EditInvoice extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _EditInvoicesState();
+  State<StatefulWidget> createState() => _EditOffersState();
 }
 
-class _EditInvoicesState extends State<EditInvoice> {
+class _EditOffersState extends State<EditOffer> {
   String user = "";
   String user2 = "";
   String contact = "";
@@ -73,9 +73,9 @@ class _EditInvoicesState extends State<EditInvoice> {
   List<String> typeOfDiscountPosition = [];
 
   TextEditingController status = TextEditingController();
-  TextEditingController invoiceNumber = TextEditingController();
-  TextEditingController invoiceDate = TextEditingController();
-  TextEditingController paymentTerm = TextEditingController();
+  TextEditingController offerNumber = TextEditingController();
+  TextEditingController offerDate = TextEditingController();
+  TextEditingController validUntil = TextEditingController();
   TextEditingController headerText = TextEditingController();
   TextEditingController flowText = TextEditingController();
   TextEditingController subject = TextEditingController();
@@ -85,8 +85,7 @@ class _EditInvoicesState extends State<EditInvoice> {
   TextEditingController tax = TextEditingController();
 
   DateTime date = DateTime(2022, 9, 5);
-  DateTime payDate = DateTime(2022, 9, 5);
-
+  DateTime validUntilDate = DateTime(2022, 9, 5);
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> _status = [
@@ -100,9 +99,9 @@ class _EditInvoicesState extends State<EditInvoice> {
     ];
 
     status.text = widget.status;
-    invoiceNumber.text = widget.invoiceNum;
-    invoiceDate.text = widget.invoiceDate;
-    paymentTerm.text = widget.paymentTerm;
+    offerNumber.text = widget.offerNum;
+    offerDate.text = widget.offerDate;
+    validUntil.text = widget.validUntil;
     headerText.text = widget.headerText;
     flowText.text = widget.flowText;
     subject.text = widget.subject;
@@ -147,7 +146,7 @@ class _EditInvoicesState extends State<EditInvoice> {
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
-              title: const Text('Rechnung bearbeiten',
+              title: const Text('Angebot bearbeiten',
                   style: TextStyle(
                       height: 1.00, fontSize: 25.00, color: Colors.white)),
               centerTitle: true,
@@ -162,16 +161,16 @@ class _EditInvoicesState extends State<EditInvoice> {
                           children: [
                         const Align(
                           alignment: Alignment(-0.95, 1),
-                          child: Text('Rechnungsnummer *',
+                          child: Text('Angebotsnummer *',
                               style: TextStyle(fontSize: 20.00)),
                         ),
                         TextFormField(
-                          controller: invoiceNumber,
+                          controller: offerNumber,
                           autofocus: false,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
-                              hintText: 'Rechnungsnummer eingeben',
+                              hintText: 'Angebotsnummer eingeben',
                               hintStyle: const TextStyle(fontSize: 20.00)),
                           style: const TextStyle(fontSize: 20.00),
                         ),
@@ -187,7 +186,7 @@ class _EditInvoicesState extends State<EditInvoice> {
                         ),
                         TextFormField(
                           readOnly: true,
-                          controller: invoiceDate,
+                          controller: offerDate,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
@@ -206,7 +205,7 @@ class _EditInvoicesState extends State<EditInvoice> {
 
                               setState(() {
                                 date = newDate;
-                                invoiceDate.text =
+                                offerDate.text =
                                     '${date.day}.${date.month}.${date.year}';
                               });
                             },
@@ -214,13 +213,20 @@ class _EditInvoicesState extends State<EditInvoice> {
                         const SizedBox(
                           height: 25.00,
                         ),
+                        const Align(
+                          alignment: Alignment(-0.95, 1),
+                          child: Text(
+                            'Gültig bis *',
+                            style: TextStyle(fontSize: 20.00),
+                          ),
+                        ),
                         TextFormField(
                           readOnly: true,
-                          controller: paymentTerm,
+                          controller: validUntil,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
-                              hintText: "Zahlungsfrist auswählen!",
+                              hintText: "Gültig bis auswählen!",
                               hintStyle: const TextStyle(fontSize: 20.00)),
                           style: const TextStyle(fontSize: 20.00),
                         ),
@@ -228,18 +234,18 @@ class _EditInvoicesState extends State<EditInvoice> {
                             onPressed: () async {
                               DateTime? newDate = await showDatePicker(
                                   context: context,
-                                  initialDate: payDate,
+                                  initialDate: validUntilDate,
                                   firstDate: DateTime(2000),
                                   lastDate: DateTime(2100));
                               if (newDate == null) return;
 
                               setState(() {
-                                payDate = newDate;
-                                paymentTerm.text =
-                                    '${payDate.day}.${payDate.month}.${payDate.year}';
+                                validUntilDate = newDate;
+                                validUntil.text =
+                                    '${validUntilDate.day}.${validUntilDate.month}.${validUntilDate.year}';
                               });
                             },
-                            child: const Text('Zahlungsfrist auswählen')),
+                            child: const Text('Gültig bis auswählen')),
                         const SizedBox(
                           height: 25.00,
                         ),
@@ -512,9 +518,9 @@ class _EditInvoicesState extends State<EditInvoice> {
                             addDynamic(
                                 products,
                                 status,
-                                invoiceNumber,
-                                invoiceDate,
-                                paymentTerm,
+                                offerNumber,
+                                offerDate,
+                                validUntil,
                                 headerText,
                                 flowText,
                                 subject,
@@ -544,12 +550,12 @@ class _EditInvoicesState extends State<EditInvoice> {
                         MaterialButton(
                           onPressed: () async {
                             submitData();
-                            await editInvoice(
+                            await editOffer(
                                 widget.id,
                                 widget.documentInformationId,
-                                invoiceNumber.text,
+                                offerNumber.text,
                                 date,
-                                payDate,
+                                validUntilDate,
                                 status.text,
                                 subject.text,
                                 headerText.text,
@@ -566,13 +572,13 @@ class _EditInvoicesState extends State<EditInvoice> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const Invoice()),
+                                  builder: (context) => const Offer()),
                             );
                           },
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100)),
                           color: Colors.redAccent[700],
-                          child: const Text('Rechnung speichern',
+                          child: const Text('Angebot speichern',
                               style: TextStyle(fontSize: 22.00, height: 1.35)),
                           textColor: Colors.white,
                           height: 50.00,
@@ -585,9 +591,9 @@ class _EditInvoicesState extends State<EditInvoice> {
   addDynamic(
       List<Products> products,
       TextEditingController status,
-      TextEditingController invoiceNum,
-      TextEditingController invoiceDate,
-      TextEditingController paymentTerm,
+      TextEditingController offerNum,
+      TextEditingController offerDate,
+      TextEditingController validUntil,
       TextEditingController headerText,
       TextEditingController flowText,
       TextEditingController subject,
@@ -598,9 +604,9 @@ class _EditInvoicesState extends State<EditInvoice> {
       String contact) {
     setState(() {
       this.status = status;
-      invoiceNumber = invoiceNum;
-      this.invoiceDate = invoiceDate;
-      this.paymentTerm = paymentTerm;
+      offerNumber = offerNum;
+      this.offerDate = offerDate;
+      this.validUntil = validUntil;
       this.headerText = headerText;
       this.flowText = flowText;
       this.subject = subject;
@@ -625,12 +631,12 @@ class _EditInvoicesState extends State<EditInvoice> {
     }
   }
 
-  Future<int> editInvoice(
+  Future<int> editOffer(
       String id,
       String documentInformationId,
-      String invoiceNum,
-      DateTime invoiceDate,
-      DateTime paymentTerm,
+      String offerNum,
+      DateTime offerDate,
+      DateTime validUntil,
       String status,
       String subject,
       String headerText,
@@ -644,7 +650,7 @@ class _EditInvoicesState extends State<EditInvoice> {
       List<String> discountPosition,
       List<String> typeOfDiscountPosition,
       List<String> productPosition) async {
-    String url = "https://backend.invoicer.at/api/Invoices";
+    String url = "https://backend.invoicer.at/api/Offers";
     Uri uri = Uri.parse(url);
     List<Products> products = await NetworkHandler.getProducts();
     List<Contact> contacts = await NetworkHandler.getContacts();
@@ -671,7 +677,6 @@ class _EditInvoicesState extends State<EditInvoice> {
 
     List<String> _status = ['OPEN', 'CLOSED'];
     List<String> _delTypeOfDiscount = ['Euro', 'Percent'];
-   
     String delStatus = "";
     String delTypeOfDiscount = "";
 
@@ -718,27 +723,27 @@ class _EditInvoicesState extends State<EditInvoice> {
 
       var body = {};
       body["id"] = id;
-      body["invoiceNumber"] = invoiceNum;
-      if (invoiceDate.month < 10 && invoiceDate.day < 10) {
-        body["invoiceDate"] =
-            "${invoiceDate.year}-0${invoiceDate.month}-0${invoiceDate.day}";
-      } else if (invoiceDate.month < 10) {
-        body["invoiceDate"] =
-            "${invoiceDate.year}-0${invoiceDate.month}-${invoiceDate.day}";
-      } else if (invoiceDate.day < 10) {
-        body["invoiceDate"] =
-            "${invoiceDate.year}-${invoiceDate.month}-0${invoiceDate.day}";
+      body["offerNumber"] = offerNum;
+      if (offerDate.month < 10 && offerDate.day < 10) {
+        body["offerDate"] =
+            "${offerDate.year}-0${offerDate.month}-0${offerDate.day}";
+      } else if (offerDate.month < 10) {
+        body["offerDate"] =
+            "${offerDate.year}-0${offerDate.month}-${offerDate.day}";
+      } else if (offerDate.day < 10) {
+        body["offerDate"] =
+            "${offerDate.year}-${offerDate.month}-0${offerDate.day}";
       }
 
-      if (paymentTerm.month < 10 && paymentTerm.day < 10) {
-        body["paymentTerm"] =
-            "${paymentTerm.year}-0${paymentTerm.month}-0${paymentTerm.day}";
-      } else if (paymentTerm.month < 10) {
-        body["paymentTerm"] =
-            "${paymentTerm.year}-0${paymentTerm.month}-${paymentTerm.day}";
-      } else if (paymentTerm.day < 10) {
-        body["paymentTerm"] =
-            "${paymentTerm.year}-${paymentTerm.month}-0${paymentTerm.day}";
+      if (validUntil.month < 10 && validUntil.day < 10) {
+        body["validUntil"] =
+            "${validUntil.year}-0${validUntil.month}-0${validUntil.day}";
+      } else if (validUntil.month < 10) {
+        body["validUntil"] =
+            "${validUntil.year}-0${validUntil.month}-${validUntil.day}";
+      } else if (validUntil.day < 10) {
+        body["validUntil"] =
+            "${validUntil.year}-${validUntil.month}-0${validUntil.day}";
       }
 
       body["status"] = delStatus;

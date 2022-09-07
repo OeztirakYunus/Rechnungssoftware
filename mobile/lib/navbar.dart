@@ -6,6 +6,8 @@ import 'package:demo5/user/roles.dart';
 import 'deliveryNote/delivery_note.dart';
 import 'package:flutter/material.dart';
 
+import 'offer/offer.dart';
+
 class NavBar extends StatelessWidget {
   const NavBar({Key? key}) : super(key: key);
 
@@ -28,7 +30,11 @@ class NavBar extends StatelessWidget {
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => const Invoice()));
         return;
-      case 6:
+      case 5:
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => const Offer()));
+        return;
+      case 7:
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => UserRole()));
         return;
@@ -110,6 +116,19 @@ class NavBar extends StatelessWidget {
               const SizedBox(height: 16),
               ListTile(
                 leading: Image.asset(
+                  "lib/assets/offer.png",
+                  scale: 2.0,
+                  height: 35.0,
+                  width: 35.0,
+                ),
+                title: const Text('Angebote',
+                    style: TextStyle(
+                        color: Colors.white, fontSize: 18, height: 1.40)),
+                onTap: () => selectedItem(context, 5),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                leading: Image.asset(
                   "lib/assets/order.png",
                   scale: 2.0,
                   height: 35.0,
@@ -118,7 +137,7 @@ class NavBar extends StatelessWidget {
                 title: const Text('Auftrags-\nbestätigungen',
                     style: TextStyle(
                         color: Colors.white, fontSize: 18, height: 1.40)),
-                onTap: () => selectedItem(context, 5),
+                onTap: () => selectedItem(context, 6),
               ),
               const SizedBox(height: 16),
               ListTile(
@@ -130,7 +149,7 @@ class NavBar extends StatelessWidget {
                 ),
                 title: const Text('Benutzer',
                     style: TextStyle(color: Colors.white, fontSize: 18)),
-                onTap: () => selectedItem(context, 6),
+                onTap: () => selectedItem(context, 7),
               ),
             ],
           )),
