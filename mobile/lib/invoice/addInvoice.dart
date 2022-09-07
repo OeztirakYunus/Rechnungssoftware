@@ -1,72 +1,38 @@
 import 'dart:convert';
 import 'package:demo5/contact/contacts.dart';
 import 'package:demo5/deliveryNote/delivery_note.dart';
-import 'package:demo5/deliveryNote/editDynamicWidget.dart';
 import 'package:demo5/network/networkHandler.dart';
 import 'package:demo5/products/product.dart';
 import 'package:demo5/user/user.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:select_form_field/select_form_field.dart';
-import 'dynamicWidget.dart';
+import '../deliveryNote/dynamicWidget.dart';
+import 'invoice.dart';
 
-class EditDeliveryNote extends StatefulWidget {
-  final String delNoteNum;
-  final String delNoteDate;
-  final String status;
-  final String subject;
-  final String headerText;
-  final String flowText;
-  final String totalDiscount;
-  final String typeOfDiscount;
-  final String tax;
-  final String clientId;
-  final String contactPersonId;
-  final List<String> quantityPosition;
-  final List<String> discountPosition;
-  final List<String> typeOfDiscountPosition;
-  final List<String> productPosition;
-  final List<Products> products;
-  const EditDeliveryNote(
-      {Key? key,
-      required this.delNoteNum,
-      required this.delNoteDate,
-      required this.status,
-      required this.subject,
-      required this.headerText,
-      required this.flowText,
-      required this.totalDiscount,
-      required this.typeOfDiscount,
-      required this.tax,
-      required this.clientId,
-      required this.contactPersonId,
-      required this.quantityPosition,
-      required this.discountPosition,
-      required this.typeOfDiscountPosition,
-      required this.productPosition,
-      required this.products})
-      : super(key: key);
+class AddInvoice extends StatefulWidget {
+  const AddInvoice({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _EditDeliveryNotesState();
+  State<StatefulWidget> createState() => _AddInvoicesState();
 }
 
-class _EditDeliveryNotesState extends State<EditDeliveryNote> {
+class _AddInvoicesState extends State<AddInvoice> {
   String user = "";
   String user2 = "";
   String contact = "";
   String contact2 = "";
   int count = 0;
-  List<EditDynamicWidget> dynamicList = [];
-  List<DynamicWidget> addDynamicList = [];
+  List<DynamicWidget> dynamicList = [];
   List<String> productPosition = [];
   List<String> quantityPosition = [];
   List<String> discountPosition = [];
   List<String> typeOfDiscountPosition = [];
 
   TextEditingController status = TextEditingController();
-  TextEditingController deliveryNoteNumber = TextEditingController();
-  TextEditingController deliveryNoteDate = TextEditingController();
+  TextEditingController invoiceNumber = TextEditingController();
+  TextEditingController invoiceDate = TextEditingController();
+  TextEditingController paymentTerm = TextEditingController();
   TextEditingController headerText = TextEditingController();
   TextEditingController flowText = TextEditingController();
   TextEditingController subject = TextEditingController();
@@ -76,6 +42,7 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
   TextEditingController tax = TextEditingController();
 
   DateTime date = DateTime(2022, 9, 5);
+  DateTime payDate = DateTime(2022, 9, 5);
 
   @override
   Widget build(BuildContext context) {
@@ -89,32 +56,6 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
       {'value': 1, 'label': 'Prozent'}
     ];
 
-    status.text = widget.status;
-    deliveryNoteNumber.text = widget.delNoteNum;
-    deliveryNoteDate.text = widget.delNoteDate;
-    headerText.text = widget.headerText;
-    flowText.text = widget.flowText;
-    subject.text = widget.subject;
-    typeOfDiscount.text = widget.typeOfDiscount;
-    totalDiscount.text = widget.totalDiscount;
-    tax.text = widget.tax;
-    user = widget.contactPersonId;
-    contact = widget.clientId;
-
-    for (int i = 0; i < widget.quantityPosition.length; i++) {
-      dynamicList.add(EditDynamicWidget(
-          products: widget.products,
-          pPosition: widget.productPosition[i],
-          qPosition: widget.quantityPosition[i],
-          dPosition: widget.discountPosition[i],
-          typePosition: widget.typeOfDiscountPosition[i]));
-
-      productPosition.add(widget.productPosition[i]);
-      quantityPosition.add(widget.quantityPosition[i]);
-      discountPosition.add(widget.discountPosition[i]);
-      typeOfDiscountPosition.add(widget.typeOfDiscountPosition[i]);
-    }
-
     Widget dynamicTextField = Container(
       width: 500,
       child: ListView.builder(
@@ -124,19 +65,10 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
       ),
     );
 
-    Widget addDynamicTextField = Container(
-      width: 500,
-      child: ListView.builder(
-        itemCount: addDynamicList.length,
-        shrinkWrap: true,
-        itemBuilder: (_, index) => addDynamicList[index],
-      ),
-    );
-
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
-              title: const Text('Lieferschein bearbeiten',
+              title: const Text('Rechnung anlegen',
                   style: TextStyle(
                       height: 1.00, fontSize: 25.00, color: Colors.white)),
               centerTitle: true,
@@ -151,16 +83,16 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                           children: [
                         const Align(
                           alignment: Alignment(-0.95, 1),
-                          child: Text('Lieferscheinnummer *',
+                          child: Text('Rechnungsnummer *',
                               style: TextStyle(fontSize: 20.00)),
                         ),
                         TextFormField(
-                          controller: deliveryNoteNumber,
+                          controller: invoiceNumber,
                           autofocus: false,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
-                              hintText: 'Lieferscheinnummer eingeben',
+                              hintText: 'Rechnungsnummer eingeben',
                               hintStyle: const TextStyle(fontSize: 20.00)),
                           style: const TextStyle(fontSize: 20.00),
                         ),
@@ -176,7 +108,7 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                         ),
                         TextFormField(
                           readOnly: true,
-                          controller: deliveryNoteDate,
+                          controller: invoiceDate,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
@@ -195,11 +127,40 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
 
                               setState(() {
                                 date = newDate;
-                                deliveryNoteDate.text =
+                                invoiceDate.text =
                                     '${date.day}.${date.month}.${date.year}';
                               });
                             },
                             child: const Text('Datum auswählen')),
+                        const SizedBox(
+                          height: 25.00,
+                        ),
+                        TextFormField(
+                          readOnly: true,
+                          controller: paymentTerm,
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(100.0)),
+                              hintText: "Zahlungsfrist auswählen!",
+                              hintStyle: const TextStyle(fontSize: 20.00)),
+                          style: const TextStyle(fontSize: 20.00),
+                        ),
+                        ElevatedButton(
+                            onPressed: () async {
+                              DateTime? newDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: payDate,
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime(2100));
+                              if (newDate == null) return;
+
+                              setState(() {
+                                payDate = newDate;
+                                paymentTerm.text =
+                                    '${payDate.day}.${payDate.month}.${payDate.year}';
+                              });
+                            },
+                            child: const Text('Zahlungsfrist auswählen')),
                         const SizedBox(
                           height: 25.00,
                         ),
@@ -272,7 +233,7 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                           controller: status,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              value = widget.status;
+                              return "Status darf nicht leer sein!";
                             }
                           },
                           type: SelectFormFieldType.dropdown,
@@ -281,7 +242,7 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
-                              hintText: widget.status,
+                              hintText: 'Status auswählen',
                               hintStyle: const TextStyle(fontSize: 20.00)),
                           onChanged: (val) => status.text = val,
                           onSaved: (val) =>
@@ -318,17 +279,12 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                         SelectFormField(
                           controller: typeOfDiscount,
                           type: SelectFormFieldType.dropdown,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              value = widget.typeOfDiscount;
-                            }
-                          },
                           labelText: 'Ermäßigungstyp',
                           items: _typeOfDiscount,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
-                              hintText: widget.typeOfDiscount,
+                              hintText: 'Ermäßigungstyp auswählen',
                               hintStyle: const TextStyle(fontSize: 20.00)),
                           onChanged: (val) => typeOfDiscount.text = val,
                           onSaved: (val) =>
@@ -472,8 +428,9 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                             addDynamic(
                                 products,
                                 status,
-                                deliveryNoteNumber,
-                                deliveryNoteDate,
+                                invoiceNumber,
+                                invoiceDate,
+                                paymentTerm,
                                 headerText,
                                 flowText,
                                 subject,
@@ -496,16 +453,16 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                           height: 25.00,
                         ),
                         dynamicTextField,
-                        addDynamicTextField,
                         const SizedBox(
                           height: 25.00,
                         ),
                         MaterialButton(
                           onPressed: () async {
                             submitData();
-                            await editDeliveryNote(
-                                deliveryNoteNumber.text,
-                                deliveryNoteDate.text,
+                            await addInvoice(
+                                invoiceNumber.text,
+                                date,
+                                payDate,
                                 status.text,
                                 subject.text,
                                 headerText.text,
@@ -522,13 +479,13 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const DeliveryNote()),
+                                  builder: (context) => const Invoice()),
                             );
                           },
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(100)),
                           color: Colors.redAccent[700],
-                          child: const Text('Lieferschein speichern',
+                          child: const Text('Rechnung anlegen',
                               style: TextStyle(fontSize: 22.00, height: 1.35)),
                           textColor: Colors.white,
                           height: 50.00,
@@ -541,8 +498,9 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
   addDynamic(
       List<Products> products,
       TextEditingController status,
-      TextEditingController deliveryNoteNumber,
-      TextEditingController deliveryNoteDate,
+      TextEditingController invoiceNumber,
+      TextEditingController invoiceDate,
+      TextEditingController paymentTerm,
       TextEditingController headerText,
       TextEditingController flowText,
       TextEditingController subject,
@@ -553,8 +511,9 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
       String contact) {
     setState(() {
       this.status = status;
-      this.deliveryNoteNumber = deliveryNoteNumber;
-      this.deliveryNoteDate = deliveryNoteDate;
+      this.invoiceNumber = invoiceNumber;
+      this.invoiceDate = invoiceDate;
+      this.paymentTerm = paymentTerm;
       this.headerText = headerText;
       this.flowText = flowText;
       this.subject = subject;
@@ -563,15 +522,19 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
       this.tax = tax;
       this.user = user;
       this.contact = contact;
-      dynamicList = [];
     });
-    addDynamicList.add(DynamicWidget(
+    dynamicList.add(DynamicWidget(
       products: products,
     ));
   }
 
   submitData() {
-    for (var widget in addDynamicList) {
+    productPosition = [];
+    quantityPosition = [];
+    discountPosition = [];
+    typeOfDiscountPosition = [];
+
+    for (var widget in dynamicList) {
       productPosition.add(widget.productPosition.text);
       quantityPosition.add(widget.quantityPosition.text);
       discountPosition.add(widget.discountPosition.text);
@@ -579,9 +542,10 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
     }
   }
 
-  Future<int> editDeliveryNote(
-      String delNoteNum,
-      String delNoteDate,
+  Future<int> addInvoice(
+      String invoiceNum,
+      DateTime invoiceDate,
+      DateTime paymentTerm,
       String status,
       String subject,
       String headerText,
@@ -595,7 +559,7 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
       List<String> discountPosition,
       List<String> typeOfDiscountPosition,
       List<String> productPosition) async {
-    String url = "https://backend.invoicer.at/api/DeliveryNotes";
+    String url = "https://backend.invoicer.at/api/Companies/add-invoice";
     Uri uri = Uri.parse(url);
     List<Products> products = await NetworkHandler.getProducts();
     List<Contact> contacts = await NetworkHandler.getContacts();
@@ -624,13 +588,13 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
     List<String> _delTypeOfDiscount = ['Euro', 'Percent'];
     int statusIndex = int.parse(status);
     int typeOfDisIndex = int.parse(typeOfDiscount);
-    String delStatus = "";
+    String invStatus = "";
     String delTypeOfDiscount = "";
 
     if (statusIndex == 0) {
-      delStatus = _status[0];
+      invStatus = _status[0];
     } else if (statusIndex == 1) {
-      delStatus = _status[1];
+      invStatus = _status[1];
     }
 
     if (typeOfDisIndex == 0) {
@@ -654,8 +618,8 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
         typeOfDis = _delTypeOfDiscount[1];
       }
       _positions.addAll({
-        "quantity": quantityPosition[i],
-        "discount": discountPosition[i],
+        "quantity": double.parse(quantityPosition[i]),
+        "discount": double.parse(discountPosition[i]),
         "typeOfDiscount": typeOfDis,
         "productId": product.productId
       });
@@ -666,14 +630,35 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
       token = token.toString();
 
       var body = {};
-      body["deliveryNoteNumber"] = delNoteNum;
-      body["deliveryNoteDate"] = delNoteDate;
-      body["status"] = delStatus;
+      body["invoiceNumber"] = invoiceNum;
+      if (invoiceDate.month < 10 && invoiceDate.day < 10) {
+        body["invoiceDate"] =
+            "${invoiceDate.year}-0${invoiceDate.month}-0${invoiceDate.day}";
+      } else if (invoiceDate.month < 10) {
+        body["invoiceDate"] =
+            "${invoiceDate.year}-0${invoiceDate.month}-${invoiceDate.day}";
+      } else if (invoiceDate.day < 10) {
+        body["invoiceDate"] =
+            "${invoiceDate.year}-${invoiceDate.month}-0${invoiceDate.day}";
+      }
+
+      if (paymentTerm.month < 10 && paymentTerm.day < 10) {
+        body["paymentTerm"] =
+            "${paymentTerm.year}-0${paymentTerm.month}-0${paymentTerm.day}";
+      } else if (paymentTerm.month < 10) {
+        body["paymentTerm"] =
+            "${paymentTerm.year}-0${paymentTerm.month}-${paymentTerm.day}";
+      } else if (paymentTerm.day < 10) {
+        body["paymentTerm"] =
+            "${paymentTerm.year}-${paymentTerm.month}-0${paymentTerm.day}";
+      }
+
+      body["status"] = invStatus;
       body["subject"] = subject;
       body["headerText"] = headerText;
       body["flowText"] = flowText;
-      body["documentInformations"] = {
-        "totalDiscount": totalDiscount,
+      body["documentInformation"] = {
+        "totalDiscount": double.parse(totalDiscount),
         "typeOfDiscount": delTypeOfDiscount,
         "tax": delTax,
         "clientId": idClient,

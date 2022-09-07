@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:select_form_field/select_form_field.dart';
 
@@ -48,7 +47,6 @@ class DynamicWidget extends StatelessWidget {
               controller: productPosition,
               type: SelectFormFieldType.dropdown,
               labelText: 'Produkt',
-              
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Bitte treffen Sie eine Auswahl!';

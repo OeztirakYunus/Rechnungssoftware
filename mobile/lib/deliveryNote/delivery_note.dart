@@ -87,7 +87,7 @@ class _DeliveryNotesState extends State<DeliveryNote> {
                         snapshot.data?[index].delNoteNum,
                       ),
                       subtitle: Text(
-                        "Status: ${snapshot.data?[index].status}",
+                        "${snapshot.data?[index].status}",
                       ),
                       trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                         OutlinedButton(
@@ -219,12 +219,6 @@ class _DeliveryNotesState extends State<DeliveryNote> {
       print(response.statusCode);
 
       List data = await json.decode(response.body) as List;
-      List<String> quantityPosition = [];
-      List<String> discountPosition = [];
-      List<String> typeOfDiscountPosition = [];
-      List<String> productIdPosition = [];
-      List<String> productPosition = [];
-
       List<Contact> contacts = await NetworkHandler.getContacts();
       List<User> users = await NetworkHandler.getUsers();
       List<Products> products = await NetworkHandler.getProducts();
@@ -234,11 +228,17 @@ class _DeliveryNotesState extends State<DeliveryNote> {
 
       if (response.statusCode == 200) {
         for (var element in data) {
+          List<String> quantityPosition = [];
+          List<String> discountPosition = [];
+          List<String> typeOfDiscountPosition = [];
+          List<String> productIdPosition = [];
+          List<String> productPosition = [];
           Map obj = element;
           String id = obj["id"];
           String deliveryNoteNumber = obj["deliveryNoteNumber"];
           String deliveryNoteDate = obj["deliveryNoteDate"];
           String status = obj["status"];
+
           if (status.isNotEmpty && status == "OPEN") {
             status = "geöffnet";
           } else if (status.isNotEmpty && status == "CLOSED") {
