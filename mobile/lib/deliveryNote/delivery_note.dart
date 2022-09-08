@@ -425,23 +425,3 @@ class DeliveryNotes {
       this.productPosition,
       this.products);
 }
-
-
-/*appBar: AppBar(
-          title: const Text('Lieferscheine',
-              style: TextStyle(
-                  height: 1.00, fontSize: 25.00, color: Colors.white)),
-          centerTitle: true,
-        ),
-        body: Center(
-          child: MaterialButton(
-              child: const Text(
-                "Lieferschein scannen",
-                style: TextStyle(color: Colors.white),
-              ),
-              color: Colors.purple,
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const Scanner()));
-              }),
-        ),*/

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:demo5/deliveryNote/display_delivery_note.dart';
+import 'package:demo5/document-scanner/display_delivery_note.dart';
 import 'package:flutter/material.dart';
 
 class DocumentList extends StatefulWidget {
@@ -12,12 +12,13 @@ class DocumentList extends StatefulWidget {
 }
 
 class _DocumentListState extends State<DocumentList> {
+  
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: const Text('Gescannte Lieferscheine'),
+        title: const Text('Gescannte Dokumente'),
       ),
       body: ListView(
         children: [
@@ -25,13 +26,35 @@ class _DocumentListState extends State<DocumentList> {
               leading: const Icon(Icons.image),
               title: Text(widget.scannedDocument!.path.split('/').last),
               onTap: () => {
-                    Navigator.of(context).push(MaterialPageRoute(
+                    /*Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
-                            Document(scannedDocument: widget.scannedDocument)))
+                            Document(scannedDocument: widget.scannedDocument)))*/
                   },
+                  
               trailing: const Icon(Icons.edit))
         ],
       ),
     ));
   }
 }
+
+
+
+/*appBar: AppBar(
+          title: const Text('Lieferscheine',
+              style: TextStyle(
+                  height: 1.00, fontSize: 25.00, color: Colors.white)),
+          centerTitle: true,
+        ),
+        body: Center(
+          child: MaterialButton(
+              child: const Text(
+                "Lieferschein scannen",
+                style: TextStyle(color: Colors.white),
+              ),
+              color: Colors.purple,
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const Scanner()));
+              }),
+        ),*/

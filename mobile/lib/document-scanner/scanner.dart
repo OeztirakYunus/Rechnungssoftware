@@ -49,7 +49,8 @@ class _ScannerState extends State<Scanner> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primarySwatch: createMaterialColor(const Color(0xFF7B1FA2))),
+          primarySwatch:
+              createMaterialColor(const Color.fromARGB(255, 239, 5, 20))),
       home: Scaffold(
           appBar: AppBar(
             title: const Text('Dokumenten-Scanner'),
@@ -92,9 +93,9 @@ class _ScannerState extends State<Scanner> {
                               Positioned(
                                 bottom: 20,
                                 left: 10,
-                                right: 0,
+                                right: 140,
                                 child: ElevatedButton(
-                                    child: const Text("Nochmal scannen"),
+                                    child: const Text("Erneut scannen"),
                                     onPressed: () {
                                       setState(() {
                                         scannedDocument = null;
