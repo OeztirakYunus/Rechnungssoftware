@@ -1,6 +1,7 @@
 import 'package:demo5/companies/companies.dart';
 import 'package:demo5/contact/categoryContact.dart';
 import 'package:demo5/invoice/invoice.dart';
+import 'package:demo5/orderConfirmation/order_confirmation.dart';
 import 'package:demo5/products/categoryList.dart';
 import 'package:demo5/user/roles.dart';
 import 'deliveryNote/delivery_note.dart';
@@ -33,6 +34,10 @@ class NavBar extends StatelessWidget {
       case 5:
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => const Offer()));
+        return;
+      case 6:
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const OrderConfirmation()));
         return;
       case 7:
         Navigator.of(context)

@@ -2,28 +2,26 @@ import 'dart:convert';
 import 'dart:isolate';
 import 'dart:ui';
 
-import 'package:demo5/offer/addOffer.dart';
-import 'package:demo5/orderConfirmation/order_confirmation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:http/http.dart' as http;
 import '../NavBar.dart';
 import '../contact/contacts.dart';
 import '../network/networkHandler.dart';
 import '../products/product.dart';
 import '../user/user.dart';
-import 'editOffer.dart';
+import 'add_order_confirmation.dart';
 
-class Offer extends StatefulWidget {
-  const Offer({Key? key}) : super(key: key);
+class OrderConfirmation extends StatefulWidget {
+  const OrderConfirmation({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _OffersState();
+  State<StatefulWidget> createState() => _OrderConfirmationsState();
 }
 
-class _OffersState extends State<Offer> {
+class _OrderConfirmationsState extends State<OrderConfirmation> {
   final ReceivePort _port = ReceivePort();
   @override
   void initState() {
@@ -62,14 +60,14 @@ class _OffersState extends State<Offer> {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: const Text('Angebote',
+        title: const Text('Auftragsbestätigungen',
             style:
                 TextStyle(height: 1.00, fontSize: 25.00, color: Colors.white)),
         centerTitle: true,
       ),
       drawer: const NavBar(),
-      body: FutureBuilder<List<Offers>>(
-          future: getOffers(),
+      body: FutureBuilder<List<OrderConfirmations>>(
+          future: getOrderConfirmations(),
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.hasData &&
                 snapshot.connectionState == ConnectionState.done) {
@@ -80,7 +78,7 @@ class _OffersState extends State<Offer> {
                   return Card(
                     child: ListTile(
                       title: Text(
-                        snapshot.data?[index].offerNum,
+                        snapshot.data?[index].orderConfirmationNum,
                       ),
                       subtitle: Text(
                         "${snapshot.data?[index].status}",
@@ -90,14 +88,13 @@ class _OffersState extends State<Offer> {
                           width: 50.0,
                           child: OutlinedButton(
                             onPressed: () async {
-                              String orderConfirmationNumber =
-                                  await offerToOrderConfirmation(
+                              String deliveryNoteNumber =
+                                  await orderConfirmationToDeliveryNote(
                                       snapshot.data?[index].id);
                               alert = AlertDialog(
-                                title:
-                                    const Text("Auftragsbestätigung erzeugt!"),
+                                title: const Text("Lieferschein erzeugt!"),
                                 content: Text(
-                                    "Die Auftragsbestätigung wurde erfolgreich erzeugt. Die Angebotsnummer lautet $orderConfirmationNumber"),
+                                    "Der Lieferschein wurde erfolgreich erzeugt. Die Lieferscheinnummer lautet $deliveryNoteNumber"),
                                 actions: [
                                   TextButton(
                                     child: const Text("Ok"),
@@ -115,7 +112,7 @@ class _OffersState extends State<Offer> {
                               );
                             },
                             child: Image.asset(
-                              "lib/assets/order.png",
+                              "lib/assets/delivery_report.png",
                               height: 35,
                             ),
                           ),
@@ -149,12 +146,12 @@ class _OffersState extends State<Offer> {
                                 alert = AlertDialog(
                                   title: const Text("Achtung!"),
                                   content: const Text(
-                                      "Möchten Sie wirklich dieses Angebot löschen?"),
+                                      "Möchten Sie wirklich diese Auftragsbestätigung löschen?"),
                                   actions: [
                                     TextButton(
                                       child: const Text("Löschen"),
                                       onPressed: () async {
-                                        await deleteOffer(
+                                        await deleteOrderConfirmation(
                                             snapshot.data?[index].id);
                                         Navigator.of(context).pop();
                                         setState(() {});
@@ -180,51 +177,34 @@ class _OffersState extends State<Offer> {
                         SizedBox(
                             width: 50.0,
                             child: OutlinedButton(
-                              onPressed: () => {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => EditOffer(
-                                          id: snapshot.data?[index].id,
-                                          documentInformationId: snapshot
-                                              .data?[index]
-                                              .documentInformationId,
-                                          offerNum:
-                                              snapshot.data?[index].offerNum,
-                                          offerDate:
-                                              snapshot.data?[index].offerDate,
-                                          validUntil:
-                                              snapshot.data?[index].validUntil,
-                                          status: snapshot.data?[index].status,
-                                          subject:
-                                              snapshot.data?[index].subject,
-                                          headerText:
-                                              snapshot.data?[index].headerText,
-                                          flowText:
-                                              snapshot.data?[index].flowText,
-                                          totalDiscount: snapshot
-                                              .data?[index].totalDiscount,
-                                          typeOfDiscount: snapshot
-                                              .data?[index].typeOfDiscount,
-                                          tax: snapshot.data?[index].tax,
-                                          clientId:
-                                              snapshot.data?[index].clientId,
-                                          contactPersonId: snapshot
-                                              .data?[index].contactPersonId,
-                                          quantityPosition: snapshot
-                                              .data?[index].quantityPosition,
-                                          discountPosition: snapshot
-                                              .data?[index].discountPosition,
-                                          typeOfDiscountPosition: snapshot
-                                              .data?[index]
-                                              .typeOfDiscountPosition,
-                                          productPosition: snapshot
-                                              .data?[index].productPosition,
-                                          products:
-                                              snapshot.data?[index].products)),
-                                )
+                              onPressed: () async {
+                                String invoiceNumber =
+                                    await orderConfirmationToInvoice(
+                                        snapshot.data?[index].id);
+                                alert = AlertDialog(
+                                  title: const Text("Rechnung erzeugt!"),
+                                  content: Text(
+                                      "Die Rechnung wurde erfolgreich erzeugt. Die Rechnungsnummer lautet $invoiceNumber"),
+                                  actions: [
+                                    TextButton(
+                                      child: const Text("Ok"),
+                                      onPressed: () async {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return alert;
+                                  },
+                                );
                               },
-                              child: const Icon(Icons.edit),
+                              child: Image.asset(
+                                "lib/assets/invoice.png",
+                                height: 25,
+                              ),
                             )),
                       ]),
                     ),
@@ -241,7 +221,8 @@ class _OffersState extends State<Offer> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AddOffer()),
+            MaterialPageRoute(
+                builder: (context) => const AddOrderConfirmation()),
           );
         },
         backgroundColor: Colors.redAccent[700],
@@ -250,14 +231,15 @@ class _OffersState extends State<Offer> {
     ));
   }
 
-  Future<String> offerToOrderConfirmation(String offerId) async {
+  Future<String> orderConfirmationToDeliveryNote(
+      String orderConfirmationId) async {
     String url =
-        "https://backend.invoicer.at/api/Offers/offer-to-order-confirmation/" +
-            offerId;
+        "https://backend.invoicer.at/api/OrderConfirmations/order-confirmation-to-delivery-note/" +
+            orderConfirmationId;
 
     Uri uri = Uri.parse(url);
     String? token = await NetworkHandler.getToken();
-    String orderConfirmationNumber = "";
+    String deliveryNoteNumber = "";
     if (token!.isNotEmpty) {
       token = token.toString();
       final response = await http.post(uri, headers: {
@@ -271,17 +253,49 @@ class _OffersState extends State<Offer> {
 
       if (response.statusCode == 200) {
         data.forEach((key, value) {
-          if (key == "orderConfirmationNumber") {
-            orderConfirmationNumber = value;
+          if (key == "deliveryNoteNumber") {
+            deliveryNoteNumber = value;
           }
         });
       }
     }
-    return orderConfirmationNumber;
+    return deliveryNoteNumber;
   }
 
-  Future<int> deleteOffer(String id) async {
-    String url = "https://backend.invoicer.at/api/Companies/delete-offer/" + id;
+  Future<String> orderConfirmationToInvoice(String orderConfirmationId) async {
+    String url =
+        "https://backend.invoicer.at/api/OrderConfirmations/order-confirmation-to-invoice/" +
+            orderConfirmationId;
+
+    Uri uri = Uri.parse(url);
+    String? token = await NetworkHandler.getToken();
+    String invoiceNumber = "";
+    if (token!.isNotEmpty) {
+      token = token.toString();
+      final response = await http.post(uri, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        "Authorization": "Bearer $token"
+      });
+      print(response.statusCode);
+
+      Map<String, dynamic> data = await json.decode(response.body);
+
+      if (response.statusCode == 200) {
+        data.forEach((key, value) {
+          if (key == "invoiceNumber") {
+            invoiceNumber = value;
+          }
+        });
+      }
+    }
+    return invoiceNumber;
+  }
+
+  Future<int> deleteOrderConfirmation(String id) async {
+    String url =
+        "https://backend.invoicer.at/api/Companies/delete-order-confirmation/" +
+            id;
     Uri uri = Uri.parse(url);
 
     String? token = await NetworkHandler.getToken();
@@ -298,12 +312,13 @@ class _OffersState extends State<Offer> {
     return 0;
   }
 
-  Future getAsPdf(String offerId) async {
+  Future getAsPdf(String orderConfirmationId) async {
     var status = await Permission.storage.request();
     if (status.isGranted) {
       final baseStorage = await getExternalStorageDirectory();
       String url =
-          "https://backend.invoicer.at/api/Offers/get-as-pdf/" + offerId;
+          "https://backend.invoicer.at/api/OrderConfirmations/get-as-pdf/" +
+              orderConfirmationId;
 
       Uri uri = Uri.parse(url);
 
@@ -327,12 +342,13 @@ class _OffersState extends State<Offer> {
     }
   }
 
-  Future getAsWord(String offerId) async {
+  Future getAsWord(String orderConfirmationId) async {
     var status = await Permission.storage.request();
     if (status.isGranted) {
       final baseStorage = await getExternalStorageDirectory();
       String url =
-          "https://backend.invoicer.at/api/Offers/get-as-word/" + offerId;
+          "https://backend.invoicer.at/api/OrderConfirmations/get-as-word/" +
+              orderConfirmationId;
 
       String? token = await NetworkHandler.getToken();
 
@@ -354,12 +370,12 @@ class _OffersState extends State<Offer> {
     }
   }
 
-  Future<List<Offers>> getOffers() async {
-    String url = "https://backend.invoicer.at/api/Offers";
+  Future<List<OrderConfirmations>> getOrderConfirmations() async {
+    String url = "https://backend.invoicer.at/api/OrderConfirmations";
     Uri uri = Uri.parse(url);
 
     String? token = await NetworkHandler.getToken();
-    List<Offers> offers = [];
+    List<OrderConfirmations> orderConfirmations = [];
     if (token!.isNotEmpty) {
       token = token.toString();
 
@@ -390,9 +406,8 @@ class _OffersState extends State<Offer> {
           Map obj = element;
           String id = obj["id"];
           String documentInformationId = obj["documentInformationId"];
-          String offerNumber = obj["offerNumber"];
-          String offerDate = obj["offerDate"];
-          String validUntil = obj["validUntil"];
+          String orderConfirmationNumber = obj["orderConfirmationNumber"];
+          String orderConfirmationDate = obj["orderConfirmationDate"];
           String status = obj["status"];
           if (status.isNotEmpty && status == "OPEN") {
             status = "geöffnet";
@@ -433,12 +448,11 @@ class _OffersState extends State<Offer> {
               clientIdPos = "${contact.firstName} ${contact.lastName}";
             }
           }
-          Offers offer = Offers(
+          OrderConfirmations orderConfirmation = OrderConfirmations(
               id,
               documentInformationId,
-              offerNumber,
-              offerDate,
-              validUntil,
+              orderConfirmationNumber,
+              orderConfirmationDate,
               status,
               subject,
               headerText,
@@ -453,21 +467,20 @@ class _OffersState extends State<Offer> {
               typeOfDiscountPosition,
               productPosition,
               products);
-          offers.add(offer);
+          orderConfirmations.add(orderConfirmation);
         }
       }
     }
 
-    return offers;
+    return orderConfirmations;
   }
 }
 
-class Offers {
+class OrderConfirmations {
   final String id;
   final String documentInformationId;
-  final String offerNum;
-  final String offerDate;
-  final String validUntil;
+  final String orderConfirmationNum;
+  final String orderConfirmationdate;
   final String status;
   final String subject;
   final String headerText;
@@ -483,12 +496,11 @@ class Offers {
   final List<String> productPosition;
   final List<Products> products;
 
-  Offers(
+  OrderConfirmations(
       this.id,
       this.documentInformationId,
-      this.offerNum,
-      this.offerDate,
-      this.validUntil,
+      this.orderConfirmationNum,
+      this.orderConfirmationdate,
       this.status,
       this.subject,
       this.headerText,
