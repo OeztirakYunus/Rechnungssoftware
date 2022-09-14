@@ -128,6 +128,13 @@ class AddUser extends StatelessWidget {
                         const SizedBox(
                           height: 25.00,
                         ),
+                        const Align(
+                          alignment: Alignment(-0.95, 1),
+                          child: Text(
+                            'Passwort',
+                            style: TextStyle(fontSize: 20.00),
+                          ),
+                        ),
                         TextFormField(
                           controller: password,
                           autofocus: false,
@@ -141,7 +148,7 @@ class AddUser extends StatelessWidget {
                           style: const TextStyle(fontSize: 20.00),
                         ),
                         const SizedBox(
-                          height: 25.00,
+                          height: 2.00,
                         ),
                         Column(
                           children: [
@@ -166,7 +173,7 @@ class AddUser extends StatelessWidget {
                               },
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(100)),
-                              color: Colors.purpleAccent[700],
+                              color: Colors.redAccent[700],
                               child: const Text('Hinzufügen',
                                   style:
                                       TextStyle(fontSize: 22.00, height: 1.35)),

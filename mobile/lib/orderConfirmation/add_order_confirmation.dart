@@ -67,7 +67,7 @@ class _AddOrderConfirmationsState extends State<AddOrderConfirmation> {
             appBar: AppBar(
               title: const Text('Auftragsbestätigung anlegen',
                   style: TextStyle(
-                      height: 1.00, fontSize: 25.00, color: Colors.white)),
+                      height: 1.00, fontSize: 24.50, color: Colors.white)),
               centerTitle: true,
             ),
             body: SingleChildScrollView(

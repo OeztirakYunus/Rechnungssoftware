@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:demo5/address/address.dart';
-import 'package:demo5/companies/companies.dart';
+import 'package:demo5/company/company.dart';
 import 'package:demo5/products/categoryList.dart';
 import 'package:demo5/user/user.dart';
 import 'package:http/http.dart' as http;

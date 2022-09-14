@@ -105,23 +105,6 @@ class _LoginState extends State<Login> {
                     const SizedBox(
                       height: 10.00,
                     ),
-                    Column(
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width - 10,
-                          child: CheckboxListTile(
-                            title: const Text('Anmeldedaten merken'),
-                            value: changed,
-                            onChanged: (changedValue) {
-                              setState(() {
-                                changed = changedValue;
-                              });
-                            },
-                            controlAffinity: ListTileControlAffinity.leading,
-                          ),
-                        ),
-                      ],
-                    ),
                     const SizedBox(
                       height: 25.00,
                     ),

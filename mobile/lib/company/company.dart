@@ -1,5 +1,4 @@
 import 'package:demo5/address/address.dart';
-import 'package:demo5/companies/addCompany.dart';
 import 'package:demo5/navbar.dart';
 import 'package:flutter/material.dart';
 
@@ -32,9 +31,6 @@ class Company {
   final String email;
   final String phoneNumber;
   final Address addresses;
-  String iban = "fijo343fesf";
-  String bic = "fsjjnjioe";
-  String bankname = "oberbank";
 
   Company(this.companyName, this.email, this.phoneNumber, this.addresses);
 }
