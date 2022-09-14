@@ -1,10 +1,18 @@
 // ignore_for_file: file_names
+import 'dart:convert';
 import 'dart:io';
-
+import 'dart:typed_data';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:demo5/document-scanner/display_delivery_note.dart';
+import 'package:http/http.dart' as http;
 import 'package:demo5/document-scanner/documents_list.dart';
 import 'package:flutter/material.dart';
 import 'package:document_scanner/document_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import '../network/networkHandler.dart';
 
 class Scanner extends StatefulWidget {
   const Scanner({Key? key}) : super(key: key);
@@ -81,6 +89,7 @@ class _ScannerState extends State<Scanner> {
                                       setState(() {
                                         scannedDocument = scannedImage
                                             .getScannedDocumentAsFile();
+
                                         // imageLocation = image;
                                       });
                                     },
@@ -91,7 +100,7 @@ class _ScannerState extends State<Scanner> {
                       scannedDocument != null
                           ? Stack(children: [
                               Positioned(
-                                bottom: 20,
+                                bottom: 0,
                                 left: 10,
                                 right: 140,
                                 child: ElevatedButton(
@@ -103,17 +112,16 @@ class _ScannerState extends State<Scanner> {
                                     }),
                               ),
                               Positioned(
-                                  bottom: 20,
+                                  bottom: 0,
                                   right: 10,
                                   child: ElevatedButton(
                                     child: const Text("Speichern"),
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      await addFile(scannedDocument!);
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  DocumentList(
-                                                      scannedDocument:
-                                                          scannedDocument)));
+                                                  const Document()));
                                     },
                                   ))
                             ])
@@ -122,7 +130,7 @@ class _ScannerState extends State<Scanner> {
                   );
                 } else {
                   return const Center(
-                    child: Text("camera permission denied"),
+                    child: Text("Kamera Zugriff abgelehnt"),
                   );
                 }
               } else {
@@ -133,5 +141,42 @@ class _ScannerState extends State<Scanner> {
             },
           )),
     );
+  }
+
+  Future<File> getPdf(File screenShot) async {
+    pw.Document pdf = pw.Document();
+    final image = pw.MemoryImage(screenShot.readAsBytesSync());
+    pdf.addPage(pw.Page(build: (pw.Context context) {
+      return pw.FullPage(
+                    ignoreMargins: true,
+                    child: pw.Image(image,fit: pw.BoxFit.fill),
+                  );// Center
+    }));
+    final output = await getTemporaryDirectory();
+    File pdfFile = File('${output.path}/datei.pdf');
+    await pdfFile.writeAsBytes(await pdf.save());
+    return pdfFile;
+  }
+
+  Future<int> addFile(File scannedDocument) async {
+    String url = "https://backend.invoicer.at/api/Files";
+    Uri uri = Uri.parse(url);
+    String? token = await NetworkHandler.getToken();
+    int responseCode = 0;
+    if (token!.isNotEmpty) {
+      token = token.toString();
+      File pdfFile = await getPdf(scannedDocument);
+      
+      Map<String, String> headers = {'Authorization': 'Bearer $token'};
+      var request = http.MultipartRequest('POST', uri);
+      request.headers.addAll(headers);
+      request.files.add(http.MultipartFile.fromBytes(
+          'file', File(pdfFile.path).readAsBytesSync(),
+          filename: 'datei.pdf'));
+      var response = await request.send();
+      responseCode = response.statusCode;
+      print(response.statusCode);
+    }
+    return responseCode;
   }
 }
