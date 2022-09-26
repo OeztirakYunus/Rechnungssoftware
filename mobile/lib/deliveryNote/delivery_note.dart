@@ -92,7 +92,7 @@ class _DeliveryNotesState extends State<DeliveryNote> {
                       trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                         OutlinedButton(
                           onPressed: () async {
-                            await getAsWord(snapshot.data?[index].id);
+                            await getAsWord(snapshot.data?[index].id,snapshot.data?[index].delNoteNum);
                           },
                           child: Image.asset(
                             "lib/assets/word.png",
@@ -101,7 +101,7 @@ class _DeliveryNotesState extends State<DeliveryNote> {
                         ),
                         OutlinedButton(
                           onPressed: () async {
-                            await getAsPdf(snapshot.data?[index].id);
+                            await getAsPdf(snapshot.data?[index].id,snapshot.data?[index].delNoteNum);
                           },
                           child: Image.asset(
                             "lib/assets/pdf.png",
@@ -329,7 +329,7 @@ class _DeliveryNotesState extends State<DeliveryNote> {
   }
 }
 
-Future getAsPdf(String deliveryNoteId) async {
+Future getAsPdf(String deliveryNoteId, String fileName) async {
   var status = await Permission.storage.request();
   if (status.isGranted) {
     final baseStorage = await getExternalStorageDirectory();
@@ -350,6 +350,7 @@ Future getAsPdf(String deliveryNoteId) async {
           'Accept': 'application/json',
           "Authorization": "Bearer $token"
         },
+        fileName: fileName,
         savedDir: baseStorage!.path,
         showNotification: true,
         openFileFromNotification: true,
@@ -358,7 +359,7 @@ Future getAsPdf(String deliveryNoteId) async {
   }
 }
 
-Future getAsWord(String deliveryNoteId) async {
+Future getAsWord(String deliveryNoteId, String fileName) async {
   var status = await Permission.storage.request();
   if (status.isGranted) {
     final baseStorage = await getExternalStorageDirectory();
@@ -377,6 +378,7 @@ Future getAsWord(String deliveryNoteId) async {
           'Accept': 'application/json',
           "Authorization": "Bearer $token"
         },
+        fileName: fileName,
         savedDir: baseStorage!.path,
         showNotification: true,
         openFileFromNotification: true,

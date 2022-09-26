@@ -121,7 +121,7 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
                             width: 50.0,
                             child: OutlinedButton(
                               onPressed: () async {
-                                await getAsWord(snapshot.data?[index].id);
+                                await getAsWord(snapshot.data?[index].id,snapshot.data?[index].orderConfirmationNum);
                               },
                               child: Image.asset(
                                 "lib/assets/word.png",
@@ -132,7 +132,7 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
                             width: 50.0,
                             child: OutlinedButton(
                               onPressed: () async {
-                                await getAsPdf(snapshot.data?[index].id);
+                                await getAsPdf(snapshot.data?[index].id,snapshot.data?[index].orderConfirmationNum);
                               },
                               child: Image.asset(
                                 "lib/assets/pdf.png",
@@ -312,7 +312,7 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
     return 0;
   }
 
-  Future getAsPdf(String orderConfirmationId) async {
+  Future getAsPdf(String orderConfirmationId, String fileName) async {
     var status = await Permission.storage.request();
     if (status.isGranted) {
       final baseStorage = await getExternalStorageDirectory();
@@ -334,6 +334,7 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
             'Accept': 'application/json',
             "Authorization": "Bearer $token"
           },
+          fileName: fileName,
           savedDir: baseStorage!.path,
           showNotification: true,
           openFileFromNotification: true,
@@ -342,7 +343,7 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
     }
   }
 
-  Future getAsWord(String orderConfirmationId) async {
+  Future getAsWord(String orderConfirmationId, String fileName) async {
     var status = await Permission.storage.request();
     if (status.isGranted) {
       final baseStorage = await getExternalStorageDirectory();
@@ -362,6 +363,7 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
             'Accept': 'application/json',
             "Authorization": "Bearer $token"
           },
+          fileName: fileName,
           savedDir: baseStorage!.path,
           showNotification: true,
           openFileFromNotification: true,

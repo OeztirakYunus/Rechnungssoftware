@@ -85,7 +85,7 @@ class _DocumentsState extends State<Document> {
                             width: 50.0,
                             child: OutlinedButton(
                               onPressed: () async {
-                                await downloadFile(snapshot.data?[index].id);
+                                await downloadFile(snapshot.data?[index].id, snapshot.data?[index].fileName);
                               },
                               child: const Icon(Icons.download),
                             )),
@@ -167,7 +167,7 @@ Future<int> deleteFile(String id) async {
   return 0;
 }
 
-Future downloadFile(String id) async {
+Future downloadFile(String id, String fileName) async {
   final status = await Permission.storage.status;
   if (status == PermissionStatus.granted) {
     final result = await Permission.storage.request();
@@ -185,6 +185,7 @@ Future downloadFile(String id) async {
         await FlutterDownloader.enqueue(
           url: url,
           headers: {"Authorization": "Bearer $token"},
+          fileName: fileName,
           savedDir: baseStorage!.path,
           showNotification: true,
           openFileFromNotification: true,
@@ -234,27 +235,3 @@ class Documents {
 
   Documents(this.id, this.companyId, this.fileName, this.creationTime);
 }
-
-//body: Image(image: FileImage(scannedDocument!)),
-
-/*
-var fileName = scannedDocument!.path.split('/').last;
-    return SafeArea(
-        child: Scaffold(
-      appBar: AppBar(
-        title: Text(fileName),
-      ),
-      drawer: const NavBar(),
-      body: Image(image: FileImage(scannedDocument!)),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const Scanner()),
-          );
-        },
-        backgroundColor: Colors.redAccent[700],
-        child: const Icon(Icons.add),
-      ),
-    ));
-*/

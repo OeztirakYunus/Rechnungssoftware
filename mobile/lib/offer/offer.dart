@@ -124,7 +124,7 @@ class _OffersState extends State<Offer> {
                             width: 50.0,
                             child: OutlinedButton(
                               onPressed: () async {
-                                await getAsWord(snapshot.data?[index].id);
+                                await getAsWord(snapshot.data?[index].id,snapshot.data?[index].offerNum);
                               },
                               child: Image.asset(
                                 "lib/assets/word.png",
@@ -135,7 +135,7 @@ class _OffersState extends State<Offer> {
                             width: 50.0,
                             child: OutlinedButton(
                               onPressed: () async {
-                                await getAsPdf(snapshot.data?[index].id);
+                                await getAsPdf(snapshot.data?[index].id,snapshot.data?[index].offerNum);
                               },
                               child: Image.asset(
                                 "lib/assets/pdf.png",
@@ -298,7 +298,7 @@ class _OffersState extends State<Offer> {
     return 0;
   }
 
-  Future getAsPdf(String offerId) async {
+  Future getAsPdf(String offerId, String fileName) async {
     var status = await Permission.storage.request();
     if (status.isGranted) {
       final baseStorage = await getExternalStorageDirectory();
@@ -319,6 +319,7 @@ class _OffersState extends State<Offer> {
             'Accept': 'application/json',
             "Authorization": "Bearer $token"
           },
+          fileName: fileName,
           savedDir: baseStorage!.path,
           showNotification: true,
           openFileFromNotification: true,
@@ -327,7 +328,7 @@ class _OffersState extends State<Offer> {
     }
   }
 
-  Future getAsWord(String offerId) async {
+  Future getAsWord(String offerId, String fileName) async {
     var status = await Permission.storage.request();
     if (status.isGranted) {
       final baseStorage = await getExternalStorageDirectory();
@@ -346,6 +347,7 @@ class _OffersState extends State<Offer> {
             'Accept': 'application/json',
             "Authorization": "Bearer $token"
           },
+          fileName: fileName,
           savedDir: baseStorage!.path,
           showNotification: true,
           openFileFromNotification: true,

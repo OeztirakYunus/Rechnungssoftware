@@ -35,7 +35,6 @@ class _InvoicesState extends State<Invoice> {
       String id = data[0];
       DownloadTaskStatus status = data[1];
       int progress = data[2];
-      setState(() {});
     });
 
     FlutterDownloader.registerCallback(downloadCallback);
@@ -124,7 +123,7 @@ class _InvoicesState extends State<Invoice> {
                               width: 50.0,
                               child: OutlinedButton(
                                 onPressed: () async {
-                                  await getAsWord(snapshot.data?[index].id);
+                                  await getAsWord(snapshot.data?[index].id,snapshot.data?[index].invoiceNum);
                                 },
                                 child: Image.asset(
                                   "lib/assets/word.png",
@@ -135,7 +134,7 @@ class _InvoicesState extends State<Invoice> {
                               width: 50.0,
                               child: OutlinedButton(
                                 onPressed: () async {
-                                  await getAsPdf(snapshot.data?[index].id);
+                                  await getAsPdf(snapshot.data?[index].id,snapshot.data?[index].invoiceNum);
                                 },
                                 child: Image.asset(
                                   "lib/assets/pdf.png",
@@ -376,7 +375,7 @@ class _InvoicesState extends State<Invoice> {
     return 0;
   }
 
-  Future getAsPdf(String invoiceId) async {
+  Future getAsPdf(String invoiceId, String fileName) async {
     var status = await Permission.storage.request();
     if (status.isGranted) {
       final baseStorage = await getExternalStorageDirectory();
@@ -391,12 +390,13 @@ class _InvoicesState extends State<Invoice> {
         token = token.toString();
 
         await FlutterDownloader.enqueue(
-          url: url,
+          url: uri.toString(),
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
             "Authorization": "Bearer $token"
           },
+          fileName: fileName,
           savedDir: baseStorage!.path,
           showNotification: true,
           openFileFromNotification: true,
@@ -405,7 +405,7 @@ class _InvoicesState extends State<Invoice> {
     }
   }
 
-  Future getAsWord(String invoiceId) async {
+  Future getAsWord(String invoiceId, String fileName) async {
     var status = await Permission.storage.request();
     if (status.isGranted) {
       final baseStorage = await getExternalStorageDirectory();
@@ -424,6 +424,7 @@ class _InvoicesState extends State<Invoice> {
             'Accept': 'application/json',
             "Authorization": "Bearer $token"
           },
+          fileName: fileName,
           savedDir: baseStorage!.path,
           showNotification: true,
           openFileFromNotification: true,
