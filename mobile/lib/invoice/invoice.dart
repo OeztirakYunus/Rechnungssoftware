@@ -396,7 +396,7 @@ class _InvoicesState extends State<Invoice> {
             'Accept': 'application/json',
             "Authorization": "Bearer $token"
           },
-          fileName: fileName,
+          fileName: fileName + ".pdf",
           savedDir: baseStorage!.path,
           showNotification: true,
           openFileFromNotification: true,
@@ -424,7 +424,7 @@ class _InvoicesState extends State<Invoice> {
             'Accept': 'application/json',
             "Authorization": "Bearer $token"
           },
-          fileName: fileName,
+          fileName: fileName + ".docx",
           savedDir: baseStorage!.path,
           showNotification: true,
           openFileFromNotification: true,

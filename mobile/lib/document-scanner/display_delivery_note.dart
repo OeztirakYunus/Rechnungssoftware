@@ -30,7 +30,6 @@ class _DocumentsState extends State<Document> {
       String id = data[0];
       DownloadTaskStatus status = data[1];
       int progress = data[2];
-      setState(() {});
     });
 
     FlutterDownloader.registerCallback(downloadCallback);

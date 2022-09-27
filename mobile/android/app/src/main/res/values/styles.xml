@@ -15,4 +15,10 @@
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
+    <string name="flutter_downloader_notification_started">Wird heruntergeladen...</string>
+    <string name="flutter_downloader_notification_in_progress">Wird heruntergeladen...</string>
+    <string name="flutter_downloader_notification_canceled">Abgebrochen</string>
+    <string name="flutter_downloader_notification_failed">Fehlgeschlagen</string>
+    <string name="flutter_downloader_notification_complete">Wurde heruntergeladen</string>
+    <string name="flutter_downloader_notification_paused">Pausiert</string>
 </resources>

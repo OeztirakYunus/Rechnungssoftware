@@ -36,7 +36,6 @@ class _DeliveryNotesState extends State<DeliveryNote> {
       String id = data[0];
       DownloadTaskStatus status = data[1];
       int progress = data[2];
-      setState(() {});
     });
 
     FlutterDownloader.registerCallback(downloadCallback);
@@ -350,7 +349,7 @@ Future getAsPdf(String deliveryNoteId, String fileName) async {
           'Accept': 'application/json',
           "Authorization": "Bearer $token"
         },
-        fileName: fileName,
+        fileName: fileName + ".pdf",
         savedDir: baseStorage!.path,
         showNotification: true,
         openFileFromNotification: true,
@@ -378,7 +377,7 @@ Future getAsWord(String deliveryNoteId, String fileName) async {
           'Accept': 'application/json',
           "Authorization": "Bearer $token"
         },
-        fileName: fileName,
+        fileName: fileName + ".docx",
         savedDir: baseStorage!.path,
         showNotification: true,
         openFileFromNotification: true,

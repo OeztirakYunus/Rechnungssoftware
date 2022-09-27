@@ -18,28 +18,7 @@
           <meta-data
               android:name="android.support.FILE_PROVIDER_PATHS"
               android:resource="@xml/provider_paths"/>
-              <string name="flutter_downloader_notification_started">Herunterladen gestartet</string>
-<string name="flutter_downloader_notification_in_progress">Wird heruntergeladen</string>
-<string name="flutter_downloader_notification_canceled">Herunterladen abgebrochen</string>
-<string name="flutter_downloader_notification_failed">Herunterladen fehlgeschlagen</string>
-<string name="flutter_downloader_notification_complete">Wurde heruntergeladen</string>
-<string name="flutter_downloader_notification_paused">Herunterladen pausiert</string>
          </provider>
-         <provider
-    android:name="androidx.startup.InitializationProvider"
-    android:authorities="${applicationId}.androidx-startup"
-    android:exported="false"
-    tools:node="merge">
-    <meta-data
-        android:name="androidx.work.WorkManagerInitializer"
-        android:value="androidx.startup"
-        tools:node="remove" />
-</provider>
-<provider
-    android:name="vn.hunghd.flutterdownloader.FlutterDownloaderInitializer"
-    android:authorities="${applicationId}.flutter-downloader-init"
-    android:exported="false">
-</provider>
 
         <activity
             android:name=".MainActivity"
