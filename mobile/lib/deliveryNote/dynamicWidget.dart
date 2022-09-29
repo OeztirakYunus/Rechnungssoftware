@@ -5,17 +5,21 @@ import '../products/product.dart';
 
 class DynamicWidget extends StatelessWidget {
   List<Products> products;
-
+  GlobalKey<FormState> formGlobalKey = GlobalKey<FormState>();
   TextEditingController productPosition = TextEditingController();
   TextEditingController quantityPosition = TextEditingController();
   TextEditingController discountPosition = TextEditingController();
   TextEditingController typeOfDiscountPosition = TextEditingController();
+  bool isEnabled = true;
 
   DynamicWidget({Key? key, required this.products}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> _products = [];
+    if (products.isEmpty) {
+      isEnabled = false;
+    }
     for (int i = 0; i < products.length; i++) {
       _products.add({'value': i, 'label': products[i].productName});
     }
@@ -34,6 +38,7 @@ class DynamicWidget extends StatelessWidget {
         ),
         padding: const EdgeInsets.all(10),
         child: Form(
+          key: formGlobalKey,
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const SizedBox(
@@ -41,17 +46,18 @@ class DynamicWidget extends StatelessWidget {
             ),
             const Align(
               alignment: Alignment(-0.95, 1),
-              child: Text('Produkt', style: TextStyle(fontSize: 20.00)),
+              child: Text('Produkt *', style: TextStyle(fontSize: 20.00)),
             ),
             SelectFormField(
               controller: productPosition,
+              enabled: isEnabled,
               type: SelectFormFieldType.dropdown,
               labelText: 'Produkt',
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Bitte treffen Sie eine Auswahl!';
                 }
-                return value;
+                return null;
               },
               items: _products,
               decoration: InputDecoration(
@@ -79,10 +85,10 @@ class DynamicWidget extends StatelessWidget {
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Bitte geben Sie die Quantität ein!';
-                } else if (value.replaceAll(' ', '') == '0') {
+                } else if (value.trim() == '0') {
                   return 'Bitte geben Sie eine Zahl größer 0 ein!';
                 }
-                return value;
+                return null;
               },
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
@@ -106,12 +112,6 @@ class DynamicWidget extends StatelessWidget {
               controller: discountPosition,
               autofocus: false,
               keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Bitte geben Sie die Ermäßigung ein!';
-                }
-                return value;
-              },
               decoration: InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(100.0)),
@@ -130,12 +130,6 @@ class DynamicWidget extends StatelessWidget {
               controller: typeOfDiscountPosition,
               type: SelectFormFieldType.dropdown,
               labelText: 'Ermäßigungstyp',
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Bitte treffen Sie eine Auswahl!';
-                }
-                return value;
-              },
               items: _typeOfDiscount,
               decoration: InputDecoration(
                   border: OutlineInputBorder(

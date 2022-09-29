@@ -91,7 +91,8 @@ class _DeliveryNotesState extends State<DeliveryNote> {
                       trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                         OutlinedButton(
                           onPressed: () async {
-                            await getAsWord(snapshot.data?[index].id,snapshot.data?[index].delNoteNum);
+                            await getAsWord(snapshot.data?[index].id,
+                                snapshot.data?[index].delNoteNum);
                           },
                           child: Image.asset(
                             "lib/assets/word.png",
@@ -100,7 +101,8 @@ class _DeliveryNotesState extends State<DeliveryNote> {
                         ),
                         OutlinedButton(
                           onPressed: () async {
-                            await getAsPdf(snapshot.data?[index].id,snapshot.data?[index].delNoteNum);
+                            await getAsPdf(snapshot.data?[index].id,
+                                snapshot.data?[index].delNoteNum);
                           },
                           child: Image.asset(
                             "lib/assets/pdf.png",
@@ -254,6 +256,9 @@ class _DeliveryNotesState extends State<DeliveryNote> {
               obj["documentInformations"]["totalDiscount"].toString();
           String typeOfDiscount =
               obj["documentInformations"]["typeOfDiscount"].toString();
+          if (typeOfDiscount.isNotEmpty && typeOfDiscount == "Percent") {
+            typeOfDiscount = "Prozent";
+          }
           String tax = obj["documentInformations"]["tax"].toString();
           String clientId = obj["documentInformations"]["clientId"];
           String contactPersonId =
