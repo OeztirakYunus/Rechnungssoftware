@@ -123,7 +123,8 @@ class _InvoicesState extends State<Invoice> {
                               width: 50.0,
                               child: OutlinedButton(
                                 onPressed: () async {
-                                  await getAsWord(snapshot.data?[index].id,snapshot.data?[index].invoiceNum);
+                                  await getAsWord(snapshot.data?[index].id,
+                                      snapshot.data?[index].invoiceNum);
                                 },
                                 child: Image.asset(
                                   "lib/assets/word.png",
@@ -134,7 +135,8 @@ class _InvoicesState extends State<Invoice> {
                               width: 50.0,
                               child: OutlinedButton(
                                 onPressed: () async {
-                                  await getAsPdf(snapshot.data?[index].id,snapshot.data?[index].invoiceNum);
+                                  await getAsPdf(snapshot.data?[index].id,
+                                      snapshot.data?[index].invoiceNum);
                                 },
                                 child: Image.asset(
                                   "lib/assets/pdf.png",
@@ -185,7 +187,9 @@ class _InvoicesState extends State<Invoice> {
                                     MaterialPageRoute(
                                         builder: (context) => EditInvoice(
                                             id: snapshot.data?[index].id,
-                                            documentInformationId: snapshot.data?[index].documentInformationId,
+                                            documentInformationId: snapshot
+                                                .data?[index]
+                                                .documentInformationId,
                                             invoiceNum: snapshot
                                                 .data?[index].invoiceNum,
                                             invoiceDate: snapshot
@@ -301,6 +305,9 @@ class _InvoicesState extends State<Invoice> {
               obj["documentInformation"]["totalDiscount"].toString();
           String typeOfDiscount =
               obj["documentInformation"]["typeOfDiscount"].toString();
+          if (typeOfDiscount.isNotEmpty && typeOfDiscount == "Percent") {
+            typeOfDiscount = "Prozent";
+          }
           String tax = obj["documentInformation"]["tax"].toString();
           String clientId = obj["documentInformation"]["clientId"];
           String contactPersonId =

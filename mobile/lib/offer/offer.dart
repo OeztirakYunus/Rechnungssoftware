@@ -123,7 +123,8 @@ class _OffersState extends State<Offer> {
                             width: 50.0,
                             child: OutlinedButton(
                               onPressed: () async {
-                                await getAsWord(snapshot.data?[index].id,snapshot.data?[index].offerNum);
+                                await getAsWord(snapshot.data?[index].id,
+                                    snapshot.data?[index].offerNum);
                               },
                               child: Image.asset(
                                 "lib/assets/word.png",
@@ -134,7 +135,8 @@ class _OffersState extends State<Offer> {
                             width: 50.0,
                             child: OutlinedButton(
                               onPressed: () async {
-                                await getAsPdf(snapshot.data?[index].id,snapshot.data?[index].offerNum);
+                                await getAsPdf(snapshot.data?[index].id,
+                                    snapshot.data?[index].offerNum);
                               },
                               child: Image.asset(
                                 "lib/assets/pdf.png",
@@ -407,6 +409,9 @@ class _OffersState extends State<Offer> {
               obj["documentInformation"]["totalDiscount"].toString();
           String typeOfDiscount =
               obj["documentInformation"]["typeOfDiscount"].toString();
+          if (typeOfDiscount.isNotEmpty && typeOfDiscount == "Percent") {
+            typeOfDiscount = "Prozent";
+          }
           String tax = obj["documentInformation"]["tax"].toString();
           String clientId = obj["documentInformation"]["clientId"];
           String contactPersonId =
