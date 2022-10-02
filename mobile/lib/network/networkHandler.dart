@@ -117,6 +117,60 @@ class NetworkHandler {
     return contacts;
   }
 
+  static Future<List<Contact>> getClients() async {
+    String url = "https://backend.invoicer.at/api/Contacts";
+    Uri uri = Uri.parse(url);
+
+    String? token = await NetworkHandler.getToken();
+    List<Contact> contacts = [];
+
+    if (token!.isNotEmpty) {
+      token = token.toString();
+
+      final response = await http.get(uri, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        "Authorization": "Bearer $token"
+      });
+      print(response.statusCode);
+
+      List data = await json.decode(response.body) as List;
+
+      for (var element in data) {
+        Map obj = element;
+        String typeOfContact = obj["typeOfContactEnum"];
+        String gender = obj["gender"];
+        String? title = obj["title"];
+        String firstName = obj["firstName"];
+        String lastName = obj["lastName"];
+        String nameOfOrganisation = obj["nameOfOrganisation"];
+        String phoneNumber = obj["phoneNumber"];
+        String email = obj["email"];
+        String contactId = obj["id"];
+        Address address = Address(
+            obj["address"]["street"],
+            obj["address"]["zipCode"],
+            obj["address"]["city"],
+            obj["address"]["country"]);
+        Contact contact = Contact(
+            contactId,
+            typeOfContact,
+            gender,
+            title,
+            firstName,
+            lastName,
+            nameOfOrganisation,
+            phoneNumber,
+            email,
+            address);
+        if (contact.typeOfContact == "Client") {
+          contacts.add(contact);
+        }
+      }
+    }
+    return contacts;
+  }
+
   static Future<List<User>> getUsers() async {
     String url = "https://backend.invoicer.at/api/Users";
     Uri uri = Uri.parse(url);

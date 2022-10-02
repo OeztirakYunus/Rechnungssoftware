@@ -134,7 +134,7 @@ class _ContactsState extends State<Contacts> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const AddContact()),
+              MaterialPageRoute(builder: (context) => AddContact()),
             );
           },
           backgroundColor: Colors.redAccent[700],

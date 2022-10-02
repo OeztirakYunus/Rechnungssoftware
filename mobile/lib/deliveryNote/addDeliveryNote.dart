@@ -23,6 +23,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
   String user2 = "";
   String contact = "";
   String contact2 = "";
+  bool productsIsEmpty = false;
   int count = 0;
   List<DynamicWidget> dynamicList = [];
   List<String> productPosition = [];
@@ -39,7 +40,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
   TextEditingController totalDiscount = TextEditingController();
   TextEditingController tax = TextEditingController();
 
-  DateTime date = DateTime(2022, 9, 5);
+  DateTime date = DateTime(2022, 10, 6);
 
   @override
   Widget build(BuildContext context) {
@@ -281,7 +282,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                                   style: TextStyle(fontSize: 20.00)),
                             ),
                             FutureBuilder<List<Contact>>(
-                                future: NetworkHandler.getContacts(),
+                                future: NetworkHandler.getClients(),
                                 builder: ((context, AsyncSnapshot snapshot) {
                                   if (snapshot.hasData &&
                                       snapshot.connectionState ==
@@ -353,8 +354,12 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                                       snapshot.connectionState ==
                                           ConnectionState.done) {
                                     if (user.isEmpty) {
-                                      user =
-                                          "${snapshot.data[0].firstName} ${snapshot.data[0].lastName}";
+                                      try {
+                                        user =
+                                            "${snapshot.data[0].firstName} ${snapshot.data[0].lastName}";
+                                      } catch (e) {
+                                        user = "";
+                                      }
                                     } else if (user.isNotEmpty &&
                                         user2.isNotEmpty) {
                                       user = user2;
@@ -409,6 +414,9 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                               onPressed: () async {
                                 List<Products> products =
                                     await NetworkHandler.getProducts();
+                                if (products.isEmpty) {
+                                  productsIsEmpty = true;
+                                }
                                 addDynamic(
                                     products,
                                     deliveryNoteNumber,
@@ -454,26 +462,25 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                                 String message = "";
                                 if (contact == "" ||
                                     user == "" ||
-                                    productPosition.isEmpty) {
+                                    productsIsEmpty) {
                                   message =
                                       "Es ist kein/keine Kunde/Ansprechperson/Produkt vorhanden!\nLieferschein Anlegen nicht möglich!";
                                   showAlertDialog(context, message);
                                   return;
                                 }
-                                List<Products> products =
-                                    await NetworkHandler.getProducts();
-                                if (products.isNotEmpty &&
+
+                                if (!productsIsEmpty &&
                                     productPosition.isEmpty) {
                                   message =
                                       "Sie müssen mindestens eine Position hinzufügen!";
                                   showAlertDialog(context, message);
                                 }
 
-                                if (count >= 0) {
+                                if (count > 0) {
                                   return;
                                 }
 
-                                await addDeliveryNote(
+                                int statusCode = await addDeliveryNote(
                                     deliveryNoteNumber.text,
                                     deliveryNoteDate.text,
                                     subject.text,
@@ -488,12 +495,14 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                                     discountPosition,
                                     typeOfDiscountPosition,
                                     productPosition);
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const DeliveryNote()),
-                                );
+                                if (statusCode == 200) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const DeliveryNote()),
+                                  );
+                                }
                               },
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(100)),
@@ -596,6 +605,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
     List<Products> products = await NetworkHandler.getProducts();
     List<Contact> contacts = await NetworkHandler.getContacts();
     List<User> users = await NetworkHandler.getUsers();
+    int statusCode = 0;
 
     String firstName = "";
     String lastName = "";
@@ -617,35 +627,48 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
     }
 
     List<String> _delTypeOfDiscount = ['Euro', 'Percent'];
-    int typeOfDisIndex = int.parse(typeOfDiscount!);
+    int typeOfDisIndex = 0;
     String delTypeOfDiscount = "";
-
-    if (typeOfDisIndex == 0) {
-      delTypeOfDiscount = _delTypeOfDiscount[0];
-    } else if (typeOfDisIndex == 1) {
-      delTypeOfDiscount = _delTypeOfDiscount[1];
+    if (typeOfDiscount != null && typeOfDiscount.isNotEmpty) {
+      typeOfDisIndex = int.parse(typeOfDiscount);
+      if (typeOfDisIndex == 0) {
+        delTypeOfDiscount = _delTypeOfDiscount[0];
+      } else if (typeOfDisIndex == 1) {
+        delTypeOfDiscount = _delTypeOfDiscount[1];
+      }
     }
 
     double delTax = double.parse(tax);
 
-    Map<String, dynamic> _positions = {};
+    Map<dynamic, dynamic> _positions = {};
 
     for (int i = 0; i < quantityPosition.length; i++) {
-      int typeOfDisIndex = int.parse(typeOfDiscountPosition![i]);
+      int typeOfDisIndex = 0;
+      var positionBody = {};
+      String typeOfDis = "";
+      if (typeOfDiscountPosition != null &&
+          typeOfDiscountPosition[i].isNotEmpty) {
+        typeOfDisIndex = int.parse(typeOfDiscountPosition[i]);
+        if (typeOfDisIndex == 0) {
+          typeOfDis = _delTypeOfDiscount[0];
+        } else if (typeOfDisIndex == 1) {
+          typeOfDis = _delTypeOfDiscount[1];
+        }
+        positionBody["typeOfDiscount"] = typeOfDis;
+      }
+
       int prodIndex = int.parse(productPosition[i]);
       Products product = products.elementAt(prodIndex);
-      String typeOfDis = "";
-      if (typeOfDisIndex == 0) {
-        typeOfDis = _delTypeOfDiscount[0];
-      } else if (typeOfDisIndex == 1) {
-        typeOfDis = _delTypeOfDiscount[1];
+
+      positionBody["quantity"] = quantityPosition[i];
+      positionBody["productId"] = product.productId;
+      String discountPos = "";
+      if (discountPosition != null && discountPosition[i].isNotEmpty) {
+        discountPos = discountPosition[i];
+        positionBody["discount"] = discountPos;
       }
-      _positions.addAll({
-        "quantity": quantityPosition[i],
-        "discount": discountPosition![i],
-        "typeOfDiscount": typeOfDis,
-        "productId": product.productId
-      });
+
+      _positions.addAll(positionBody);
     }
 
     String? token = await NetworkHandler.getToken();
@@ -653,19 +676,34 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
       token = token.toString();
 
       var body = {};
-      body["deliveryNoteNumber"] = delNoteNum;
+
       body["deliveryNoteDate"] = delNoteDate;
-      body["subject"] = subject;
-      body["headerText"] = headerText;
-      body["flowText"] = flowText;
+
       body["documentInformations"] = {
-        "totalDiscount": totalDiscount,
-        "typeOfDiscount": delTypeOfDiscount,
         "tax": delTax,
         "clientId": idClient,
         "contactPersonId": contactId,
         "positions": [_positions]
       };
+
+      if (delNoteNum != null && delNoteNum.isNotEmpty) {
+        body["deliveryNoteNumber"] = delNoteNum;
+      }
+      if (delTypeOfDiscount.isNotEmpty) {
+        body["documentInformations"]["typeOfDiscount"] = delTypeOfDiscount;
+      }
+      if (subject != null && subject.isNotEmpty) {
+        body["subject"] = subject;
+      }
+      if (headerText != null && headerText.isNotEmpty) {
+        body["headerText"] = headerText;
+      }
+      if (flowText != null && flowText.isNotEmpty) {
+        body["flowText"] = flowText;
+      }
+      if (totalDiscount != null && totalDiscount.isNotEmpty) {
+        body["documentInformations"]["totalDiscount"] = totalDiscount;
+      }
       var jsonBody = json.encode(body);
 
       final response = await http.put(uri,
@@ -675,11 +713,9 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
             'Authorization': 'Bearer $token'
           },
           body: jsonBody);
-
-      print(response.statusCode);
-      print(response.body);
+      statusCode = response.statusCode;
     }
 
-    return 0;
+    return statusCode;
   }
 }

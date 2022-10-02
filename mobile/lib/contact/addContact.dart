@@ -9,8 +9,8 @@ import 'package:http/http.dart' as http;
 import 'package:select_form_field/select_form_field.dart';
 
 class AddContact extends StatelessWidget {
-  const AddContact({Key? key}) : super(key: key);
-
+  AddContact({Key? key}) : super(key: key);
+  final formGlobalKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> _typeOfContacts = [
@@ -54,6 +54,7 @@ class AddContact extends StatelessWidget {
             Container(
                 padding: const EdgeInsets.all(10),
                 child: Form(
+                  key: formGlobalKey,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -66,8 +67,9 @@ class AddContact extends StatelessWidget {
                           controller: typeOfContact,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return "Kontaktart darf nicht leer sein!";
+                              return "Bitte Kontaktart auswählen!";
                             }
+                            return null;
                           },
                           type: SelectFormFieldType.dropdown,
                           labelText: 'Kontaktart',
@@ -91,14 +93,14 @@ class AddContact extends StatelessWidget {
                         ),
                         SelectFormField(
                           controller: gender,
+                          type: SelectFormFieldType.dropdown,
+                          labelText: 'Geschlecht',
+                          items: _genders,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return "Geschlecht darf nicht leer sein!";
+                              return "Bitte Geschlecht auswählen!";
                             }
                           },
-                          type: SelectFormFieldType.dropdown,
-                          labelText: 'Geschelcht',
-                          items: _genders,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
@@ -141,6 +143,12 @@ class AddContact extends StatelessWidget {
                         TextFormField(
                           controller: firstName,
                           autofocus: false,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Bitte Vorname eingeben!";
+                            }
+                            return null;
+                          },
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
@@ -160,6 +168,12 @@ class AddContact extends StatelessWidget {
                         ),
                         TextFormField(
                           controller: lastName,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Bitte Nachname eingeben!";
+                            }
+                            return null;
+                          },
                           autofocus: false,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
@@ -237,9 +251,15 @@ class AddContact extends StatelessWidget {
                             Expanded(
                               flex: 2,
                               child: ListTile(
-                                title: const Text('Straße'),
+                                title: const Text('Straße mit Hausnummer'),
                                 subtitle: TextFormField(
                                   controller: street,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "Bitte Straße eingeben!";
+                                    }
+                                    return null;
+                                  },
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.all(
@@ -261,6 +281,12 @@ class AddContact extends StatelessWidget {
                                 subtitle: TextFormField(
                                   controller: zipCode,
                                   keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return "PLZ!";
+                                    }
+                                    return null;
+                                  },
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.all(
@@ -286,6 +312,12 @@ class AddContact extends StatelessWidget {
                         ),
                         TextFormField(
                           controller: city,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Bitte Stadt eingeben!";
+                            }
+                            return null;
+                          },
                           autofocus: false,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
@@ -306,6 +338,12 @@ class AddContact extends StatelessWidget {
                         ),
                         TextFormField(
                           controller: country,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Bitte Land eingeben!";
+                            }
+                            return null;
+                          },
                           autofocus: false,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
@@ -324,6 +362,9 @@ class AddContact extends StatelessWidget {
                             ),
                             MaterialButton(
                               onPressed: () async {
+                                if (!formGlobalKey.currentState!.validate()) {
+                                  return;
+                                }
                                 Address address = Address(street.text,
                                     zipCode.text, city.text, country.text);
                                 int categoryIndex = await addContact(
@@ -391,14 +432,14 @@ class AddContact extends StatelessWidget {
       token = token.toString();
 
       for (int i = 0; i < typeOfContacts.length; i++) {
-        if (typeOfContacts[i] == typeOfContact &&
+        if (typeOfContacts[i] == typeOfContact || i == int.parse(typeOfContact) &&
             categoryIndex <= typeOfContacts.length - 1) {
           categoryIndex = i;
         }
       }
 
       var body = {};
-      body["typeOfContactEnum"] = typeOfContact;
+      body["typeOfContactEnum"] = typeOfContacts[categoryIndex];
       body["gender"] = gender;
       body["title"] = title;
       body["firstName"] = firstName;
