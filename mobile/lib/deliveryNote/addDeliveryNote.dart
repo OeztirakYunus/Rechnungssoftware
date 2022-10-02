@@ -300,7 +300,8 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                                     return DropdownButtonFormField<String>(
                                         alignment: const Alignment(-0.95, 1),
                                         validator: (value) {
-                                          if (value == null || value.isEmpty) {
+                                          if (value == null ||
+                                              value.isEmpty && contact != "") {
                                             return "Bitte Kunde auswählen!";
                                           }
                                           return null;
@@ -450,6 +451,24 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                                     count++;
                                   }
                                 }
+                                String message = "";
+                                if (contact == "" ||
+                                    user == "" ||
+                                    productPosition.isEmpty) {
+                                  message =
+                                      "Es ist kein/keine Kunde/Ansprechperson/Produkt vorhanden!\nLieferschein Anlegen nicht möglich!";
+                                  showAlertDialog(context, message);
+                                  return;
+                                }
+                                List<Products> products =
+                                    await NetworkHandler.getProducts();
+                                if (products.isNotEmpty &&
+                                    productPosition.isEmpty) {
+                                  message =
+                                      "Sie müssen mindestens eine Position hinzufügen!";
+                                  showAlertDialog(context, message);
+                                }
+
                                 if (count >= 0) {
                                   return;
                                 }
@@ -488,6 +507,28 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                             ),
                           ])))
             ]))));
+  }
+
+  showAlertDialog(BuildContext context, String message) {
+    AlertDialog alert = AlertDialog(
+      title: const Text("Achtung!"),
+      content: Text(message),
+      actions: [
+        TextButton(
+          child: const Text("OK"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        )
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   addDynamic(

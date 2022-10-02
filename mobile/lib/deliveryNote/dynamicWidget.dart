@@ -55,7 +55,7 @@ class DynamicWidget extends StatelessWidget {
               labelText: 'Produkt',
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Bitte treffen Sie eine Auswahl!';
+                  return 'Bitte Produkt auswählen!';
                 }
                 return null;
               },
@@ -84,8 +84,8 @@ class DynamicWidget extends StatelessWidget {
               autofocus: false,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Bitte geben Sie die Quantität ein!';
-                } else if (value.trim() == '0') {
+                  return 'Bitte Quantität eingeben!';
+                } else if (int.parse(value.trim()) <= 0) {
                   return 'Bitte geben Sie eine Zahl größer 0 ein!';
                 }
                 return null;
