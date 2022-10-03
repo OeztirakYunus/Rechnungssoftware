@@ -319,8 +319,6 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
           "https://backend.invoicer.at/api/OrderConfirmations/get-as-pdf/" +
               orderConfirmationId;
 
-      Uri uri = Uri.parse(url);
-
       String? token = await NetworkHandler.getToken();
 
       if (token!.isNotEmpty) {

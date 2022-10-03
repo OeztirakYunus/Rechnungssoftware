@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:demo5/contact/contacts.dart';
-import 'package:demo5/deliveryNote/delivery_note.dart';
 import 'package:demo5/network/networkHandler.dart';
 import 'package:demo5/products/product.dart';
 import 'package:demo5/user/user.dart';
@@ -235,6 +234,7 @@ class _AddInvoicesState extends State<AddInvoice> {
                             if (value == null || value.isEmpty) {
                               return "Status darf nicht leer sein!";
                             }
+                            return null;
                           },
                           type: SelectFormFieldType.dropdown,
                           labelText: 'Status *',

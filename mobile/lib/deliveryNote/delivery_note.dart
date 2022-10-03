@@ -4,7 +4,6 @@ import 'dart:ui';
 
 import 'package:demo5/NavBar.dart';
 import 'package:demo5/deliveryNote/addDeliveryNote.dart';
-import 'package:demo5/document-scanner/scanner.dart';
 import 'package:demo5/network/networkHandler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';

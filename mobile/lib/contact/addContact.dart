@@ -100,6 +100,7 @@ class AddContact extends StatelessWidget {
                             if (value == null || value.isEmpty) {
                               return "Bitte Geschlecht auswählen!";
                             }
+                            return null;
                           },
                           decoration: InputDecoration(
                               border: OutlineInputBorder(

@@ -1,13 +1,9 @@
 // ignore_for_file: file_names
-import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:demo5/document-scanner/display_delivery_note.dart';
 import 'package:http/http.dart' as http;
-import 'package:demo5/document-scanner/documents_list.dart';
 import 'package:flutter/material.dart';
 import 'package:document_scanner/document_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';

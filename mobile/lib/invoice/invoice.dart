@@ -12,7 +12,6 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../contact/contacts.dart';
-import '../deliveryNote/delivery_note.dart';
 import '../products/product.dart';
 import '../user/user.dart';
 
@@ -447,7 +446,6 @@ class _InvoicesState extends State<Invoice> {
 
     Uri uri = Uri.parse(url);
     String? token = await NetworkHandler.getToken();
-    List<DeliveryNotes> deliveryNotes = [];
     String deliveryNoteNumber = "";
     if (token!.isNotEmpty) {
       token = token.toString();
@@ -459,19 +457,6 @@ class _InvoicesState extends State<Invoice> {
       print(response.statusCode);
 
       Map<String, dynamic> data = await json.decode(response.body);
-
-      List<String> quantityPosition = [];
-      List<String> discountPosition = [];
-      List<String> typeOfDiscountPosition = [];
-      List<String> productIdPosition = [];
-      List<String> productPosition = [];
-
-      List<Contact> contacts = await NetworkHandler.getContacts();
-      List<User> users = await NetworkHandler.getUsers();
-      List<Products> products = await NetworkHandler.getProducts();
-
-      String clientIdPos = "";
-      String contactIdPos = "";
 
       if (response.statusCode == 200) {
         data.forEach((key, value) {

@@ -1,15 +1,10 @@
-import 'package:demo5/home/home.dart';
-import 'package:demo5/products/addProduct.dart';
 import 'package:demo5/products/categoryList.dart';
-import 'package:demo5/products/product.dart';
 import 'package:demo5/authentication/signup.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:demo5/network/networkHandler.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);

@@ -242,6 +242,7 @@ class _AddOffersState extends State<AddOffer> {
                             if (value == null || value.isEmpty) {
                               return "Status darf nicht leer sein!";
                             }
+                            return null;
                           },
                           type: SelectFormFieldType.dropdown,
                           labelText: 'Status *',

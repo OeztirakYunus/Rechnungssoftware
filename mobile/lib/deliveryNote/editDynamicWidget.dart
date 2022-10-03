@@ -1,9 +1,10 @@
-import 'package:flutter/cupertino.dart';
+// ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:select_form_field/select_form_field.dart';
 
 import '../products/product.dart';
 
+// ignore: must_be_immutable
 class EditDynamicWidget extends StatelessWidget {
   List<Products> products;
   String pPosition;
@@ -11,6 +12,7 @@ class EditDynamicWidget extends StatelessWidget {
   final String dPosition;
   final String typePosition;
 
+  GlobalKey<FormState> formGlobalKey = GlobalKey<FormState>();
   TextEditingController productPosition = TextEditingController();
   TextEditingController quantityPosition = TextEditingController();
   TextEditingController discountPosition = TextEditingController();
@@ -31,6 +33,12 @@ class EditDynamicWidget extends StatelessWidget {
     quantityPosition.text = qPosition;
     discountPosition.text = dPosition;
     typeOfDiscountPosition.text = typePosition;
+    String typeOfDisPosHint = "";
+    if (typePosition == "Percent") {
+      typeOfDisPosHint = "Prozent";
+    } else {
+      typeOfDisPosHint = "Euro";
+    }
 
     List<Map<String, dynamic>> _products = [];
     for (int i = 0; i < products.length; i++) {
@@ -51,6 +59,7 @@ class EditDynamicWidget extends StatelessWidget {
         ),
         padding: const EdgeInsets.all(10),
         child: Form(
+          key: formGlobalKey,
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const SizedBox(
@@ -58,23 +67,23 @@ class EditDynamicWidget extends StatelessWidget {
             ),
             const Align(
               alignment: Alignment(-0.95, 1),
-              child: Text('Produkt', style: TextStyle(fontSize: 20.00)),
+              child: Text('Produkt *', style: TextStyle(fontSize: 20.00)),
             ),
             SelectFormField(
               controller: productPosition,
               type: SelectFormFieldType.dropdown,
-              labelText: 'Produkt',
+              labelText: 'Produkt *',
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Bitte treffen Sie eine Auswahl!';
+                  return 'Bitte Produkt auswählen';
                 }
-                return value;
+                return null;
               },
               items: _products,
               decoration: InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(100.0)),
-                  hintText: 'Produkt auswählen',
+                  hintText: productPosition.text,
                   hintStyle: const TextStyle(fontSize: 20.00)),
               onChanged: (val) => productPosition.text = val,
               onSaved: (val) =>
@@ -95,11 +104,11 @@ class EditDynamicWidget extends StatelessWidget {
               autofocus: false,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Bitte geben Sie die Quantität ein!';
-                } else if (value.replaceAll(' ', '') == '0') {
+                  return 'Bitte Quantität eingeben!';
+                } else if (double.parse(value.trim()) <= 0) {
                   return 'Bitte geben Sie eine Zahl größer 0 ein!';
                 }
-                return value;
+                return null;
               },
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
@@ -123,12 +132,6 @@ class EditDynamicWidget extends StatelessWidget {
               controller: discountPosition,
               autofocus: false,
               keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Bitte geben Sie die Ermäßigung ein!';
-                }
-                return value;
-              },
               decoration: InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(100.0)),
@@ -147,17 +150,11 @@ class EditDynamicWidget extends StatelessWidget {
               controller: typeOfDiscountPosition,
               type: SelectFormFieldType.dropdown,
               labelText: 'Ermäßigungstyp',
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Bitte treffen Sie eine Auswahl!';
-                }
-                return value;
-              },
               items: _typeOfDiscount,
               decoration: InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(100.0)),
-                  hintText: 'Ermäßigungstyp auswählen',
+                  hintText: typeOfDisPosHint,
                   hintStyle: const TextStyle(fontSize: 20.00)),
               onChanged: (val) => typeOfDiscountPosition.text = val,
               onSaved: (val) =>

@@ -676,8 +676,9 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
       token = token.toString();
 
       var body = {};
-
-      body["deliveryNoteDate"] = delNoteDate;
+      String delDateSplit =
+          "${delNoteDate.split('.')[2]}-${delNoteDate.split('.')[1]}-${delNoteDate.split('.')[0]}";
+      body["deliveryNoteDate"] = delDateSplit;
 
       body["documentInformations"] = {
         "tax": delTax,

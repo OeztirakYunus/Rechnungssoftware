@@ -33,6 +33,12 @@ class EditProduct extends StatelessWidget {
       {'value': '0', 'label': 'Artikel'},
       {'value': 1, 'label': 'Dienstleistungen'},
     ];
+    String categry = "";
+    if (category == "Article") {
+      categry = "Artikel";
+    } else if (category == "Service") {
+      categry = "Dienstleistungen";
+    }
 
     final List<Map<String, dynamic>> _units = [
       {'value': 0, 'label': 'Stück'},
@@ -89,6 +95,7 @@ class EditProduct extends StatelessWidget {
                           if (value == null || value.isEmpty) {
                             return "Artikelnummer darf nicht leer sein!";
                           }
+                          return null;
                         },
                         autofocus: false,
                         decoration: InputDecoration(
@@ -112,6 +119,7 @@ class EditProduct extends StatelessWidget {
                           if (value == null || value.isEmpty) {
                             return "Produktname darf nicht leer sein!";
                           }
+                          return null;
                         },
                         autofocus: false,
                         decoration: InputDecoration(
@@ -135,6 +143,7 @@ class EditProduct extends StatelessWidget {
                           if (value == null || value.isEmpty) {
                             return "Verkaufspreis-Netto darf nicht leer sein!";
                           }
+                          return null;
                         },
                         autofocus: false,
                         keyboardType: TextInputType.number,
@@ -161,7 +170,7 @@ class EditProduct extends StatelessWidget {
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(100.0)),
-                            hintText: category,
+                            hintText: categry,
                             hintStyle: const TextStyle(fontSize: 20.00)),
                         onChanged: (val) => productCategory.text = val,
                         onSaved: (val) =>
@@ -280,7 +289,7 @@ class EditProduct extends StatelessWidget {
       token = token.toString();
 
       for (int i = 0; i < categoriesGerman.length; i++) {
-        if (categoriesGerman[i] == productCategory && categoryIndex <= 1) {
+        if (categoriesGerman[i] == productCategory || i == int.parse(productCategory) && categoryIndex <= 1) {
           categoryIndex = i;
         }
       }

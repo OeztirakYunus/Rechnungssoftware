@@ -1,10 +1,8 @@
 // ignore_for_file: file_names
 
 import 'package:demo5/network/networkHandler.dart';
-import 'package:demo5/products/categoryList.dart';
 import 'package:demo5/products/product.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:select_form_field/select_form_field.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -71,6 +69,7 @@ class AddProduct extends StatelessWidget {
                           if (value == null || value.isEmpty) {
                             return "Artikelnummer darf nicht leer sein!";
                           }
+                          return null;
                         },
                         autofocus: false,
                         decoration: InputDecoration(
@@ -94,6 +93,7 @@ class AddProduct extends StatelessWidget {
                           if (value == null || value.isEmpty) {
                             return "Produktname darf nicht leer sein!";
                           }
+                          return null;
                         },
                         autofocus: false,
                         decoration: InputDecoration(
@@ -117,6 +117,7 @@ class AddProduct extends StatelessWidget {
                           if (value == null || value.isEmpty) {
                             return "Verkaufspreis-Netto darf nicht leer sein!";
                           }
+                          return null;
                         },
                         autofocus: false,
                         keyboardType: TextInputType.number,
@@ -141,6 +142,7 @@ class AddProduct extends StatelessWidget {
                           if (value == null || value.isEmpty) {
                             return "Produktkategorie darf nicht leer sein!";
                           }
+                          return null;
                         },
                         type: SelectFormFieldType.dropdown,
                         labelText: 'Produktkategorie',
@@ -168,6 +170,7 @@ class AddProduct extends StatelessWidget {
                           if (value == null || value.isEmpty) {
                             return "Einheit darf nicht leer sein!";
                           }
+                          return null;
                         },
                         type: SelectFormFieldType.dropdown,
                         labelText: 'Einheit',

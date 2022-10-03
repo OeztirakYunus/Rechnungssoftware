@@ -85,7 +85,7 @@ class DynamicWidget extends StatelessWidget {
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Bitte Quantität eingeben!';
-                } else if (int.parse(value.trim()) <= 0) {
+                } else if (double.parse(value.trim()) <= 0) {
                   return 'Bitte geben Sie eine Zahl größer 0 ein!';
                 }
                 return null;

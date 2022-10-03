@@ -126,6 +126,7 @@ class EditContact extends StatelessWidget {
                             if (value == null || value.isEmpty) {
                               return "Kontaktart darf nicht leer sein!";
                             }
+                            return null;
                           },
                           type: SelectFormFieldType.dropdown,
                           labelText: 'Kontaktart',
@@ -153,6 +154,7 @@ class EditContact extends StatelessWidget {
                             if (value == null || value.isEmpty) {
                               return "Geschlecht darf nicht leer sein!";
                             }
+                            return null;
                           },
                           type: SelectFormFieldType.dropdown,
                           labelText: 'Geschelcht',
