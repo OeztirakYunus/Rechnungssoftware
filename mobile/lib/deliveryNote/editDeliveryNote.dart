@@ -178,6 +178,13 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                             ),
                             TextFormField(
                               controller: deliveryNoteNumber,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Bitte Lieferscheinnummer eingeben!";
+                                } else {
+                                  return null;
+                                }
+                              },
                               autofocus: false,
                               decoration: InputDecoration(
                                   border: OutlineInputBorder(
@@ -200,6 +207,13 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                             TextFormField(
                               readOnly: true,
                               controller: deliveryNoteDate,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Bitte Datum auswählen!";
+                                } else {
+                                  return null;
+                                }
+                              },
                               decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius:
@@ -236,11 +250,19 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                             ),
                             TextFormField(
                               controller: headerText,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Bitte Kopftext eingeben!";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              maxLines: null,
                               autofocus: false,
                               decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius:
-                                          BorderRadius.circular(100.0)),
+                                          BorderRadius.circular(50.0)),
                                   hintText: 'Kopftext eingeben',
                                   hintStyle: const TextStyle(fontSize: 20.00)),
                               style: const TextStyle(fontSize: 20.00),
@@ -258,6 +280,13 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                             TextFormField(
                               controller: subject,
                               autofocus: false,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Bitte Betreff eingeben!";
+                                } else {
+                                  return null;
+                                }
+                              },
                               decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius:
@@ -280,10 +309,17 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                               controller: flowText,
                               autofocus: false,
                               maxLines: null,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Bitte Fließtext eingeben!";
+                                } else {
+                                  return null;
+                                }
+                              },
                               decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius:
-                                          BorderRadius.circular(100.0)),
+                                          BorderRadius.circular(50.0)),
                                   hintText: 'Fließtext eingeben',
                                   hintStyle: const TextStyle(fontSize: 20.00)),
                               style: const TextStyle(fontSize: 20.00),
@@ -779,7 +815,7 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
     List<Map<String, dynamic>> _positions = [];
 
     for (int i = 0; i < quantityPosition.length; i++) {
-      Map<String,dynamic> positionBody = {};
+      Map<String, dynamic> positionBody = {};
       positionBody["quantity"] = quantityPosition[i];
       String productId = "";
       if (int.tryParse(productPosition[i]) != null) {

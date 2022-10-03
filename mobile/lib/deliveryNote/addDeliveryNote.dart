@@ -147,11 +147,12 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                             ),
                             TextFormField(
                               controller: headerText,
+                              maxLines: null,
                               autofocus: false,
                               decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius:
-                                          BorderRadius.circular(100.0)),
+                                          BorderRadius.circular(50.0)),
                                   hintText: 'Kopftext eingeben',
                                   hintStyle: const TextStyle(fontSize: 20.00)),
                               style: const TextStyle(fontSize: 20.00),
@@ -474,6 +475,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                                   message =
                                       "Sie müssen mindestens eine Position hinzufügen!";
                                   showAlertDialog(context, message);
+                                  return;
                                 }
 
                                 if (count > 0) {
@@ -640,11 +642,11 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
 
     double delTax = double.parse(tax);
 
-    Map<dynamic, dynamic> _positions = {};
+    List<Map<String, dynamic>> _positions = [];
 
     for (int i = 0; i < quantityPosition.length; i++) {
       int typeOfDisIndex = 0;
-      var positionBody = {};
+      Map<String, dynamic> positionBody = {};
       String typeOfDis = "";
       if (typeOfDiscountPosition != null &&
           typeOfDiscountPosition[i].isNotEmpty) {
@@ -668,7 +670,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
         positionBody["discount"] = discountPos;
       }
 
-      _positions.addAll(positionBody);
+      _positions.add(positionBody);
     }
 
     String? token = await NetworkHandler.getToken();
@@ -684,7 +686,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
         "tax": delTax,
         "clientId": idClient,
         "contactPersonId": contactId,
-        "positions": [_positions]
+        "positions": _positions
       };
 
       if (delNoteNum != null && delNoteNum.isNotEmpty) {
