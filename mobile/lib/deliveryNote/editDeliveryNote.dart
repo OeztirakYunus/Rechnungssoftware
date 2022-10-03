@@ -593,6 +593,10 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                                 if (count > 0) {
                                   return;
                                 }
+                                if (deliveryNoteDate.text == "") {
+                                  deliveryNoteDate.text =
+                                      "${date.day.toString()}.${date.month.toString()}.${date.year.toString()}";
+                                }
 
                                 await editDeliveryNote(
                                     widget.id,
@@ -772,27 +776,53 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
 
     double delTax = double.parse(tax);
 
-    Map<String, dynamic> _positions = {};
+    List<Map<String, dynamic>> _positions = [];
 
     for (int i = 0; i < quantityPosition.length; i++) {
+      Map<String,dynamic> positionBody = {};
+      positionBody["quantity"] = quantityPosition[i];
       String productId = "";
-      for (var product in products) {
-        if (product.productName == productPosition[i]) {
-          productId = product.productId;
+      if (int.tryParse(productPosition[i]) != null) {
+        int prodIndex = int.parse(productPosition[i]);
+        Products product = products.elementAt(prodIndex);
+        productId = product.productId;
+      } else {
+        for (var product in products) {
+          if (product.productName == productPosition[i]) {
+            productId = product.productId;
+          }
         }
       }
+      positionBody["productId"] = productId;
+
       String typeOfDis = "";
-      if (_delTypeOfDiscount[0] == typeOfDiscountPosition[i]) {
-        typeOfDis = _delTypeOfDiscount[0];
-      } else if (typeOfDiscountPosition[i] == _delTypeOfDiscount[1]) {
-        typeOfDis = _delTypeOfDiscount[1];
+      if (typeOfDiscountPosition[i].isNotEmpty &&
+          int.tryParse(typeOfDiscountPosition[i]) != null) {
+        int typeOfDisIndex = int.parse(typeOfDiscountPosition[i]);
+        if (typeOfDisIndex == 0) {
+          typeOfDis = _delTypeOfDiscount[0];
+        } else if (typeOfDisIndex == 1) {
+          typeOfDis = _delTypeOfDiscount[1];
+        }
+        positionBody["typeOfDiscount"] = typeOfDis;
+      } else if (typeOfDiscountPosition[i].isNotEmpty &&
+          int.tryParse(typeOfDiscountPosition[i]) == null) {
+        if (typeOfDiscountPosition[i] == _delTypeOfDiscount[0]) {
+          typeOfDis = _delTypeOfDiscount[0];
+        } else if (typeOfDiscountPosition[i] == _delTypeOfDiscount[1] ||
+            typeOfDiscountPosition[i] == "Prozent") {
+          typeOfDis = _delTypeOfDiscount[1];
+        }
+        positionBody["typeOfDiscount"] = typeOfDis;
       }
-      _positions.addAll({
-        "quantity": quantityPosition[i],
-        "discount": discountPosition[i],
-        "typeOfDiscount": typeOfDis,
-        "productId": productId
-      });
+
+      String discountPos = "";
+      if (discountPosition[i].isNotEmpty) {
+        discountPos = discountPosition[i];
+        positionBody["discount"] = discountPos;
+      }
+
+      _positions.add(positionBody);
     }
 
     String? token = await NetworkHandler.getToken();
@@ -816,7 +846,7 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
         "tax": delTax,
         "clientId": idClient,
         "contactPersonId": contactId,
-        "positions": [_positions]
+        "positions": _positions
       };
       var jsonBody = json.encode(body);
 
@@ -829,7 +859,6 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
           body: jsonBody);
 
       print(response.statusCode);
-      print(response.body);
     }
 
     return 0;
