@@ -241,6 +241,7 @@ class _EditInvoicesState extends State<EditInvoice> {
                             ElevatedButton(
                                 onPressed: () async {
                                   DateTime? newDate = await showDatePicker(
+                                      cancelText: "Abbrechen",
                                       context: context,
                                       initialDate: date,
                                       firstDate: DateTime(2000),
@@ -278,6 +279,7 @@ class _EditInvoicesState extends State<EditInvoice> {
                             ElevatedButton(
                                 onPressed: () async {
                                   DateTime? newDate = await showDatePicker(
+                                      cancelText: "Abbrechen",
                                       context: context,
                                       initialDate: payDate,
                                       firstDate: DateTime(2000),
@@ -494,7 +496,7 @@ class _EditInvoicesState extends State<EditInvoice> {
                                   style: TextStyle(fontSize: 20.00)),
                             ),
                             FutureBuilder<List<Contact>>(
-                                future: NetworkHandler.getContacts(),
+                                future: NetworkHandler.getClients(),
                                 builder: ((context, AsyncSnapshot snapshot) {
                                   if (snapshot.hasData &&
                                       snapshot.connectionState ==
@@ -849,7 +851,7 @@ class _EditInvoicesState extends State<EditInvoice> {
     String url = "https://backend.invoicer.at/api/Invoices";
     Uri uri = Uri.parse(url);
     List<Products> products = await NetworkHandler.getProducts();
-    List<Contact> contacts = await NetworkHandler.getContacts();
+    List<Contact> contacts = await NetworkHandler.getClients();
     List<User> users = await NetworkHandler.getUsers();
 
     String firstName = "";

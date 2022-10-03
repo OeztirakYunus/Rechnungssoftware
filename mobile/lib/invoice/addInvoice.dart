@@ -325,7 +325,7 @@ class _AddInvoicesState extends State<AddInvoice> {
                                   style: TextStyle(fontSize: 20.00)),
                             ),
                             FutureBuilder<List<Contact>>(
-                                future: NetworkHandler.getContacts(),
+                                future: NetworkHandler.getClients(),
                                 builder: ((context, AsyncSnapshot snapshot) {
                                   if (snapshot.hasData &&
                                       snapshot.connectionState ==
@@ -670,7 +670,7 @@ class _AddInvoicesState extends State<AddInvoice> {
     String url = "https://backend.invoicer.at/api/Companies/add-invoice";
     Uri uri = Uri.parse(url);
     List<Products> products = await NetworkHandler.getProducts();
-    List<Contact> contacts = await NetworkHandler.getContacts();
+    List<Contact> contacts = await NetworkHandler.getClients();
     List<User> users = await NetworkHandler.getUsers();
 
     String firstName = "";
@@ -760,7 +760,7 @@ class _AddInvoicesState extends State<AddInvoice> {
         body["invoiceNumber"] = invoiceNum;
       }
       if (delTypeOfDiscount.isNotEmpty) {
-        body["documentInformations"]["typeOfDiscount"] = delTypeOfDiscount;
+        body["documentInformation"]["typeOfDiscount"] = delTypeOfDiscount;
       }
       if (subject.isNotEmpty) {
         body["subject"] = subject;
@@ -772,7 +772,7 @@ class _AddInvoicesState extends State<AddInvoice> {
         body["flowText"] = flowText;
       }
       if (totalDiscount.isNotEmpty) {
-        body["documentInformations"]["totalDiscount"] = totalDiscount;
+        body["documentInformation"]["totalDiscount"] = totalDiscount;
       }
 
       var jsonBody = json.encode(body);

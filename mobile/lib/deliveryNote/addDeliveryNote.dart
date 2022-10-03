@@ -605,7 +605,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
     String url = "https://backend.invoicer.at/api/Companies/add-delivery-note";
     Uri uri = Uri.parse(url);
     List<Products> products = await NetworkHandler.getProducts();
-    List<Contact> contacts = await NetworkHandler.getContacts();
+    List<Contact> contacts = await NetworkHandler.getClients();
     List<User> users = await NetworkHandler.getUsers();
     int statusCode = 0;
 

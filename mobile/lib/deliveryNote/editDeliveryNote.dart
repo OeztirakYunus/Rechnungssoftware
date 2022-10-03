@@ -439,7 +439,7 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                                   style: TextStyle(fontSize: 20.00)),
                             ),
                             FutureBuilder<List<Contact>>(
-                                future: NetworkHandler.getContacts(),
+                                future: NetworkHandler.getClients(),
                                 builder: ((context, AsyncSnapshot snapshot) {
                                   if (snapshot.hasData &&
                                       snapshot.connectionState ==
@@ -770,7 +770,7 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
     String url = "https://backend.invoicer.at/api/DeliveryNotes";
     Uri uri = Uri.parse(url);
     List<Products> products = await NetworkHandler.getProducts();
-    List<Contact> contacts = await NetworkHandler.getContacts();
+    List<Contact> contacts = await NetworkHandler.getClients();
     List<User> users = await NetworkHandler.getUsers();
 
     String firstName = "";
