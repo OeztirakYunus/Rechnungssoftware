@@ -88,37 +88,34 @@ class _EditInvoicesState extends State<EditInvoice> {
 
   DateTime date = DateTime(2022, 9, 5);
   DateTime payDate = DateTime(2022, 9, 5);
+  String invDateHint = "";
+  String payDateHint = "";
 
   @override
-  Widget build(BuildContext context) {
-    List<Map<String, dynamic>> _status = [
-      {'value': 0, 'label': 'geöffnet'},
-      {'value': 1, 'label': 'geschlossen'}
-    ];
-
-    List<Map<String, dynamic>> _typeOfDiscount = [
-      {'value': 0, 'label': 'Euro'},
-      {'value': 1, 'label': 'Prozent'}
-    ];
-
+  void initState() {
+    super.initState();
     status.text = widget.status;
     invoiceNumber.text = widget.invoiceNum;
 
     String invDateSplit = widget.invoiceDate.split('T')[0];
-    String invDateHint =
+    invDateHint =
         "${invDateSplit.split('-')[2]}.${invDateSplit.split('-')[1]}.${invDateSplit.split('-')[0]}";
     int year = int.parse(invDateSplit.split('-')[0]);
     int month = int.parse(invDateSplit.split('-')[1]);
     int day = int.parse(invDateSplit.split('-')[2]);
     date = DateTime(year, month, day);
+    invoiceDate.text =
+        "${invDateSplit.split('-')[2]}.${invDateSplit.split('-')[1]}.${invDateSplit.split('-')[0]}";
 
     String payDateSplit = widget.paymentTerm.split('T')[0];
-    String payDateHint =
+    payDateHint =
         "${payDateSplit.split('-')[2]}.${payDateSplit.split('-')[1]}.${payDateSplit.split('-')[0]}";
     int payYear = int.parse(payDateSplit.split('-')[0]);
     int payMonth = int.parse(payDateSplit.split('-')[1]);
     int payDay = int.parse(payDateSplit.split('-')[2]);
     payDate = DateTime(payYear, payMonth, payDay);
+    paymentTerm.text =
+        "${payDateSplit.split('-')[2]}.${payDateSplit.split('-')[1]}.${payDateSplit.split('-')[0]}";
 
     headerText.text = widget.headerText;
     flowText.text = widget.flowText;
@@ -142,6 +139,19 @@ class _EditInvoicesState extends State<EditInvoice> {
       discountPosition.add(widget.discountPosition[i]);
       typeOfDiscountPosition.add(widget.typeOfDiscountPosition[i]);
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<Map<String, dynamic>> _status = [
+      {'value': 0, 'label': 'geöffnet'},
+      {'value': 1, 'label': 'geschlossen'}
+    ];
+
+    List<Map<String, dynamic>> _typeOfDiscount = [
+      {'value': 0, 'label': 'Euro'},
+      {'value': 1, 'label': 'Prozent'}
+    ];
 
     Widget dynamicTextField = Container(
       width: 500,
@@ -787,19 +797,8 @@ class _EditInvoicesState extends State<EditInvoice> {
       String user,
       String contact) {
     setState(() {
-      this.status = status;
-      invoiceNumber = invoiceNum;
-      this.invoiceDate = invoiceDate;
-      this.paymentTerm = paymentTerm;
-      this.headerText = headerText;
-      this.flowText = flowText;
-      this.subject = subject;
-      this.typeOfDiscount = typeOfDiscount;
-      this.totalDiscount = totalDiscount;
-      this.tax = tax;
       this.user = user;
       this.contact = contact;
-      dynamicList = [];
     });
     addDynamicList.add(DynamicWidget(
       products: products,
@@ -967,7 +966,7 @@ class _EditInvoicesState extends State<EditInvoice> {
         "tax": delTax,
         "clientId": idClient,
         "contactPersonId": contactId,
-        "positions": [_positions]
+        "positions": _positions
       };
       var jsonBody = json.encode(body);
 

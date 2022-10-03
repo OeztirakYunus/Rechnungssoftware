@@ -81,37 +81,30 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
   TextEditingController typeOfDiscount = TextEditingController();
   TextEditingController totalDiscount = TextEditingController();
   TextEditingController tax = TextEditingController();
-
-  DateTime date = DateTime(2022, 9, 5);
+  String dateHint = "";
+  String typeOfD = "";
 
   @override
-  Widget build(BuildContext context) {
-    List<Map<String, dynamic>> _status = [
-      {'value': 0, 'label': 'geöffnet'},
-      {'value': 1, 'label': 'geschlossen'}
-    ];
-
-    List<Map<String, dynamic>> _typeOfDiscount = [
-      {'value': 0, 'label': 'Euro'},
-      {'value': 1, 'label': 'Prozent'}
-    ];
-    String typeOfD = "";
-    if (widget.typeOfDiscount == "Percent") {
-      typeOfD = "Prozent";
-    } else {
-      typeOfD = "Euro";
-    }
-
+  void initState() {
+    super.initState();
     status.text = widget.status;
     deliveryNoteNumber.text = widget.delNoteNum;
 
     String dateSplit = widget.delNoteDate.split('T')[0];
-    String dateHint =
+    dateHint =
         "${dateSplit.split('-')[2]}.${dateSplit.split('-')[1]}.${dateSplit.split('-')[0]}";
     int year = int.parse(dateSplit.split('-')[0]);
     int month = int.parse(dateSplit.split('-')[1]);
     int day = int.parse(dateSplit.split('-')[2]);
     date = DateTime(year, month, day);
+    deliveryNoteDate.text =
+        "${day.toString()}.${month.toString()}.${year.toString()}";
+
+    if (widget.typeOfDiscount == "Percent") {
+      typeOfD = "Prozent";
+    } else {
+      typeOfD = "Euro";
+    }
 
     headerText.text = widget.headerText;
     flowText.text = widget.flowText;
@@ -135,6 +128,21 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
       discountPosition.add(widget.discountPosition[i]);
       typeOfDiscountPosition.add(widget.typeOfDiscountPosition[i]);
     }
+  }
+
+  DateTime date = DateTime(2022, 9, 5);
+
+  @override
+  Widget build(BuildContext context) {
+    List<Map<String, dynamic>> _status = [
+      {'value': 0, 'label': 'geöffnet'},
+      {'value': 1, 'label': 'geschlossen'}
+    ];
+
+    List<Map<String, dynamic>> _typeOfDiscount = [
+      {'value': 0, 'label': 'Euro'},
+      {'value': 1, 'label': 'Prozent'}
+    ];
 
     Widget dynamicTextField = Container(
       width: 500,
@@ -208,7 +216,9 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                               readOnly: true,
                               controller: deliveryNoteDate,
                               validator: (value) {
-                                if (value == null || value.isEmpty) {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    deliveryNoteDate.text.isEmpty) {
                                   return "Bitte Datum auswählen!";
                                 } else {
                                   return null;
@@ -709,18 +719,8 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
       String user,
       String contact) {
     setState(() {
-      this.status = status;
-      this.deliveryNoteNumber = deliveryNoteNumber;
-      this.deliveryNoteDate = deliveryNoteDate;
-      this.headerText = headerText;
-      this.flowText = flowText;
-      this.subject = subject;
-      this.typeOfDiscount = typeOfDiscount;
-      this.totalDiscount = totalDiscount;
-      this.tax = tax;
       this.user = user;
       this.contact = contact;
-      dynamicList = [];
     });
     addDynamicList.add(DynamicWidget(
       products: products,
