@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:demo5/contact/contacts.dart';
-import 'package:demo5/deliveryNote/delivery_note.dart';
 import 'package:demo5/deliveryNote/editDynamicWidget.dart';
 import 'package:demo5/network/networkHandler.dart';
 import 'package:demo5/products/product.dart';
@@ -60,10 +59,13 @@ class EditInvoice extends StatefulWidget {
 }
 
 class _EditInvoicesState extends State<EditInvoice> {
+  final formGlobalKey = GlobalKey<FormState>();
+  List<GlobalKey<FormState>> keys = [];
   String user = "";
   String user2 = "";
   String contact = "";
   String contact2 = "";
+  bool productsIsEmpty = false;
   int count = 0;
   List<EditDynamicWidget> dynamicList = [];
   List<DynamicWidget> addDynamicList = [];
@@ -101,8 +103,23 @@ class _EditInvoicesState extends State<EditInvoice> {
 
     status.text = widget.status;
     invoiceNumber.text = widget.invoiceNum;
-    invoiceDate.text = widget.invoiceDate;
-    paymentTerm.text = widget.paymentTerm;
+
+    String invDateSplit = widget.invoiceDate.split('T')[0];
+    String invDateHint =
+        "${invDateSplit.split('-')[2]}.${invDateSplit.split('-')[1]}.${invDateSplit.split('-')[0]}";
+    int year = int.parse(invDateSplit.split('-')[0]);
+    int month = int.parse(invDateSplit.split('-')[1]);
+    int day = int.parse(invDateSplit.split('-')[2]);
+    date = DateTime(year, month, day);
+
+    String payDateSplit = widget.paymentTerm.split('T')[0];
+    String payDateHint =
+        "${payDateSplit.split('-')[2]}.${payDateSplit.split('-')[1]}.${payDateSplit.split('-')[0]}";
+    int payYear = int.parse(payDateSplit.split('-')[0]);
+    int payMonth = int.parse(payDateSplit.split('-')[1]);
+    int payDay = int.parse(payDateSplit.split('-')[2]);
+    payDate = DateTime(payYear, payMonth, payDay);
+
     headerText.text = widget.headerText;
     flowText.text = widget.flowText;
     subject.text = widget.subject;
@@ -157,429 +174,602 @@ class _EditInvoicesState extends State<EditInvoice> {
               Container(
                   padding: const EdgeInsets.all(10),
                   child: Form(
+                      key: formGlobalKey,
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                        const Align(
-                          alignment: Alignment(-0.95, 1),
-                          child: Text('Rechnungsnummer *',
-                              style: TextStyle(fontSize: 20.00)),
-                        ),
-                        TextFormField(
-                          controller: invoiceNumber,
-                          autofocus: false,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(100.0)),
-                              hintText: 'Rechnungsnummer eingeben',
-                              hintStyle: const TextStyle(fontSize: 20.00)),
-                          style: const TextStyle(fontSize: 20.00),
-                        ),
-                        const SizedBox(
-                          height: 25.00,
-                        ),
-                        const Align(
-                          alignment: Alignment(-0.95, 1),
-                          child: Text(
-                            'Datum *',
-                            style: TextStyle(fontSize: 20.00),
-                          ),
-                        ),
-                        TextFormField(
-                          readOnly: true,
-                          controller: invoiceDate,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(100.0)),
-                              hintText: "Datum auswählen!",
-                              hintStyle: const TextStyle(fontSize: 20.00)),
-                          style: const TextStyle(fontSize: 20.00),
-                        ),
-                        ElevatedButton(
-                            onPressed: () async {
-                              DateTime? newDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: date,
-                                  firstDate: DateTime(2000),
-                                  lastDate: DateTime(2100));
-                              if (newDate == null) return;
-
-                              setState(() {
-                                date = newDate;
-                                invoiceDate.text =
-                                    '${date.day}.${date.month}.${date.year}';
-                              });
-                            },
-                            child: const Text('Datum auswählen')),
-                        const SizedBox(
-                          height: 25.00,
-                        ),
-                        TextFormField(
-                          readOnly: true,
-                          controller: paymentTerm,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(100.0)),
-                              hintText: "Zahlungsfrist auswählen!",
-                              hintStyle: const TextStyle(fontSize: 20.00)),
-                          style: const TextStyle(fontSize: 20.00),
-                        ),
-                        ElevatedButton(
-                            onPressed: () async {
-                              DateTime? newDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: payDate,
-                                  firstDate: DateTime(2000),
-                                  lastDate: DateTime(2100));
-                              if (newDate == null) return;
-
-                              setState(() {
-                                payDate = newDate;
-                                paymentTerm.text =
-                                    '${payDate.day}.${payDate.month}.${payDate.year}';
-                              });
-                            },
-                            child: const Text('Zahlungsfrist auswählen')),
-                        const SizedBox(
-                          height: 25.00,
-                        ),
-                        const Align(
-                          alignment: Alignment(-0.95, 1),
-                          child: Text(
-                            'Bezeichnung *',
-                            style: TextStyle(fontSize: 20.00),
-                          ),
-                        ),
-                        TextFormField(
-                          controller: headerText,
-                          autofocus: false,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(100.0)),
-                              hintText: 'Bezeichnung eingeben',
-                              hintStyle: const TextStyle(fontSize: 20.00)),
-                          style: const TextStyle(fontSize: 20.00),
-                        ),
-                        const SizedBox(
-                          height: 25.00,
-                        ),
-                        const Align(
-                          alignment: Alignment(-0.95, 1),
-                          child: Text(
-                            'Thema *',
-                            style: TextStyle(fontSize: 20.00),
-                          ),
-                        ),
-                        TextFormField(
-                          controller: subject,
-                          autofocus: false,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(100.0)),
-                              hintText: 'Thema eingeben',
-                              hintStyle: const TextStyle(fontSize: 20.00)),
-                          style: const TextStyle(fontSize: 20.00),
-                        ),
-                        const SizedBox(
-                          height: 25.00,
-                        ),
-                        const Align(
-                          alignment: Alignment(-0.95, 1),
-                          child: Text(
-                            'Fließtext*',
-                            style: TextStyle(fontSize: 20.00),
-                          ),
-                        ),
-                        TextFormField(
-                          controller: flowText,
-                          autofocus: false,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(100.0)),
-                              hintText: 'Fließtext eingeben',
-                              hintStyle: const TextStyle(fontSize: 20.00)),
-                          style: const TextStyle(fontSize: 20.00),
-                        ),
-                        const SizedBox(
-                          height: 25.00,
-                        ),
-                        const Align(
-                          alignment: Alignment(-0.95, 1),
-                          child: Text('Status *',
-                              style: TextStyle(fontSize: 20.00)),
-                        ),
-                        SelectFormField(
-                          controller: status,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              value = widget.status;
-                            }
-                          },
-                          type: SelectFormFieldType.dropdown,
-                          labelText: 'Status *',
-                          items: _status,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(100.0)),
-                              hintText: widget.status,
-                              hintStyle: const TextStyle(fontSize: 20.00)),
-                          onChanged: (val) => status.text = val,
-                          onSaved: (val) =>
-                              val!.isNotEmpty ? status.text = val : val,
-                        ),
-                        const SizedBox(
-                          height: 25.00,
-                        ),
-                        const Align(
-                          alignment: Alignment(-0.95, 1),
-                          child: Text(
-                            'Ermäßigung',
-                            style: TextStyle(fontSize: 20.00),
-                          ),
-                        ),
-                        TextFormField(
-                          controller: totalDiscount,
-                          autofocus: false,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(100.0)),
-                              hintText: 'Ermäßigung eingeben',
-                              hintStyle: const TextStyle(fontSize: 20.00)),
-                          style: const TextStyle(fontSize: 20.00),
-                        ),
-                        const SizedBox(
-                          height: 25.00,
-                        ),
-                        const Align(
-                          alignment: Alignment(-0.95, 1),
-                          child: Text('Ermäßigungstyp',
-                              style: TextStyle(fontSize: 20.00)),
-                        ),
-                        SelectFormField(
-                          controller: typeOfDiscount,
-                          type: SelectFormFieldType.dropdown,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              value = widget.typeOfDiscount;
-                            }
-                          },
-                          labelText: 'Ermäßigungstyp',
-                          items: _typeOfDiscount,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(100.0)),
-                              hintText: widget.typeOfDiscount,
-                              hintStyle: const TextStyle(fontSize: 20.00)),
-                          onChanged: (val) => typeOfDiscount.text = val,
-                          onSaved: (val) =>
-                              val!.isNotEmpty ? typeOfDiscount.text = val : val,
-                        ),
-                        const SizedBox(
-                          height: 25.00,
-                        ),
-                        const Align(
-                          alignment: Alignment(-0.95, 1),
-                          child: Text(
-                            'Steuer *',
-                            style: TextStyle(fontSize: 20.00),
-                          ),
-                        ),
-                        TextFormField(
-                          controller: tax,
-                          autofocus: false,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(100.0)),
-                              hintText: 'Steuer eingeben',
-                              hintStyle: const TextStyle(fontSize: 20.00)),
-                          style: const TextStyle(fontSize: 20.00),
-                        ),
-                        const SizedBox(
-                          height: 25.00,
-                        ),
-                        const Align(
-                          alignment: Alignment(-0.95, 1),
-                          child: Text('Kunde *',
-                              style: TextStyle(fontSize: 20.00)),
-                        ),
-                        FutureBuilder<List<Contact>>(
-                            future: NetworkHandler.getContacts(),
-                            builder: ((context, AsyncSnapshot snapshot) {
-                              if (snapshot.hasData &&
-                                  snapshot.connectionState ==
-                                      ConnectionState.done) {
-                                if (contact.isEmpty) {
-                                  contact =
-                                      "${snapshot.data[0].firstName} ${snapshot.data[0].lastName}";
-                                } else if (contact.isNotEmpty &&
-                                    contact2.isNotEmpty) {
-                                  contact = contact2;
+                            const Align(
+                              alignment: Alignment(-0.95, 1),
+                              child: Text('Rechnungsnummer *',
+                                  style: TextStyle(fontSize: 20.00)),
+                            ),
+                            TextFormField(
+                              controller: invoiceNumber,
+                              autofocus: false,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Bitte Rechnungsnummer eingeben!";
                                 }
-                                return DropdownButtonFormField<String>(
-                                    alignment: const Alignment(-0.95, 1),
-                                    decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(100.0)),
-                                        hintText: 'Kunde auswählen',
-                                        hintStyle:
-                                            const TextStyle(fontSize: 20.00)),
-                                    isExpanded: true,
-                                    hint: const Text("Kunde auswählen"),
-                                    value: contact,
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        contact2 = newValue!;
-                                      });
-                                    },
-                                    items: snapshot.data
-                                        .map<DropdownMenuItem<String>>(
-                                            (fc) => DropdownMenuItem<String>(
-                                                  child: Text(
-                                                      '${fc.firstName} ${fc.lastName}'),
-                                                  value:
-                                                      '${fc.firstName} ${fc.lastName}',
-                                                ))
-                                        .toList());
-                              } else {
-                                return const Center(
-                                    child:
-                                        CircularProgressIndicator()); //SizedBox.shrink()
-                              }
-                            })),
-                        const SizedBox(
-                          height: 25.00,
-                        ),
-                        const Align(
-                          alignment: Alignment(-0.95, 1),
-                          child: Text('Ansprechperson *',
-                              style: TextStyle(fontSize: 20.00)),
-                        ),
-                        FutureBuilder<List<User>>(
-                            future: NetworkHandler.getUsers(),
-                            builder: ((context, AsyncSnapshot snapshot) {
-                              if (snapshot.hasData &&
-                                  snapshot.connectionState ==
-                                      ConnectionState.done) {
-                                if (user.isEmpty) {
-                                  user =
-                                      "${snapshot.data[0].firstName} ${snapshot.data[0].lastName}";
-                                } else if (user.isNotEmpty &&
-                                    user2.isNotEmpty) {
-                                  user = user2;
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(100.0)),
+                                  hintText: 'Rechnungsnummer eingeben',
+                                  hintStyle: const TextStyle(fontSize: 20.00)),
+                              style: const TextStyle(fontSize: 20.00),
+                            ),
+                            const SizedBox(
+                              height: 25.00,
+                            ),
+                            const Align(
+                              alignment: Alignment(-0.95, 1),
+                              child: Text(
+                                'Datum *',
+                                style: TextStyle(fontSize: 20.00),
+                              ),
+                            ),
+                            TextFormField(
+                              readOnly: true,
+                              controller: invoiceDate,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Bitte Datum auswählen!";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(100.0)),
+                                  hintText: invDateHint,
+                                  hintStyle: const TextStyle(fontSize: 20.00)),
+                              style: const TextStyle(fontSize: 20.00),
+                            ),
+                            ElevatedButton(
+                                onPressed: () async {
+                                  DateTime? newDate = await showDatePicker(
+                                      context: context,
+                                      initialDate: date,
+                                      firstDate: DateTime(2000),
+                                      lastDate: DateTime(2100));
+                                  if (newDate == null) return;
+
+                                  setState(() {
+                                    date = newDate;
+                                    invoiceDate.text =
+                                        '${date.day}.${date.month}.${date.year}';
+                                  });
+                                },
+                                child: const Text('Datum auswählen')),
+                            const SizedBox(
+                              height: 25.00,
+                            ),
+                            TextFormField(
+                              readOnly: true,
+                              controller: paymentTerm,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Bitte Zahlungsfrist auswählen!";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(100.0)),
+                                  hintText: payDateHint,
+                                  hintStyle: const TextStyle(fontSize: 20.00)),
+                              style: const TextStyle(fontSize: 20.00),
+                            ),
+                            ElevatedButton(
+                                onPressed: () async {
+                                  DateTime? newDate = await showDatePicker(
+                                      context: context,
+                                      initialDate: payDate,
+                                      firstDate: DateTime(2000),
+                                      lastDate: DateTime(2100));
+                                  if (newDate == null) return;
+
+                                  setState(() {
+                                    payDate = newDate;
+                                    paymentTerm.text =
+                                        '${payDate.day}.${payDate.month}.${payDate.year}';
+                                  });
+                                },
+                                child: const Text('Zahlungsfrist auswählen')),
+                            const SizedBox(
+                              height: 25.00,
+                            ),
+                            const Align(
+                              alignment: Alignment(-0.95, 1),
+                              child: Text(
+                                'Kopftext *',
+                                style: TextStyle(fontSize: 20.00),
+                              ),
+                            ),
+                            TextFormField(
+                              controller: headerText,
+                              maxLines: null,
+                              autofocus: false,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Bitte Kopftext eingeben!";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(100.0)),
+                                  hintText: 'Kopftext eingeben',
+                                  hintStyle: const TextStyle(fontSize: 20.00)),
+                              style: const TextStyle(fontSize: 20.00),
+                            ),
+                            const SizedBox(
+                              height: 25.00,
+                            ),
+                            const Align(
+                              alignment: Alignment(-0.95, 1),
+                              child: Text(
+                                'Betreff *',
+                                style: TextStyle(fontSize: 20.00),
+                              ),
+                            ),
+                            TextFormField(
+                              controller: subject,
+                              autofocus: false,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Bitte Betreff eingeben!";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(100.0)),
+                                  hintText: 'Betreff eingeben',
+                                  hintStyle: const TextStyle(fontSize: 20.00)),
+                              style: const TextStyle(fontSize: 20.00),
+                            ),
+                            const SizedBox(
+                              height: 25.00,
+                            ),
+                            const Align(
+                              alignment: Alignment(-0.95, 1),
+                              child: Text(
+                                'Fließtext*',
+                                style: TextStyle(fontSize: 20.00),
+                              ),
+                            ),
+                            TextFormField(
+                              controller: flowText,
+                              maxLines: null,
+                              autofocus: false,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Bitte Fließtext eingeben!";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(100.0)),
+                                  hintText: 'Fließtext eingeben',
+                                  hintStyle: const TextStyle(fontSize: 20.00)),
+                              style: const TextStyle(fontSize: 20.00),
+                            ),
+                            const SizedBox(
+                              height: 25.00,
+                            ),
+                            const Align(
+                              alignment: Alignment(-0.95, 1),
+                              child: Text('Status *',
+                                  style: TextStyle(fontSize: 20.00)),
+                            ),
+                            SelectFormField(
+                              controller: status,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  value = widget.status;
+                                }
+                                return null;
+                              },
+                              type: SelectFormFieldType.dropdown,
+                              labelText: 'Status *',
+                              items: _status,
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(100.0)),
+                                  hintText: widget.status,
+                                  hintStyle: const TextStyle(fontSize: 20.00)),
+                              onChanged: (val) => status.text = val,
+                              onSaved: (val) =>
+                                  val!.isNotEmpty ? status.text = val : val,
+                            ),
+                            const SizedBox(
+                              height: 25.00,
+                            ),
+                            const Align(
+                              alignment: Alignment(-0.95, 1),
+                              child: Text(
+                                'Gesamtermäßigung',
+                                style: TextStyle(fontSize: 20.00),
+                              ),
+                            ),
+                            TextFormField(
+                              controller: totalDiscount,
+                              autofocus: false,
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(100.0)),
+                                  hintText: 'Gesamtermäßigung eingeben',
+                                  hintStyle: const TextStyle(fontSize: 20.00)),
+                              style: const TextStyle(fontSize: 20.00),
+                            ),
+                            const SizedBox(
+                              height: 25.00,
+                            ),
+                            const Align(
+                              alignment: Alignment(-0.95, 1),
+                              child: Text('Ermäßigungstyp',
+                                  style: TextStyle(fontSize: 20.00)),
+                            ),
+                            SelectFormField(
+                              controller: typeOfDiscount,
+                              type: SelectFormFieldType.dropdown,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  value = widget.typeOfDiscount;
+                                }
+                                return null;
+                              },
+                              labelText: 'Ermäßigungstyp',
+                              items: _typeOfDiscount,
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(100.0)),
+                                  hintText: widget.typeOfDiscount,
+                                  hintStyle: const TextStyle(fontSize: 20.00)),
+                              onChanged: (val) => typeOfDiscount.text = val,
+                              onSaved: (val) => val!.isNotEmpty
+                                  ? typeOfDiscount.text = val
+                                  : val,
+                            ),
+                            const SizedBox(
+                              height: 25.00,
+                            ),
+                            const Align(
+                              alignment: Alignment(-0.95, 1),
+                              child: Text(
+                                'Steuer *',
+                                style: TextStyle(fontSize: 20.00),
+                              ),
+                            ),
+                            TextFormField(
+                              controller: tax,
+                              autofocus: false,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Bitte Steuer eingeben!";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(100.0)),
+                                  hintText: 'Steuer eingeben',
+                                  hintStyle: const TextStyle(fontSize: 20.00)),
+                              style: const TextStyle(fontSize: 20.00),
+                            ),
+                            const SizedBox(
+                              height: 25.00,
+                            ),
+                            const Align(
+                              alignment: Alignment(-0.95, 1),
+                              child: Text('Kunde *',
+                                  style: TextStyle(fontSize: 20.00)),
+                            ),
+                            FutureBuilder<List<Contact>>(
+                                future: NetworkHandler.getContacts(),
+                                builder: ((context, AsyncSnapshot snapshot) {
+                                  if (snapshot.hasData &&
+                                      snapshot.connectionState ==
+                                          ConnectionState.done) {
+                                    if (contact.isEmpty) {
+                                      try {
+                                        contact =
+                                            "${snapshot.data[0].firstName} ${snapshot.data[0].lastName}";
+                                      } catch (e) {
+                                        contact = "";
+                                      }
+                                    } else if (contact.isNotEmpty &&
+                                        contact2.isNotEmpty) {
+                                      contact = contact2;
+                                    }
+                                    return DropdownButtonFormField<String>(
+                                        alignment: const Alignment(-0.95, 1),
+                                        validator: (value) {
+                                          if (value == null ||
+                                              value.isEmpty && contact != "") {
+                                            return "Bitte Kunde auswählen!";
+                                          }
+                                          return null;
+                                        },
+                                        decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        100.0)),
+                                            hintText: 'Kunde auswählen',
+                                            hintStyle: const TextStyle(
+                                                fontSize: 20.00)),
+                                        isExpanded: true,
+                                        hint: const Text("Kunde auswählen"),
+                                        value: contact,
+                                        onChanged: (newValue) {
+                                          setState(() {
+                                            contact2 = newValue!;
+                                          });
+                                        },
+                                        items: snapshot.data
+                                            .map<DropdownMenuItem<String>>(
+                                                (fc) =>
+                                                    DropdownMenuItem<String>(
+                                                      child: Text(
+                                                          '${fc.firstName} ${fc.lastName}'),
+                                                      value:
+                                                          '${fc.firstName} ${fc.lastName}',
+                                                    ))
+                                            .toList());
+                                  } else {
+                                    return const Center(
+                                        child:
+                                            CircularProgressIndicator()); //SizedBox.shrink()
+                                  }
+                                })),
+                            const SizedBox(
+                              height: 25.00,
+                            ),
+                            const Align(
+                              alignment: Alignment(-0.95, 1),
+                              child: Text('Ansprechperson *',
+                                  style: TextStyle(fontSize: 20.00)),
+                            ),
+                            FutureBuilder<List<User>>(
+                                future: NetworkHandler.getUsers(),
+                                builder: ((context, AsyncSnapshot snapshot) {
+                                  if (snapshot.hasData &&
+                                      snapshot.connectionState ==
+                                          ConnectionState.done) {
+                                    if (user.isEmpty) {
+                                      try {
+                                        user =
+                                            "${snapshot.data[0].firstName} ${snapshot.data[0].lastName}";
+                                      } catch (e) {
+                                        user = "";
+                                      }
+                                    } else if (user.isNotEmpty &&
+                                        user2.isNotEmpty) {
+                                      user = user2;
+                                    }
+
+                                    return DropdownButtonFormField<String>(
+                                        alignment: const Alignment(-0.95, 1),
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return "Bitte Ansprechperson auswählen!";
+                                          }
+                                          return null;
+                                        },
+                                        decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        100.0)),
+                                            hintText:
+                                                'Ansprechperson auswählen',
+                                            hintStyle: const TextStyle(
+                                                fontSize: 20.00)),
+                                        isExpanded: true,
+                                        hint: const Text(
+                                            "Ansprechperson auswählen"),
+                                        value: user,
+                                        onChanged: (newValue) {
+                                          setState(() {
+                                            user2 = newValue!;
+                                          });
+                                        },
+                                        items: snapshot.data
+                                            .map<DropdownMenuItem<String>>(
+                                                (fc) =>
+                                                    DropdownMenuItem<String>(
+                                                      child: Text(
+                                                          '${fc.firstName} ${fc.lastName}'),
+                                                      value:
+                                                          '${fc.firstName} ${fc.lastName}',
+                                                    ))
+                                            .toList());
+                                  } else {
+                                    return const Center(
+                                        child:
+                                            CircularProgressIndicator()); //SizedBox.shrink()
+                                  }
+                                })),
+                            const SizedBox(
+                              height: 25.00,
+                            ),
+                            MaterialButton(
+                              onPressed: () async {
+                                List<Products> products =
+                                    await NetworkHandler.getProducts();
+                                if (products.isEmpty) {
+                                  productsIsEmpty = true;
+                                }
+                                addDynamic(
+                                    products,
+                                    status,
+                                    invoiceNumber,
+                                    invoiceDate,
+                                    paymentTerm,
+                                    headerText,
+                                    flowText,
+                                    subject,
+                                    typeOfDiscount,
+                                    totalDiscount,
+                                    tax,
+                                    user,
+                                    contact);
+                              },
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(100)),
+                              color: Colors.redAccent[700],
+                              child: const Text('Position hinzufügen',
+                                  style:
+                                      TextStyle(fontSize: 18.00, height: 1.35)),
+                              textColor: Colors.white,
+                              height: 50.00,
+                              minWidth: 200.00,
+                            ),
+                            const SizedBox(
+                              height: 25.00,
+                            ),
+                            dynamicTextField,
+                            addDynamicTextField,
+                            const SizedBox(
+                              height: 25.00,
+                            ),
+                            MaterialButton(
+                              onPressed: () async {
+                                submitData();
+                                int count = 0;
+                                if (!formGlobalKey.currentState!.validate()) {
+                                  count++;
+                                }
+                                for (var key in keys) {
+                                  if (!key.currentState!.validate()) {
+                                    count++;
+                                  }
                                 }
 
-                                return DropdownButtonFormField<String>(
-                                    alignment: const Alignment(-0.95, 1),
-                                    decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(100.0)),
-                                        hintText: 'Ansprechperson auswählen',
-                                        hintStyle:
-                                            const TextStyle(fontSize: 20.00)),
-                                    isExpanded: true,
-                                    hint:
-                                        const Text("Ansprechperson auswählen"),
-                                    value: user,
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        user2 = newValue!;
-                                      });
-                                    },
-                                    items: snapshot.data
-                                        .map<DropdownMenuItem<String>>(
-                                            (fc) => DropdownMenuItem<String>(
-                                                  child: Text(
-                                                      '${fc.firstName} ${fc.lastName}'),
-                                                  value:
-                                                      '${fc.firstName} ${fc.lastName}',
-                                                ))
-                                        .toList());
-                              } else {
-                                return const Center(
-                                    child:
-                                        CircularProgressIndicator()); //SizedBox.shrink()
-                              }
-                            })),
-                        const SizedBox(
-                          height: 25.00,
-                        ),
-                        MaterialButton(
-                          onPressed: () async {
-                            List<Products> products =
-                                await NetworkHandler.getProducts();
-                            addDynamic(
-                                products,
-                                status,
-                                invoiceNumber,
-                                invoiceDate,
-                                paymentTerm,
-                                headerText,
-                                flowText,
-                                subject,
-                                typeOfDiscount,
-                                totalDiscount,
-                                tax,
-                                user,
-                                contact);
-                          },
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100)),
-                          color: Colors.redAccent[700],
-                          child: const Text('Position hinzufügen',
-                              style: TextStyle(fontSize: 18.00, height: 1.35)),
-                          textColor: Colors.white,
-                          height: 50.00,
-                          minWidth: 200.00,
-                        ),
-                        const SizedBox(
-                          height: 25.00,
-                        ),
-                        dynamicTextField,
-                        addDynamicTextField,
-                        const SizedBox(
-                          height: 25.00,
-                        ),
-                        MaterialButton(
-                          onPressed: () async {
-                            submitData();
-                            await editInvoice(
-                                widget.id,
-                                widget.documentInformationId,
-                                invoiceNumber.text,
-                                date,
-                                payDate,
-                                status.text,
-                                subject.text,
-                                headerText.text,
-                                flowText.text,
-                                totalDiscount.text,
-                                typeOfDiscount.text,
-                                tax.text,
-                                contact,
-                                user,
-                                quantityPosition,
-                                discountPosition,
-                                typeOfDiscountPosition,
-                                productPosition);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Invoice()),
-                            );
-                          },
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100)),
-                          color: Colors.redAccent[700],
-                          child: const Text('Rechnung speichern',
-                              style: TextStyle(fontSize: 22.00, height: 1.35)),
-                          textColor: Colors.white,
-                          height: 50.00,
-                          minWidth: 477.00,
-                        ),
-                      ])))
+                                String message = "";
+                                if (contact == "" ||
+                                    user == "" ||
+                                    productsIsEmpty) {
+                                  message =
+                                      "Es ist kein/keine Kunde/Ansprechperson/Produkt vorhanden!\nRechnung Bearbeiten nicht möglich!";
+                                  showAlertDialog(context, message);
+                                  return;
+                                }
+
+                                if (!productsIsEmpty &&
+                                    productPosition.isEmpty) {
+                                  message =
+                                      "Sie müssen mindestens eine Position hinzufügen!";
+                                  showAlertDialog(context, message);
+                                }
+
+                                if (count > 0) {
+                                  return;
+                                }
+
+                                int invDay =
+                                    int.parse(invoiceDate.text.split('.')[0]);
+                                int invMonth =
+                                    int.parse(invoiceDate.text.split('.')[1]);
+                                int invYear =
+                                    int.parse(invoiceDate.text.split('.')[2]);
+                                int payDay =
+                                    int.parse(paymentTerm.text.split('.')[0]);
+                                int payMonth =
+                                    int.parse(paymentTerm.text.split('.')[1]);
+                                int payYear =
+                                    int.parse(paymentTerm.text.split('.')[2]);
+
+                                if (invYear > payYear ||
+                                    (invYear == payYear &&
+                                        invMonth > payMonth) ||
+                                    (invYear == payYear &&
+                                        invMonth == payMonth &&
+                                        invDay > payDay)) {
+                                  message =
+                                      "Datum darf nicht später als die Zahlungsfrist sein!";
+                                  showAlertDialog(context, message);
+                                  return;
+                                }
+
+                                await editInvoice(
+                                    widget.id,
+                                    widget.documentInformationId,
+                                    invoiceNumber.text,
+                                    invoiceDate.text,
+                                    paymentTerm.text,
+                                    status.text,
+                                    subject.text,
+                                    headerText.text,
+                                    flowText.text,
+                                    totalDiscount.text,
+                                    typeOfDiscount.text,
+                                    tax.text,
+                                    contact,
+                                    user,
+                                    quantityPosition,
+                                    discountPosition,
+                                    typeOfDiscountPosition,
+                                    productPosition);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const Invoice()),
+                                );
+                              },
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(100)),
+                              color: Colors.redAccent[700],
+                              child: const Text('Rechnung speichern',
+                                  style:
+                                      TextStyle(fontSize: 22.00, height: 1.35)),
+                              textColor: Colors.white,
+                              height: 50.00,
+                              minWidth: 477.00,
+                            ),
+                          ])))
             ]))));
+  }
+
+  showAlertDialog(BuildContext context, String message) {
+    AlertDialog alert = AlertDialog(
+      title: const Text("Achtung!"),
+      content: Text(message),
+      actions: [
+        TextButton(
+          child: const Text("OK"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        )
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   addDynamic(
@@ -617,11 +807,24 @@ class _EditInvoicesState extends State<EditInvoice> {
   }
 
   submitData() {
+    productPosition = [];
+    quantityPosition = [];
+    discountPosition = [];
+    typeOfDiscountPosition = [];
+    keys = [];
+    for (var widget in dynamicList) {
+      productPosition.add(widget.productPosition.text);
+      quantityPosition.add(widget.quantityPosition.text);
+      discountPosition.add(widget.discountPosition.text);
+      typeOfDiscountPosition.add(widget.typeOfDiscountPosition.text);
+      keys.add(widget.formGlobalKey);
+    }
     for (var widget in addDynamicList) {
       productPosition.add(widget.productPosition.text);
       quantityPosition.add(widget.quantityPosition.text);
       discountPosition.add(widget.discountPosition.text);
       typeOfDiscountPosition.add(widget.typeOfDiscountPosition.text);
+      keys.add(widget.formGlobalKey);
     }
   }
 
@@ -629,8 +832,8 @@ class _EditInvoicesState extends State<EditInvoice> {
       String id,
       String documentInformationId,
       String invoiceNum,
-      DateTime invoiceDate,
-      DateTime paymentTerm,
+      String invoiceDate,
+      String paymentTerm,
       String status,
       String subject,
       String headerText,
@@ -671,45 +874,71 @@ class _EditInvoicesState extends State<EditInvoice> {
 
     List<String> _status = ['OPEN', 'CLOSED'];
     List<String> _delTypeOfDiscount = ['Euro', 'Percent'];
-   
+
     String delStatus = "";
     String delTypeOfDiscount = "";
 
-    if (status == "geöffnet") {
+    if (status == "geöffnet" || status == "0") {
       delStatus = _status[0];
-    } else if (status == "geschlossen") {
+    } else if (status == "geschlossen" || status == "1") {
       delStatus = _status[1];
     }
 
-    if (typeOfDiscount == _delTypeOfDiscount[0]) {
+    if (typeOfDiscount == _delTypeOfDiscount[0] || typeOfDiscount == "0") {
       delTypeOfDiscount = _delTypeOfDiscount[0];
-    } else if (typeOfDiscount == "Prozent") {
+    } else if (typeOfDiscount == "Prozent" || typeOfDiscount == "1") {
       delTypeOfDiscount = _delTypeOfDiscount[1];
     }
 
     double delTax = double.parse(tax);
 
-    Map<String, dynamic> _positions = {};
+    List<Map<String, dynamic>> _positions = [];
 
     for (int i = 0; i < quantityPosition.length; i++) {
+      Map<String, dynamic> positionBody = {};
+      positionBody["quantity"] = quantityPosition[i];
       String productId = "";
-      for (var product in products) {
-        if (product.productName == productPosition[i]) {
-          productId = product.productId;
+      if (int.tryParse(productPosition[i]) != null) {
+        int prodIndex = int.parse(productPosition[i]);
+        Products product = products.elementAt(prodIndex);
+        productId = product.productId;
+      } else {
+        for (var product in products) {
+          if (product.productName == productPosition[i]) {
+            productId = product.productId;
+          }
         }
       }
+      positionBody["productId"] = productId;
+
       String typeOfDis = "";
-      if (_delTypeOfDiscount[0] == typeOfDiscountPosition[i]) {
-        typeOfDis = _delTypeOfDiscount[0];
-      } else if (typeOfDiscountPosition[i] == "Prozent") {
-        typeOfDis = _delTypeOfDiscount[1];
+      if (typeOfDiscountPosition[i].isNotEmpty &&
+          int.tryParse(typeOfDiscountPosition[i]) != null) {
+        int typeOfDisIndex = int.parse(typeOfDiscountPosition[i]);
+        if (typeOfDisIndex == 0) {
+          typeOfDis = _delTypeOfDiscount[0];
+        } else if (typeOfDisIndex == 1) {
+          typeOfDis = _delTypeOfDiscount[1];
+        }
+        positionBody["typeOfDiscount"] = typeOfDis;
+      } else if (typeOfDiscountPosition[i].isNotEmpty &&
+          int.tryParse(typeOfDiscountPosition[i]) == null) {
+        if (typeOfDiscountPosition[i] == _delTypeOfDiscount[0]) {
+          typeOfDis = _delTypeOfDiscount[0];
+        } else if (typeOfDiscountPosition[i] == _delTypeOfDiscount[1] ||
+            typeOfDiscountPosition[i] == "Prozent") {
+          typeOfDis = _delTypeOfDiscount[1];
+        }
+        positionBody["typeOfDiscount"] = typeOfDis;
       }
-      _positions.addAll({
-        "quantity": quantityPosition[i],
-        "discount": discountPosition[i],
-        "typeOfDiscount": typeOfDis,
-        "productId": productId
-      });
+
+      String discountPos = "";
+      if (discountPosition[i].isNotEmpty) {
+        discountPos = discountPosition[i];
+        positionBody["discount"] = discountPos;
+      }
+
+      _positions.add(positionBody);
     }
 
     String? token = await NetworkHandler.getToken();
@@ -719,27 +948,13 @@ class _EditInvoicesState extends State<EditInvoice> {
       var body = {};
       body["id"] = id;
       body["invoiceNumber"] = invoiceNum;
-      if (invoiceDate.month < 10 && invoiceDate.day < 10) {
-        body["invoiceDate"] =
-            "${invoiceDate.year}-0${invoiceDate.month}-0${invoiceDate.day}";
-      } else if (invoiceDate.month < 10) {
-        body["invoiceDate"] =
-            "${invoiceDate.year}-0${invoiceDate.month}-${invoiceDate.day}";
-      } else if (invoiceDate.day < 10) {
-        body["invoiceDate"] =
-            "${invoiceDate.year}-${invoiceDate.month}-0${invoiceDate.day}";
-      }
+      String invDateSplit =
+          "${invoiceDate.split('.')[2]}-${invoiceDate.split('.')[1]}-${invoiceDate.split('.')[0]}";
+      body["invoiceDate"] = invDateSplit;
 
-      if (paymentTerm.month < 10 && paymentTerm.day < 10) {
-        body["paymentTerm"] =
-            "${paymentTerm.year}-0${paymentTerm.month}-0${paymentTerm.day}";
-      } else if (paymentTerm.month < 10) {
-        body["paymentTerm"] =
-            "${paymentTerm.year}-0${paymentTerm.month}-${paymentTerm.day}";
-      } else if (paymentTerm.day < 10) {
-        body["paymentTerm"] =
-            "${paymentTerm.year}-${paymentTerm.month}-0${paymentTerm.day}";
-      }
+      String paymentTermSplit =
+          "${paymentTerm.split('.')[2]}-${paymentTerm.split('.')[1]}-${paymentTerm.split('.')[0]}";
+      body["paymentTerm"] = paymentTermSplit;
 
       body["status"] = delStatus;
       body["subject"] = subject;
