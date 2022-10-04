@@ -117,7 +117,7 @@ class AddContact extends StatelessWidget {
                         const Align(
                           alignment: Alignment(-0.95, 1),
                           child: Text(
-                            'Titel (optional)',
+                            'Titel',
                             style: TextStyle(fontSize: 20.00),
                           ),
                         ),
@@ -127,7 +127,7 @@ class AddContact extends StatelessWidget {
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
-                              hintText: 'Titel (optional) eingeben',
+                              hintText: 'Titel eingeben',
                               hintStyle: const TextStyle(fontSize: 20.00)),
                           style: const TextStyle(fontSize: 20.00),
                         ),
@@ -433,8 +433,9 @@ class AddContact extends StatelessWidget {
       token = token.toString();
 
       for (int i = 0; i < typeOfContacts.length; i++) {
-        if (typeOfContacts[i] == typeOfContact || i == int.parse(typeOfContact) &&
-            categoryIndex <= typeOfContacts.length - 1) {
+        if (typeOfContacts[i] == typeOfContact ||
+            i == int.parse(typeOfContact) &&
+                categoryIndex <= typeOfContacts.length - 1) {
           categoryIndex = i;
         }
       }

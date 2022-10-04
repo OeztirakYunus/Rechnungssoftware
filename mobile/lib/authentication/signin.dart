@@ -145,7 +145,7 @@ class _LoginState extends State<Login> {
                     text: 'Noch kein Konto?',
                     recognizer: TapGestureRecognizer()
                       ..onTap = () => Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => SignUp())),
+                          MaterialPageRoute(builder: (context) => const SignUp())),
                     style: const TextStyle(
                       color: Colors.blueAccent,
                       fontSize: 18,

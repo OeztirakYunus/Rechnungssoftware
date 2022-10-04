@@ -8,7 +8,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class AddProduct extends StatelessWidget {
-  const AddProduct({Key? key}) : super(key: key);
+  AddProduct({Key? key}) : super(key: key);
+  final formGlobalKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +54,7 @@ class AddProduct extends StatelessWidget {
             Container(
                 padding: const EdgeInsets.all(10),
                 child: Form(
+                  key: formGlobalKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -67,7 +69,7 @@ class AddProduct extends StatelessWidget {
                         controller: articleNumber,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Artikelnummer darf nicht leer sein!";
+                            return "Bitte Artikelnummer eingeben!";
                           }
                           return null;
                         },
@@ -91,7 +93,7 @@ class AddProduct extends StatelessWidget {
                         controller: productName,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Produktname darf nicht leer sein!";
+                            return "Bitte Produktname eingeben!";
                           }
                           return null;
                         },
@@ -115,7 +117,7 @@ class AddProduct extends StatelessWidget {
                         controller: sellingPriceNet,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Verkaufspreis-Netto darf nicht leer sein!";
+                            return "Bitte Verkaufspreis-Netto eingeben!";
                           }
                           return null;
                         },
@@ -140,7 +142,7 @@ class AddProduct extends StatelessWidget {
                         controller: productCategory,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Produktkategorie darf nicht leer sein!";
+                            return "Bitte Produktkategorie auswählen!";
                           }
                           return null;
                         },
@@ -168,7 +170,7 @@ class AddProduct extends StatelessWidget {
                         controller: unit,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return "Einheit darf nicht leer sein!";
+                            return "Bitte Einheit auswählen!";
                           }
                           return null;
                         },
@@ -212,6 +214,9 @@ class AddProduct extends StatelessWidget {
                           ),
                           MaterialButton(
                             onPressed: () async {
+                              if (!formGlobalKey.currentState!.validate()) {
+                                return;
+                              }
                               int categoryIndex = await addProduct(
                                   articleNumber.text,
                                   productName.text,

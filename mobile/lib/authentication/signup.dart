@@ -5,8 +5,14 @@ import 'package:flutter/material.dart';
 
 import '../network/networkHandler.dart';
 
-class SignUp extends StatelessWidget {
-  SignUp({Key? key}) : super(key: key);
+class SignUp extends StatefulWidget {
+  const SignUp({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
   final formGlobalKey = GlobalKey<FormState>();
   TextEditingController firstName = TextEditingController();
   TextEditingController lastName = TextEditingController();
@@ -23,6 +29,8 @@ class SignUp extends StatelessWidget {
   TextEditingController companyBankName = TextEditingController();
   TextEditingController companyIban = TextEditingController();
   TextEditingController companyBic = TextEditingController();
+  bool _passwordVisible = true;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -142,17 +150,24 @@ class SignUp extends StatelessWidget {
                         }
                         return null;
                       },
-                      obscureText: true,
+                      obscureText: !_passwordVisible,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(100.0)),
                         hintText: 'Passwort eingeben',
                         hintStyle: const TextStyle(fontSize: 20.00),
-                        prefixIcon: const Padding(
-                          padding:
-                              EdgeInsets.only(top: 0, right: 12, bottom: 0),
-                          child: Icon(Icons.remove_red_eye,
-                              size: 22, color: Colors.grey),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _passwordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Theme.of(context).primaryColorDark,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            });
+                          },
                         ),
                       ),
                       style: const TextStyle(fontSize: 20.00),
@@ -458,44 +473,53 @@ class SignUp extends StatelessWidget {
                     const SizedBox(
                       height: 25.00,
                     ),
-                    MaterialButton(
-                      onPressed: () async {
-                        if (!formGlobalKey.currentState!.validate()) {
-                          return;
-                        }
-                        int statusCode = await registerUser(
-                            firstName.text,
-                            lastName.text,
-                            userMail.text,
-                            userPsw.text,
-                            companyName.text,
-                            companyMail.text,
-                            companyPhoneNumber.text,
-                            companyUst.text,
-                            companyAddress.text,
-                            companyPostalCode.text,
-                            companyCity.text,
-                            companyCountry.text,
-                            companyBankName.text,
-                            companyIban.text,
-                            companyBic.text);
-                        if (statusCode == 200) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Categories()),
-                          );
-                        }
-                      },
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100)),
-                      color: Colors.redAccent[700],
-                      child: const Text('Registrieren',
-                          style: TextStyle(fontSize: 22.00, height: 1.35)),
-                      textColor: Colors.white,
-                      height: 50.00,
-                      minWidth: 477.00,
-                    ),
+                    isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : MaterialButton(
+                            onPressed: () async {
+                              if (!formGlobalKey.currentState!.validate()) {
+                                return;
+                              }
+                              setState(() {
+                                isLoading = true;
+                              });
+                              int statusCode = await registerUser(
+                                  firstName.text,
+                                  lastName.text,
+                                  userMail.text,
+                                  userPsw.text,
+                                  companyName.text,
+                                  companyMail.text,
+                                  companyPhoneNumber.text,
+                                  companyUst.text,
+                                  companyAddress.text,
+                                  companyPostalCode.text,
+                                  companyCity.text,
+                                  companyCountry.text,
+                                  companyBankName.text,
+                                  companyIban.text,
+                                  companyBic.text);
+                              if (statusCode == 200) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Categories()),
+                                );
+                              }
+                              setState(() {
+                                isLoading = false;
+                              });
+                            },
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100)),
+                            color: Colors.redAccent[700],
+                            child: const Text('Registrieren',
+                                style:
+                                    TextStyle(fontSize: 22.00, height: 1.35)),
+                            textColor: Colors.white,
+                            height: 50.00,
+                            minWidth: 477.00,
+                          ),
                   ],
                 ),
               ),

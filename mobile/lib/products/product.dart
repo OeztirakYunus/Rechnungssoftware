@@ -125,7 +125,7 @@ class _ProductsState extends State<Product> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AddProduct()),
+            MaterialPageRoute(builder: (context) => AddProduct()),
           );
         },
         backgroundColor: Colors.redAccent[700],

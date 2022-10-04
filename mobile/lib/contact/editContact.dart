@@ -8,6 +8,7 @@ import 'package:select_form_field/select_form_field.dart';
 import 'package:http/http.dart' as http;
 
 class EditContact extends StatelessWidget {
+  final formGlobalKey = GlobalKey<FormState>();
   final String typeOfContact;
   final String gender;
   final String? title;
@@ -19,7 +20,7 @@ class EditContact extends StatelessWidget {
   final String contactId;
   final Address address;
 
-  const EditContact(
+  EditContact(
       {Key? key,
       required this.contactId,
       required this.typeOfContact,
@@ -112,6 +113,7 @@ class EditContact extends StatelessWidget {
             Container(
                 padding: const EdgeInsets.all(10),
                 child: Form(
+                  key: formGlobalKey,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -124,7 +126,7 @@ class EditContact extends StatelessWidget {
                           controller: typeOfContact,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return "Kontaktart darf nicht leer sein!";
+                              return "Bitte Kontaktart auswählen!";
                             }
                             return null;
                           },
@@ -152,12 +154,12 @@ class EditContact extends StatelessWidget {
                           controller: gender,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return "Geschlecht darf nicht leer sein!";
+                              return "Bitte Geschlecht auswählen!";
                             }
                             return null;
                           },
                           type: SelectFormFieldType.dropdown,
-                          labelText: 'Geschelcht',
+                          labelText: 'Geschlecht',
                           items: _genders,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
@@ -174,7 +176,7 @@ class EditContact extends StatelessWidget {
                         const Align(
                           alignment: Alignment(-0.95, 1),
                           child: Text(
-                            'Titel (optional)',
+                            'Titel',
                             style: TextStyle(fontSize: 20.00),
                           ),
                         ),
@@ -184,7 +186,7 @@ class EditContact extends StatelessWidget {
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
-                              hintText: 'Titel (optional) eingeben',
+                              hintText: 'Titel eingeben',
                               hintStyle: const TextStyle(fontSize: 20.00)),
                           style: const TextStyle(fontSize: 20.00),
                         ),
@@ -384,6 +386,9 @@ class EditContact extends StatelessWidget {
                             ),
                             MaterialButton(
                               onPressed: () async {
+                                if (!formGlobalKey.currentState!.validate()) {
+                                  return;
+                                }
                                 Address address = Address(street.text,
                                     zipCode.text, city.text, country.text);
                                 int categoryIndex = await editContact(
