@@ -378,12 +378,12 @@ class AddContact extends StatelessWidget {
                                     phoneNumber.text,
                                     email.text,
                                     address);
-                                Navigator.push(
-                                  context,
+                                Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(
                                       builder: (context) => Contacts(
                                             categoryIndex: categoryIndex,
                                           )),
+                                  (route) => false,
                                 );
                               },
                               shape: RoundedRectangleBorder(

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 
@@ -25,6 +26,28 @@ class DeliveryNote extends StatefulWidget {
 
 class _DeliveryNotesState extends State<DeliveryNote> {
   final ReceivePort _port = ReceivePort();
+
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('App verlassen?'),
+            content: const Text('Möchten Sie die App verlassen?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Nein'),
+              ),
+              TextButton(
+                onPressed: () => exit(0),
+                child: const Text('Ja'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -61,148 +84,157 @@ class _DeliveryNotesState extends State<DeliveryNote> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-      appBar: AppBar(
-        title: const Text('Lieferscheine',
-            style:
-                TextStyle(height: 1.00, fontSize: 25.00, color: Colors.white)),
-        centerTitle: true,
-      ),
-      drawer: const NavBar(),
-      body: FutureBuilder<List<DeliveryNotes>>(
-          future: getDeliveryNotes(),
-          builder: (context, AsyncSnapshot snapshot) {
-            if (snapshot.hasData &&
-                snapshot.connectionState == ConnectionState.done) {
-              return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  AlertDialog alert;
-                  return Card(
-                    child: ListTile(
-                      title: Text(
-                        snapshot.data?[index].delNoteNum,
-                      ),
-                      subtitle: Text(
-                        "${snapshot.data?[index].status}",
-                      ),
-                      trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                        OutlinedButton(
-                          onPressed: () async {
-                            await getAsWord(snapshot.data?[index].id,
-                                snapshot.data?[index].delNoteNum);
-                          },
-                          child: Image.asset(
-                            "lib/assets/word.png",
-                            height: 25,
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: SafeArea(
+            child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Lieferscheine',
+                style: TextStyle(
+                    height: 1.00, fontSize: 25.00, color: Colors.white)),
+            centerTitle: true,
+          ),
+          drawer: const NavBar(),
+          body: FutureBuilder<List<DeliveryNotes>>(
+              future: getDeliveryNotes(),
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData &&
+                    snapshot.connectionState == ConnectionState.done) {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      AlertDialog alert;
+                      return Card(
+                        child: ListTile(
+                          title: Text(
+                            snapshot.data?[index].delNoteNum,
                           ),
-                        ),
-                        OutlinedButton(
-                          onPressed: () async {
-                            await getAsPdf(snapshot.data?[index].id,
-                                snapshot.data?[index].delNoteNum);
-                          },
-                          child: Image.asset(
-                            "lib/assets/pdf.png",
-                            height: 25,
+                          subtitle: Text(
+                            "${snapshot.data?[index].status}",
                           ),
-                        ),
-                        OutlinedButton(
-                          onPressed: () => {
-                            alert = AlertDialog(
-                              title: const Text("Achtung!"),
-                              content: const Text(
-                                  "Möchten Sie wirklich dieses Lieferschein löschen?"),
-                              actions: [
-                                TextButton(
-                                  child: const Text("Löschen"),
-                                  onPressed: () async {
-                                    await deleteDeliveryNote(
-                                        snapshot.data?[index].id);
-                                    Navigator.of(context).pop();
-                                    setState(() {});
-                                  },
+                          trailing:
+                              Row(mainAxisSize: MainAxisSize.min, children: [
+                            OutlinedButton(
+                              onPressed: () async {
+                                await getAsWord(snapshot.data?[index].id,
+                                    snapshot.data?[index].delNoteNum);
+                              },
+                              child: Image.asset(
+                                "lib/assets/word.png",
+                                height: 25,
+                              ),
+                            ),
+                            OutlinedButton(
+                              onPressed: () async {
+                                await getAsPdf(snapshot.data?[index].id,
+                                    snapshot.data?[index].delNoteNum);
+                              },
+                              child: Image.asset(
+                                "lib/assets/pdf.png",
+                                height: 25,
+                              ),
+                            ),
+                            OutlinedButton(
+                              onPressed: () => {
+                                alert = AlertDialog(
+                                  title: const Text("Achtung!"),
+                                  content: const Text(
+                                      "Möchten Sie wirklich dieses Lieferschein löschen?"),
+                                  actions: [
+                                    TextButton(
+                                      child: const Text("Löschen"),
+                                      onPressed: () async {
+                                        await deleteDeliveryNote(
+                                            snapshot.data?[index].id);
+                                        Navigator.of(context).pop();
+                                        setState(() {});
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: const Text("Abbrechen"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    )
+                                  ],
                                 ),
-                                TextButton(
-                                  child: const Text("Abbrechen"),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return alert;
                                   },
                                 )
-                              ],
-                            ),
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return alert;
                               },
-                            )
-                          },
-                          child: const Icon(Icons.delete),
+                              child: const Icon(Icons.delete),
+                            ),
+                            OutlinedButton(
+                              onPressed: () => {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditDeliveryNote(
+                                          id: snapshot.data?[index].id,
+                                          documentInformationId: snapshot
+                                              .data?[index]
+                                              .documentInformationId,
+                                          delNoteNum:
+                                              snapshot.data?[index].delNoteNum,
+                                          delNoteDate:
+                                              snapshot.data?[index].delNoteDate,
+                                          status: snapshot.data?[index].status,
+                                          subject:
+                                              snapshot.data?[index].subject,
+                                          headerText:
+                                              snapshot.data?[index].headerText,
+                                          flowText:
+                                              snapshot.data?[index].flowText,
+                                          totalDiscount: snapshot
+                                              .data?[index].totalDiscount,
+                                          typeOfDiscount: snapshot
+                                              .data?[index].typeOfDiscount,
+                                          tax: snapshot.data?[index].tax,
+                                          clientId:
+                                              snapshot.data?[index].clientId,
+                                          contactPersonId: snapshot
+                                              .data?[index].contactPersonId,
+                                          quantityPosition: snapshot
+                                              .data?[index].quantityPosition,
+                                          discountPosition: snapshot
+                                              .data?[index].discountPosition,
+                                          typeOfDiscountPosition: snapshot
+                                              .data?[index]
+                                              .typeOfDiscountPosition,
+                                          productPosition: snapshot
+                                              .data?[index].productPosition,
+                                          products:
+                                              snapshot.data?[index].products)),
+                                )
+                              },
+                              child: const Icon(Icons.edit),
+                            ),
+                          ]),
                         ),
-                        OutlinedButton(
-                          onPressed: () => {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => EditDeliveryNote(
-                                      id: snapshot.data?[index].id,
-                                      documentInformationId: snapshot
-                                          .data?[index].documentInformationId,
-                                      delNoteNum:
-                                          snapshot.data?[index].delNoteNum,
-                                      delNoteDate:
-                                          snapshot.data?[index].delNoteDate,
-                                      status: snapshot.data?[index].status,
-                                      subject: snapshot.data?[index].subject,
-                                      headerText:
-                                          snapshot.data?[index].headerText,
-                                      flowText: snapshot.data?[index].flowText,
-                                      totalDiscount:
-                                          snapshot.data?[index].totalDiscount,
-                                      typeOfDiscount:
-                                          snapshot.data?[index].typeOfDiscount,
-                                      tax: snapshot.data?[index].tax,
-                                      clientId: snapshot.data?[index].clientId,
-                                      contactPersonId:
-                                          snapshot.data?[index].contactPersonId,
-                                      quantityPosition: snapshot
-                                          .data?[index].quantityPosition,
-                                      discountPosition: snapshot
-                                          .data?[index].discountPosition,
-                                      typeOfDiscountPosition: snapshot
-                                          .data?[index].typeOfDiscountPosition,
-                                      productPosition:
-                                          snapshot.data?[index].productPosition,
-                                      products:
-                                          snapshot.data?[index].products)),
-                            )
-                          },
-                          child: const Icon(Icons.edit),
-                        ),
-                      ]),
-                    ),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0)),
+                      );
+                    },
                   );
-                },
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              }),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const AddDeliveryNote()),
               );
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AddDeliveryNote()),
-          );
-        },
-        backgroundColor: Colors.redAccent[700],
-        child: const Icon(Icons.add),
-      ),
-    ));
+            },
+            backgroundColor: Colors.redAccent[700],
+            child: const Icon(Icons.add),
+          ),
+        )));
   }
 
   Future<List<DeliveryNotes>> getDeliveryNotes() async {

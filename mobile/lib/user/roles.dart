@@ -1,29 +1,60 @@
+import 'dart:io';
+
 import 'package:demo5/network/networkHandler.dart';
 import 'package:demo5/user/user.dart';
 import 'package:flutter/material.dart';
 
 import '../NavBar.dart';
 
-class UserRole extends StatelessWidget {
+class UserRole extends StatefulWidget {
+  const UserRole({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _UserRolesState();
+}
+
+class _UserRolesState extends State<UserRole> {
   final Role _roles = Role("");
 
-  UserRole({Key? key}) : super(key: key);
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('App verlassen?'),
+            content: const Text('Möchten Sie die App verlassen?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Nein'),
+              ),
+              TextButton(
+                onPressed: () => exit(0),
+                child: const Text('Ja'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
 
   @override
   Widget build(BuildContext context) {
     _roles.initializeRoles();
-    return SafeArea(
-        child: Scaffold(
-      appBar: AppBar(
-        title: const Text('Benutzerrollen',
-            style:
-                TextStyle(height: 1.00, fontSize: 25.00, color: Colors.white)),
-        centerTitle: true,
-      ),
-      drawer: const NavBar(),
-      body: ListView.builder(
-          itemBuilder: _itemBuilder, itemCount: _roles.getRolesListLength()),
-    ));
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: SafeArea(
+            child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Benutzerrollen',
+                style: TextStyle(
+                    height: 1.00, fontSize: 25.00, color: Colors.white)),
+            centerTitle: true,
+          ),
+          drawer: const NavBar(),
+          body: ListView.builder(
+              itemBuilder: _itemBuilder,
+              itemCount: _roles.getRolesListLength()),
+        )));
   }
 
   Widget _itemBuilder(BuildContext context, int index) {

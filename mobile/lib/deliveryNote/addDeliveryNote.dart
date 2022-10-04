@@ -499,11 +499,11 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                                     typeOfDiscountPosition,
                                     productPosition);
                                 if (statusCode == 200) {
-                                  Navigator.push(
-                                    context,
+                                  Navigator.of(context).pushAndRemoveUntil(
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             const DeliveryNote()),
+                                    (route) => false,
                                   );
                                 }
                               },

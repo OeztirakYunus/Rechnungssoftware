@@ -71,6 +71,24 @@ class EditContact extends StatelessWidget {
       {'value': 2, 'label': 'Anders'},
     ];
 
+    List<String> gendersEn = [
+      "Male",
+      "Female",
+      "Others",
+    ];
+    List<String> gendersDe = [
+      "Männlich",
+      "Weiblich",
+      "Anders",
+    ];
+
+    int genderIndex = 0;
+    for (int i = 0; i < gendersEn.length; i++) {
+      if (gendersEn[i] == this.gender) {
+        genderIndex = i;
+      }
+    }
+
     TextEditingController typeOfContact = TextEditingController();
     TextEditingController gender = TextEditingController();
     TextEditingController title = TextEditingController();
@@ -88,6 +106,8 @@ class EditContact extends StatelessWidget {
     } else {
       title.text = this.title!;
     }
+    typeOfContact.text = typeOfContactsDE[index];
+    gender.text = gendersEn[genderIndex];
 
     firstName.text = this.firstName;
     lastName.text = this.lastName;
@@ -164,7 +184,7 @@ class EditContact extends StatelessWidget {
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(100.0)),
-                              hintText: this.gender,
+                              hintText: gendersDe[genderIndex],
                               hintStyle: const TextStyle(fontSize: 20.00)),
                           onChanged: (val) => gender.text = val,
                           onSaved: (val) =>
@@ -402,12 +422,12 @@ class EditContact extends StatelessWidget {
                                     phoneNumber.text,
                                     email.text,
                                     address);
-                                Navigator.push(
-                                  context,
+                                Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(
                                       builder: (context) => Contacts(
                                             categoryIndex: categoryIndex,
                                           )),
+                                  (route) => false,
                                 );
                               },
                               shape: RoundedRectangleBorder(
@@ -451,6 +471,15 @@ class EditContact extends StatelessWidget {
       "ProspectiveClient",
       "NoTargetGroup"
     ];
+
+    List<String> typeOfContactsDE = [
+      "Anbieter",
+      "Kunde",
+      "Partner",
+      "Möglicher Kunde",
+      "Keine Zielgruppe"
+    ];
+
     int categoryIndex = 0;
 
     if (typeOfContact.isEmpty) {
@@ -465,9 +494,11 @@ class EditContact extends StatelessWidget {
       token = token.toString();
 
       for (int i = 0; i < typeOfContacts.length; i++) {
-        if (typeOfContacts[i] == typeOfContact &&
-            categoryIndex <= typeOfContacts.length - 1) {
+        if (typeOfContacts[i] == typeOfContact || typeOfContactsDE[i] == typeOfContact||
+            i == int.tryParse(typeOfContact) &&
+                categoryIndex <= typeOfContacts.length - 1) {
           categoryIndex = i;
+          typeOfContact = typeOfContacts[i];
         }
       }
 

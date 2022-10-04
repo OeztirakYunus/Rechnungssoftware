@@ -539,7 +539,12 @@ class _AddInvoicesState extends State<AddInvoice> {
                                 int payYear =
                                     int.parse(paymentTerm.text.split('.')[2]);
 
-                                if (invYear > payYear ||(invYear == payYear && invMonth > payMonth) ||(invYear == payYear && invMonth == payMonth && invDay > payDay)) {
+                                if (invYear > payYear ||
+                                    (invYear == payYear &&
+                                        invMonth > payMonth) ||
+                                    (invYear == payYear &&
+                                        invMonth == payMonth &&
+                                        invDay > payDay)) {
                                   message =
                                       "Datum darf nicht später als die Zahlungsfrist sein!";
                                   showAlertDialog(context, message);
@@ -562,10 +567,10 @@ class _AddInvoicesState extends State<AddInvoice> {
                                     discountPosition,
                                     typeOfDiscountPosition,
                                     productPosition);
-                                Navigator.push(
-                                  context,
+                                Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(
                                       builder: (context) => const Invoice()),
+                                  (route) => false,
                                 );
                               },
                               shape: RoundedRectangleBorder(

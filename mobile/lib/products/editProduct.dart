@@ -233,12 +233,12 @@ class EditProduct extends StatelessWidget {
                                   productCategory.text,
                                   unit.text,
                                   description.text);
-                              Navigator.push(
-                                context,
+                              Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(
                                     builder: (context) => Product(
                                           categoryIndex: categoryIndex,
                                         )),
+                                (route) => false,
                               );
                             },
                             shape: RoundedRectangleBorder(
@@ -289,7 +289,9 @@ class EditProduct extends StatelessWidget {
       token = token.toString();
 
       for (int i = 0; i < categoriesGerman.length; i++) {
-        if (categoriesGerman[i] == productCategory || i == int.parse(productCategory) && categoryIndex <= 1) {
+        if (categoriesGerman[i] == productCategory ||
+            categoriesEn[i] == productCategory ||
+            i == int.tryParse(productCategory) && categoryIndex <= 1) {
           categoryIndex = i;
         }
       }

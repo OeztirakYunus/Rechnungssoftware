@@ -669,11 +669,11 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                                     discountPosition,
                                     typeOfDiscountPosition,
                                     productPosition);
-                                Navigator.push(
-                                  context,
+                                Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           const DeliveryNote()),
+                                  (route) => false,
                                 );
                               },
                               shape: RoundedRectangleBorder(

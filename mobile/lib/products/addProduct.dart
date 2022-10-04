@@ -224,12 +224,12 @@ class AddProduct extends StatelessWidget {
                                   productCategory.text,
                                   unit.text,
                                   description.text);
-                              Navigator.push(
-                                context,
+                              Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(
                                     builder: (context) => Product(
                                           categoryIndex: categoryIndex,
                                         )),
+                                (route) => false,
                               );
                             },
                             shape: RoundedRectangleBorder(

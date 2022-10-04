@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 import 'package:demo5/network/networkHandler.dart';
 import 'package:demo5/products/addProduct.dart';
+import 'package:demo5/products/categoryList.dart';
 import 'package:demo5/products/editProduct.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -24,7 +25,15 @@ class _ProductsState extends State<Product> {
   @override
   Widget build(BuildContext context) {
     setState(() {});
-    return SafeArea(
+    return WillPopScope(
+        onWillPop: () async {
+          await Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const Categories()),
+            (route) => false,
+          );
+          return true;
+        },
+        child: SafeArea(
         child: Scaffold(
       appBar: AppBar(
         title: const Text('Produkte',
@@ -131,7 +140,7 @@ class _ProductsState extends State<Product> {
         backgroundColor: Colors.redAccent[700],
         child: const Icon(Icons.add),
       ),
-    ));
+    )));
   }
 
   Future<List<Products>> getProducts() async {

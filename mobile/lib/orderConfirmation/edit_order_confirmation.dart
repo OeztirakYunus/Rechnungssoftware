@@ -669,11 +669,10 @@ class _EditOrderConfirmationsState extends State<EditOrderConfirmation> {
                                     discountPosition,
                                     typeOfDiscountPosition,
                                     productPosition);
-                                Navigator.push(
-                                  context,
+                                Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const OrderConfirmation()),
+                                      builder: (context) => const OrderConfirmation()),
+                                  (route) => false,
                                 );
                               },
                               shape: RoundedRectangleBorder(

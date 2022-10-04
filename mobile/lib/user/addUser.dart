@@ -163,12 +163,12 @@ class AddUser extends StatelessWidget {
                                     email.text,
                                     role.text,
                                     password.text);
-                                Navigator.push(
-                                  context,
+                                Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(
                                       builder: (context) => Users(
                                           roleIndex: roleIndex,
                                           role: role.text)),
+                                  (route) => false,
                                 );
                               },
                               shape: RoundedRectangleBorder(

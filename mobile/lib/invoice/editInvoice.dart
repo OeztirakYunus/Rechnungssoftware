@@ -749,10 +749,10 @@ class _EditInvoicesState extends State<EditInvoice> {
                                     discountPosition,
                                     typeOfDiscountPosition,
                                     productPosition);
-                                Navigator.push(
-                                  context,
+                                Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(
                                       builder: (context) => const Invoice()),
+                                  (route) => false,
                                 );
                               },
                               shape: RoundedRectangleBorder(

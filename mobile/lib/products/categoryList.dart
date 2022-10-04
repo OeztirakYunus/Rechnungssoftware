@@ -1,30 +1,61 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
+import 'dart:io';
+
 import 'package:demo5/products/product.dart';
 import 'package:flutter/material.dart';
 
 import '../NavBar.dart';
 
-class Categories extends StatelessWidget {
+class Categories extends StatefulWidget {
+  const Categories({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _CategoriesState();
+}
+
+class _CategoriesState extends State<Categories> {
   final Category _products = Category("", "");
 
-  Categories({Key? key}) : super(key: key);
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('App verlassen?'),
+            content: const Text('Möchten Sie die App verlassen?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Nein'),
+              ),
+              TextButton(
+                onPressed: () => exit(0),
+                child: const Text('Ja'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
 
   @override
   Widget build(BuildContext context) {
     _products.initializeCategoryImageList();
-    return SafeArea(
-        child: Scaffold(
-      appBar: AppBar(
-        title: const Text('Produktkategorien',
-            style:
-                TextStyle(height: 1.00, fontSize: 25.00, color: Colors.white)),
-        centerTitle: true,
-      ),
-      drawer: NavBar(),
-      body: ListView.builder(
-          itemBuilder: _itemBuilder,
-          itemCount: _products.getCategoryListLength()),
-    ));
+
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: SafeArea(
+            child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Produktkategorien',
+                style: TextStyle(
+                    height: 1.00, fontSize: 25.00, color: Colors.white)),
+            centerTitle: true,
+          ),
+          drawer: NavBar(),
+          body: ListView.builder(
+              itemBuilder: _itemBuilder,
+              itemCount: _products.getCategoryListLength()),
+        )));
   }
 
   Widget _itemBuilder(BuildContext context, int index) {

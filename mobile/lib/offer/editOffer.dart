@@ -749,10 +749,10 @@ class _EditOffersState extends State<EditOffer> {
                                     discountPosition,
                                     typeOfDiscountPosition,
                                     productPosition);
-                                Navigator.push(
-                                  context,
+                                Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(
                                       builder: (context) => const Offer()),
+                                  (route) => false,
                                 );
                               },
                               shape: RoundedRectangleBorder(

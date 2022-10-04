@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -19,6 +20,28 @@ class Document extends StatefulWidget {
 
 class _DocumentsState extends State<Document> {
   final ReceivePort _port = ReceivePort();
+
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('App verlassen?'),
+            content: const Text('Möchten Sie die App verlassen?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Nein'),
+              ),
+              TextButton(
+                onPressed: () => exit(0),
+                child: const Text('Ja'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -52,98 +75,102 @@ class _DocumentsState extends State<Document> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-      appBar: AppBar(
-        title: const Text('Dokumente',
-            style:
-                TextStyle(height: 1.00, fontSize: 25.00, color: Colors.white)),
-        centerTitle: true,
-      ),
-      drawer: const NavBar(),
-      body: FutureBuilder<List<Documents>>(
-          future: getFiles(),
-          builder: (context, AsyncSnapshot snapshot) {
-            if (snapshot.hasData &&
-                snapshot.connectionState == ConnectionState.done) {
-              return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  AlertDialog alert;
-                  return Card(
-                    child: ListTile(
-                      title: Text(
-                        snapshot.data?[index].fileName,
-                      ),
-                      subtitle: Text(
-                        "${snapshot.data?[index].creationTime}",
-                      ),
-                      trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                        SizedBox(
-                            width: 50.0,
-                            child: OutlinedButton(
-                              onPressed: () async {
-                                await downloadFile(snapshot.data?[index].id, snapshot.data?[index].fileName);
-                              },
-                              child: const Icon(Icons.download),
-                            )),
-                        SizedBox(
-                            width: 50.0,
-                            child: OutlinedButton(
-                              onPressed: () => {
-                                alert = AlertDialog(
-                                  title: const Text("Achtung!"),
-                                  content: const Text(
-                                      "Möchten Sie wirklich dieses Dokument löschen?"),
-                                  actions: [
-                                    TextButton(
-                                      child: const Text("Löschen"),
-                                      onPressed: () async {
-                                        await deleteFile(
-                                            snapshot.data?[index].id);
-                                        Navigator.of(context).pop();
-                                        setState(() {});
-                                      },
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: SafeArea(
+            child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Dokumente',
+                style: TextStyle(
+                    height: 1.00, fontSize: 25.00, color: Colors.white)),
+            centerTitle: true,
+          ),
+          drawer: const NavBar(),
+          body: FutureBuilder<List<Documents>>(
+              future: getFiles(),
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData &&
+                    snapshot.connectionState == ConnectionState.done) {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      AlertDialog alert;
+                      return Card(
+                        child: ListTile(
+                          title: Text(
+                            snapshot.data?[index].fileName,
+                          ),
+                          subtitle: Text(
+                            "${snapshot.data?[index].creationTime}",
+                          ),
+                          trailing:
+                              Row(mainAxisSize: MainAxisSize.min, children: [
+                            SizedBox(
+                                width: 50.0,
+                                child: OutlinedButton(
+                                  onPressed: () async {
+                                    await downloadFile(snapshot.data?[index].id,
+                                        snapshot.data?[index].fileName);
+                                  },
+                                  child: const Icon(Icons.download),
+                                )),
+                            SizedBox(
+                                width: 50.0,
+                                child: OutlinedButton(
+                                  onPressed: () => {
+                                    alert = AlertDialog(
+                                      title: const Text("Achtung!"),
+                                      content: const Text(
+                                          "Möchten Sie wirklich dieses Dokument löschen?"),
+                                      actions: [
+                                        TextButton(
+                                          child: const Text("Löschen"),
+                                          onPressed: () async {
+                                            await deleteFile(
+                                                snapshot.data?[index].id);
+                                            Navigator.of(context).pop();
+                                            setState(() {});
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: const Text("Abbrechen"),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        )
+                                      ],
                                     ),
-                                    TextButton(
-                                      child: const Text("Abbrechen"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return alert;
                                       },
                                     )
-                                  ],
-                                ),
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return alert;
                                   },
-                                )
-                              },
-                              child: const Icon(Icons.delete),
-                            )),
-                      ]),
-                    ),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0)),
+                                  child: const Icon(Icons.delete),
+                                )),
+                          ]),
+                        ),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0)),
+                      );
+                    },
                   );
-                },
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              }),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Scanner()),
               );
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const Scanner()),
-          );
-        },
-        backgroundColor: Colors.redAccent[700],
-        child: const Icon(Icons.scanner),
-      ),
-    ));
+            },
+            backgroundColor: Colors.redAccent[700],
+            child: const Icon(Icons.scanner),
+          ),
+        )));
   }
 }
 
