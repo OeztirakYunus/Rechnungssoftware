@@ -109,109 +109,116 @@ class _DeliveryNotesState extends State<DeliveryNote> {
                           title: Text(
                             snapshot.data?[index].delNoteNum,
                           ),
-                          subtitle: Text(
-                            "${snapshot.data?[index].status}",
-                          ),
-                          trailing:
-                              Row(mainAxisSize: MainAxisSize.min, children: [
-                            OutlinedButton(
-                              onPressed: () async {
-                                await getAsWord(snapshot.data?[index].id,
-                                    snapshot.data?[index].delNoteNum);
-                              },
-                              child: Image.asset(
-                                "lib/assets/word.png",
-                                height: 25,
-                              ),
-                            ),
-                            OutlinedButton(
-                              onPressed: () async {
-                                await getAsPdf(snapshot.data?[index].id,
-                                    snapshot.data?[index].delNoteNum);
-                              },
-                              child: Image.asset(
-                                "lib/assets/pdf.png",
-                                height: 25,
-                              ),
-                            ),
-                            OutlinedButton(
-                              onPressed: () => {
-                                alert = AlertDialog(
-                                  title: const Text("Achtung!"),
-                                  content: const Text(
-                                      "Möchten Sie wirklich dieses Lieferschein löschen?"),
-                                  actions: [
-                                    TextButton(
-                                      child: const Text("Löschen"),
-                                      onPressed: () async {
-                                        await deleteDeliveryNote(
-                                            snapshot.data?[index].id);
-                                        Navigator.of(context).pop();
-                                        setState(() {});
-                                      },
-                                    ),
-                                    TextButton(
-                                      child: const Text("Abbrechen"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    )
-                                  ],
+                          subtitle: Column(children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${snapshot.data?[index].status}",
                                 ),
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return alert;
-                                  },
-                                )
-                              },
-                              child: const Icon(Icons.delete),
+                              ],
                             ),
-                            OutlinedButton(
-                              onPressed: () => {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => EditDeliveryNote(
-                                          id: snapshot.data?[index].id,
-                                          documentInformationId: snapshot
-                                              .data?[index]
-                                              .documentInformationId,
-                                          delNoteNum:
-                                              snapshot.data?[index].delNoteNum,
-                                          delNoteDate:
-                                              snapshot.data?[index].delNoteDate,
-                                          status: snapshot.data?[index].status,
-                                          subject:
-                                              snapshot.data?[index].subject,
-                                          headerText:
-                                              snapshot.data?[index].headerText,
-                                          flowText:
-                                              snapshot.data?[index].flowText,
-                                          totalDiscount: snapshot
-                                              .data?[index].totalDiscount,
-                                          typeOfDiscount: snapshot
-                                              .data?[index].typeOfDiscount,
-                                          tax: snapshot.data?[index].tax,
-                                          clientId:
-                                              snapshot.data?[index].clientId,
-                                          contactPersonId: snapshot
-                                              .data?[index].contactPersonId,
-                                          quantityPosition: snapshot
-                                              .data?[index].quantityPosition,
-                                          discountPosition: snapshot
-                                              .data?[index].discountPosition,
-                                          typeOfDiscountPosition: snapshot
-                                              .data?[index]
-                                              .typeOfDiscountPosition,
-                                          productPosition: snapshot
-                                              .data?[index].productPosition,
-                                          products:
-                                              snapshot.data?[index].products)),
-                                )
-                              },
-                              child: const Icon(Icons.edit),
-                            ),
+                            Row(mainAxisSize: MainAxisSize.min, children: [
+                              OutlinedButton(
+                                onPressed: () async {
+                                  await getAsWord(snapshot.data?[index].id,
+                                      snapshot.data?[index].delNoteNum);
+                                },
+                                child: Image.asset(
+                                  "lib/assets/word.png",
+                                  height: 25,
+                                ),
+                              ),
+                              OutlinedButton(
+                                onPressed: () async {
+                                  await getAsPdf(snapshot.data?[index].id,
+                                      snapshot.data?[index].delNoteNum);
+                                },
+                                child: Image.asset(
+                                  "lib/assets/pdf.png",
+                                  height: 25,
+                                ),
+                              ),
+                              OutlinedButton(
+                                onPressed: () => {
+                                  alert = AlertDialog(
+                                    title: const Text("Achtung!"),
+                                    content: const Text(
+                                        "Möchten Sie wirklich dieses Lieferschein löschen?"),
+                                    actions: [
+                                      TextButton(
+                                        child: const Text("Löschen"),
+                                        onPressed: () async {
+                                          await deleteDeliveryNote(
+                                              snapshot.data?[index].id);
+                                          Navigator.of(context).pop();
+                                          setState(() {});
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: const Text("Abbrechen"),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return alert;
+                                    },
+                                  )
+                                },
+                                child: const Icon(Icons.delete),
+                              ),
+                              OutlinedButton(
+                                onPressed: () => {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => EditDeliveryNote(
+                                            id: snapshot.data?[index].id,
+                                            documentInformationId: snapshot
+                                                .data?[index]
+                                                .documentInformationId,
+                                            delNoteNum: snapshot
+                                                .data?[index].delNoteNum,
+                                            delNoteDate: snapshot
+                                                .data?[index].delNoteDate,
+                                            status:
+                                                snapshot.data?[index].status,
+                                            subject:
+                                                snapshot.data?[index].subject,
+                                            headerText: snapshot
+                                                .data?[index].headerText,
+                                            flowText:
+                                                snapshot.data?[index].flowText,
+                                            totalDiscount: snapshot
+                                                .data?[index].totalDiscount,
+                                            typeOfDiscount: snapshot
+                                                .data?[index].typeOfDiscount,
+                                            tax: snapshot.data?[index].tax,
+                                            clientId:
+                                                snapshot.data?[index].clientId,
+                                            contactPersonId: snapshot
+                                                .data?[index].contactPersonId,
+                                            quantityPosition: snapshot
+                                                .data?[index].quantityPosition,
+                                            discountPosition: snapshot
+                                                .data?[index].discountPosition,
+                                            typeOfDiscountPosition: snapshot
+                                                .data?[index]
+                                                .typeOfDiscountPosition,
+                                            productPosition: snapshot
+                                                .data?[index].productPosition,
+                                            products: snapshot
+                                                .data?[index].products)),
+                                  )
+                                },
+                                child: const Icon(Icons.edit),
+                              ),
+                            ]),
                           ]),
                         ),
                         shape: RoundedRectangleBorder(

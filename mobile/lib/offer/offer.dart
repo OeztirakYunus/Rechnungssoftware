@@ -105,156 +105,165 @@ class _OffersState extends State<Offer> {
                           title: Text(
                             snapshot.data?[index].offerNum,
                           ),
-                          subtitle: Text(
-                            "${snapshot.data?[index].status}",
-                          ),
-                          trailing:
-                              Row(mainAxisSize: MainAxisSize.min, children: [
-                            SizedBox(
-                              width: 50.0,
-                              child: OutlinedButton(
-                                onPressed: () async {
-                                  String orderConfirmationNumber =
-                                      await offerToOrderConfirmation(
-                                          snapshot.data?[index].id);
-                                  alert = AlertDialog(
-                                    title: const Text(
-                                        "Auftragsbestätigung erzeugt!"),
-                                    content: Text(
-                                        "Die Auftragsbestätigung wurde erfolgreich erzeugt. Die Angebotsnummer lautet $orderConfirmationNumber"),
-                                    actions: [
-                                      TextButton(
-                                        child: const Text("Ok"),
-                                        onPressed: () async {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return alert;
-                                    },
-                                  );
-                                },
-                                child: Image.asset(
-                                  "lib/assets/order.png",
-                                  height: 35,
+                          subtitle: Column(children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${snapshot.data?[index].status}",
                                 ),
-                              ),
+                              ],
                             ),
-                            SizedBox(
+                            Row(mainAxisSize: MainAxisSize.min, children: [
+                              SizedBox(
                                 width: 50.0,
                                 child: OutlinedButton(
                                   onPressed: () async {
-                                    await getAsWord(snapshot.data?[index].id,
-                                        snapshot.data?[index].offerNum);
-                                  },
-                                  child: Image.asset(
-                                    "lib/assets/word.png",
-                                    height: 35,
-                                  ),
-                                )),
-                            SizedBox(
-                                width: 50.0,
-                                child: OutlinedButton(
-                                  onPressed: () async {
-                                    await getAsPdf(snapshot.data?[index].id,
-                                        snapshot.data?[index].offerNum);
-                                  },
-                                  child: Image.asset(
-                                    "lib/assets/pdf.png",
-                                    height: 25,
-                                  ),
-                                )),
-                            SizedBox(
-                                width: 50.0,
-                                child: OutlinedButton(
-                                  onPressed: () => {
+                                    String orderConfirmationNumber =
+                                        await offerToOrderConfirmation(
+                                            snapshot.data?[index].id);
                                     alert = AlertDialog(
-                                      title: const Text("Achtung!"),
-                                      content: const Text(
-                                          "Möchten Sie wirklich dieses Angebot löschen?"),
+                                      title: const Text(
+                                          "Auftragsbestätigung erzeugt!"),
+                                      content: Text(
+                                          "Die Auftragsbestätigung wurde erfolgreich erzeugt. Die Angebotsnummer lautet $orderConfirmationNumber"),
                                       actions: [
                                         TextButton(
-                                          child: const Text("Löschen"),
+                                          child: const Text("Ok"),
                                           onPressed: () async {
-                                            await deleteOffer(
-                                                snapshot.data?[index].id);
                                             Navigator.of(context).pop();
-                                            setState(() {});
                                           },
                                         ),
-                                        TextButton(
-                                          child: const Text("Abbrechen"),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        )
                                       ],
-                                    ),
+                                    );
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
                                         return alert;
                                       },
-                                    )
+                                    );
                                   },
-                                  child: const Icon(Icons.delete),
-                                )),
-                            SizedBox(
-                                width: 50.0,
-                                child: OutlinedButton(
-                                  onPressed: () => {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => EditOffer(
-                                              id: snapshot.data?[index].id,
-                                              documentInformationId: snapshot
-                                                  .data?[index]
-                                                  .documentInformationId,
-                                              offerNum: snapshot
-                                                  .data?[index].offerNum,
-                                              offerDate: snapshot
-                                                  .data?[index].offerDate,
-                                              validUntil: snapshot
-                                                  .data?[index].validUntil,
-                                              status:
-                                                  snapshot.data?[index].status,
-                                              subject:
-                                                  snapshot.data?[index].subject,
-                                              headerText: snapshot
-                                                  .data?[index].headerText,
-                                              flowText: snapshot
-                                                  .data?[index].flowText,
-                                              totalDiscount: snapshot
-                                                  .data?[index].totalDiscount,
-                                              typeOfDiscount: snapshot
-                                                  .data?[index].typeOfDiscount,
-                                              tax: snapshot.data?[index].tax,
-                                              clientId: snapshot
-                                                  .data?[index].clientId,
-                                              contactPersonId: snapshot
-                                                  .data?[index].contactPersonId,
-                                              quantityPosition: snapshot
-                                                  .data?[index]
-                                                  .quantityPosition,
-                                              discountPosition: snapshot
-                                                  .data?[index]
-                                                  .discountPosition,
-                                              typeOfDiscountPosition: snapshot
-                                                  .data?[index]
-                                                  .typeOfDiscountPosition,
-                                              productPosition: snapshot
-                                                  .data?[index].productPosition,
-                                              products: snapshot
-                                                  .data?[index].products)),
-                                    )
-                                  },
-                                  child: const Icon(Icons.edit),
-                                )),
+                                  child: Image.asset(
+                                    "lib/assets/order.png",
+                                    height: 35,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                  width: 50.0,
+                                  child: OutlinedButton(
+                                    onPressed: () async {
+                                      await getAsWord(snapshot.data?[index].id,
+                                          snapshot.data?[index].offerNum);
+                                    },
+                                    child: Image.asset(
+                                      "lib/assets/word.png",
+                                      height: 35,
+                                    ),
+                                  )),
+                              SizedBox(
+                                  width: 50.0,
+                                  child: OutlinedButton(
+                                    onPressed: () async {
+                                      await getAsPdf(snapshot.data?[index].id,
+                                          snapshot.data?[index].offerNum);
+                                    },
+                                    child: Image.asset(
+                                      "lib/assets/pdf.png",
+                                      height: 25,
+                                    ),
+                                  )),
+                              SizedBox(
+                                  width: 50.0,
+                                  child: OutlinedButton(
+                                    onPressed: () => {
+                                      alert = AlertDialog(
+                                        title: const Text("Achtung!"),
+                                        content: const Text(
+                                            "Möchten Sie wirklich dieses Angebot löschen?"),
+                                        actions: [
+                                          TextButton(
+                                            child: const Text("Löschen"),
+                                            onPressed: () async {
+                                              await deleteOffer(
+                                                  snapshot.data?[index].id);
+                                              Navigator.of(context).pop();
+                                              setState(() {});
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: const Text("Abbrechen"),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          )
+                                        ],
+                                      ),
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return alert;
+                                        },
+                                      )
+                                    },
+                                    child: const Icon(Icons.delete),
+                                  )),
+                              SizedBox(
+                                  width: 50.0,
+                                  child: OutlinedButton(
+                                    onPressed: () => {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => EditOffer(
+                                                id: snapshot.data?[index].id,
+                                                documentInformationId: snapshot
+                                                    .data?[index]
+                                                    .documentInformationId,
+                                                offerNum: snapshot
+                                                    .data?[index].offerNum,
+                                                offerDate: snapshot
+                                                    .data?[index].offerDate,
+                                                validUntil: snapshot
+                                                    .data?[index].validUntil,
+                                                status: snapshot
+                                                    .data?[index].status,
+                                                subject: snapshot
+                                                    .data?[index].subject,
+                                                headerText: snapshot
+                                                    .data?[index].headerText,
+                                                flowText: snapshot
+                                                    .data?[index].flowText,
+                                                totalDiscount: snapshot
+                                                    .data?[index].totalDiscount,
+                                                typeOfDiscount: snapshot
+                                                    .data?[index]
+                                                    .typeOfDiscount,
+                                                tax: snapshot.data?[index].tax,
+                                                clientId: snapshot
+                                                    .data?[index].clientId,
+                                                contactPersonId: snapshot
+                                                    .data?[index]
+                                                    .contactPersonId,
+                                                quantityPosition: snapshot
+                                                    .data?[index]
+                                                    .quantityPosition,
+                                                discountPosition: snapshot
+                                                    .data?[index]
+                                                    .discountPosition,
+                                                typeOfDiscountPosition: snapshot
+                                                    .data?[index]
+                                                    .typeOfDiscountPosition,
+                                                productPosition: snapshot
+                                                    .data?[index]
+                                                    .productPosition,
+                                                products: snapshot
+                                                    .data?[index].products)),
+                                      )
+                                    },
+                                    child: const Icon(Icons.edit),
+                                  )),
+                            ]),
                           ]),
                         ),
                         shape: RoundedRectangleBorder(

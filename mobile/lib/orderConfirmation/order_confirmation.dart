@@ -105,153 +105,161 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
                           title: Text(
                             snapshot.data?[index].orderConfirmationNum,
                           ),
-                          subtitle: Text(
-                            "${snapshot.data?[index].status}",
-                          ),
-                          trailing:
-                              Row(mainAxisSize: MainAxisSize.min, children: [
-                            SizedBox(
-                              width: 45.0,
-                              child: OutlinedButton(
-                                onPressed: () async {
-                                  String deliveryNoteNumber =
-                                      await orderConfirmationToDeliveryNote(
-                                          snapshot.data?[index].id);
-                                  alert = AlertDialog(
-                                    title: const Text("Lieferschein erzeugt!"),
-                                    content: Text(
-                                        "Der Lieferschein wurde erfolgreich erzeugt. Die Lieferscheinnummer lautet $deliveryNoteNumber"),
-                                    actions: [
-                                      TextButton(
-                                        child: const Text("Ok"),
-                                        onPressed: () async {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return alert;
-                                    },
-                                  );
-                                },
-                                child: Image.asset(
-                                  "lib/assets/delivery_report.png",
-                                  height: 35,
-                                ),
+                          subtitle: Column(
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "${snapshot.data?[index].status}",
+                                  ),
+                                ],
                               ),
-                            ),
-                            SizedBox(
-                                width: 45.0,
-                                child: OutlinedButton(
-                                  onPressed: () async {
-                                    String invoiceNumber =
-                                        await orderConfirmationToInvoice(
-                                            snapshot.data?[index].id);
-                                    alert = AlertDialog(
-                                      title: const Text("Rechnung erzeugt!"),
-                                      content: Text(
-                                          "Die Rechnung wurde erfolgreich erzeugt. Die Rechnungsnummer lautet $invoiceNumber"),
-                                      actions: [
-                                        TextButton(
-                                          child: const Text("Ok"),
-                                          onPressed: () async {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return alert;
-                                      },
-                                    );
-                                  },
-                                  child: Image.asset(
-                                    "lib/assets/invoice.png",
-                                    height: 25,
+                              Row(mainAxisSize: MainAxisSize.min, children: [
+                                SizedBox(
+                                  width: 46.0,
+                                  child: OutlinedButton(
+                                    onPressed: () async {
+                                      String deliveryNoteNumber =
+                                          await orderConfirmationToDeliveryNote(
+                                              snapshot.data?[index].id);
+                                      alert = AlertDialog(
+                                        title:
+                                            const Text("Lieferschein erzeugt!"),
+                                        content: Text(
+                                            "Der Lieferschein wurde erfolgreich erzeugt. Die Lieferscheinnummer lautet $deliveryNoteNumber"),
+                                        actions: [
+                                          TextButton(
+                                            child: const Text("Ok"),
+                                            onPressed: () async {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return alert;
+                                        },
+                                      );
+                                    },
+                                    child: Image.asset(
+                                      "lib/assets/delivery_report.png",
+                                      height: 35,
+                                    ),
                                   ),
-                                )),
-                            SizedBox(
-                                width: 45.0,
-                                child: OutlinedButton(
-                                  onPressed: () async {
-                                    await getAsWord(
-                                        snapshot.data?[index].id,
-                                        snapshot
-                                            .data?[index].orderConfirmationNum);
-                                  },
-                                  child: Image.asset(
-                                    "lib/assets/word.png",
-                                    height: 35,
-                                  ),
-                                )),
-                            SizedBox(
-                                width: 45.0,
-                                child: OutlinedButton(
-                                  onPressed: () async {
-                                    await getAsPdf(
-                                        snapshot.data?[index].id,
-                                        snapshot
-                                            .data?[index].orderConfirmationNum);
-                                  },
-                                  child: Image.asset(
-                                    "lib/assets/pdf.png",
-                                    height: 25,
-                                  ),
-                                )),
-                            SizedBox(
-                                width: 45.0,
-                                child: OutlinedButton(
-                                  onPressed: () => {
-                                    alert = AlertDialog(
-                                      title: const Text("Achtung!"),
-                                      content: const Text(
-                                          "Möchten Sie wirklich diese Auftragsbestätigung löschen?"),
-                                      actions: [
-                                        TextButton(
-                                          child: const Text("Löschen"),
-                                          onPressed: () async {
-                                            await deleteOrderConfirmation(
+                                ),
+                                SizedBox(
+                                    width: 46.0,
+                                    child: OutlinedButton(
+                                      onPressed: () async {
+                                        String invoiceNumber =
+                                            await orderConfirmationToInvoice(
                                                 snapshot.data?[index].id);
-                                            Navigator.of(context).pop();
-                                            setState(() {});
+                                        alert = AlertDialog(
+                                          title:
+                                              const Text("Rechnung erzeugt!"),
+                                          content: Text(
+                                              "Die Rechnung wurde erfolgreich erzeugt. Die Rechnungsnummer lautet $invoiceNumber"),
+                                          actions: [
+                                            TextButton(
+                                              child: const Text("Ok"),
+                                              onPressed: () async {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return alert;
                                           },
+                                        );
+                                      },
+                                      child: Image.asset(
+                                        "lib/assets/invoice.png",
+                                        height: 25,
+                                      ),
+                                    )),
+                                SizedBox(
+                                    width: 46.0,
+                                    child: OutlinedButton(
+                                      onPressed: () async {
+                                        await getAsWord(
+                                            snapshot.data?[index].id,
+                                            snapshot.data?[index]
+                                                .orderConfirmationNum);
+                                      },
+                                      child: Image.asset(
+                                        "lib/assets/word.png",
+                                        height: 35,
+                                      ),
+                                    )),
+                                SizedBox(
+                                    width: 47.0,
+                                    child: OutlinedButton(
+                                      onPressed: () async {
+                                        await getAsPdf(
+                                            snapshot.data?[index].id,
+                                            snapshot.data?[index]
+                                                .orderConfirmationNum);
+                                      },
+                                      child: Image.asset(
+                                        "lib/assets/pdf.png",
+                                        height: 25,
+                                      ),
+                                    )),
+                                SizedBox(
+                                    width: 46.0,
+                                    child: OutlinedButton(
+                                      onPressed: () => {
+                                        alert = AlertDialog(
+                                          title: const Text("Achtung!"),
+                                          content: const Text(
+                                              "Möchten Sie wirklich diese Auftragsbestätigung löschen?"),
+                                          actions: [
+                                            TextButton(
+                                              child: const Text("Löschen"),
+                                              onPressed: () async {
+                                                await deleteOrderConfirmation(
+                                                    snapshot.data?[index].id);
+                                                Navigator.of(context).pop();
+                                                setState(() {});
+                                              },
+                                            ),
+                                            TextButton(
+                                              child: const Text("Abbrechen"),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            )
+                                          ],
                                         ),
-                                        TextButton(
-                                          child: const Text("Abbrechen"),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return alert;
                                           },
                                         )
-                                      ],
-                                    ),
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return alert;
                                       },
-                                    )
-                                  },
-                                  child: const Icon(
-                                    Icons.delete,
-                                    size: 15,
-                                  ),
-                                )),
-                            SizedBox(
-                                width: 45.0,
-                                child: OutlinedButton(
-                                  onPressed: () => {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              EditOrderConfirmation(
+                                      child: const Icon(
+                                        Icons.delete,
+                                        size: 16,
+                                      ),
+                                    )),
+                                SizedBox(
+                                    width: 47.0,
+                                    child: OutlinedButton(
+                                      onPressed: () => {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => EditOrderConfirmation(
                                                   id: snapshot.data?[index].id,
-                                                  companyId: snapshot.data?[index].companyId,
+                                                  companyId: snapshot
+                                                      .data?[index].companyId,
                                                   documentInformationId: snapshot
                                                       .data?[index]
                                                       .documentInformationId,
@@ -291,19 +299,18 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
                                                   typeOfDiscountPosition: snapshot
                                                       .data?[index]
                                                       .typeOfDiscountPosition,
-                                                  productPosition: snapshot
-                                                      .data?[index]
-                                                      .productPosition,
-                                                  products: snapshot
-                                                      .data?[index].products)),
-                                    )
-                                  },
-                                  child: const Icon(
-                                    Icons.edit,
-                                    size: 15,
-                                  ),
-                                ))
-                          ]),
+                                                  productPosition: snapshot.data?[index].productPosition,
+                                                  products: snapshot.data?[index].products)),
+                                        )
+                                      },
+                                      child: const Icon(
+                                        Icons.edit,
+                                        size: 16,
+                                      ),
+                                    ))
+                              ]),
+                            ],
+                          ),
                         ),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0)),
