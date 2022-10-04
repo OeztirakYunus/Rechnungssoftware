@@ -15,6 +15,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool? changed = false;
+  final formGlobalKey = GlobalKey<FormState>();
   TextEditingController userMail = TextEditingController();
   TextEditingController userPsw = TextEditingController();
   bool _passwordVisible = true;
@@ -44,6 +45,7 @@ class _LoginState extends State<Login> {
             Container(
               padding: const EdgeInsets.all(10),
               child: Form(
+                key: formGlobalKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -56,6 +58,14 @@ class _LoginState extends State<Login> {
                     ),
                     TextFormField(
                       controller: userMail,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Bitte Email eingeben";
+                        } else if (isEmailValid(value.toString())) {
+                          return "Email ist nicht gültig";
+                        }
+                        return null;
+                      },
                       autofocus: false,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
@@ -75,6 +85,12 @@ class _LoginState extends State<Login> {
                     TextFormField(
                       controller: userPsw,
                       autofocus: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Bitte Passwort eingeben";
+                        }
+                        return null;
+                      },
                       obscureText: !_passwordVisible,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -107,6 +123,9 @@ class _LoginState extends State<Login> {
                         ? const Center(child: CircularProgressIndicator())
                         : MaterialButton(
                             onPressed: () async {
+                              if (!formGlobalKey.currentState!.validate()) {
+                                return;
+                              }
                               setState(() {
                                 isLoading = true;
                               });
@@ -116,8 +135,16 @@ class _LoginState extends State<Login> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => Categories()),
+                                      builder: (context) => const Categories()),
                                 );
+                              } else if (statusCode != 200) {
+                                String message =
+                                    "Benutzer/Passwort ist falsch!";
+                                showAlertDialog(context, message);
+                                setState(() {
+                                  isLoading = false;
+                                });
+                                return;
                               }
                               setState(() {
                                 isLoading = false;
@@ -144,8 +171,10 @@ class _LoginState extends State<Login> {
                 text: TextSpan(
                     text: 'Noch kein Konto?',
                     recognizer: TapGestureRecognizer()
-                      ..onTap = () => Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => const SignUp())),
+                      ..onTap = () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignUp())),
                     style: const TextStyle(
                       color: Colors.blueAccent,
                       fontSize: 18,
@@ -155,6 +184,35 @@ class _LoginState extends State<Login> {
           ],
         ),
       ),
+    );
+  }
+
+  bool isEmailValid(String email) {
+    String pattern =
+        '^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))';
+    RegExp regex = RegExp(pattern);
+    return regex.hasMatch(email);
+  }
+
+  showAlertDialog(BuildContext context, String message) {
+    AlertDialog alert = AlertDialog(
+      title: const Text("Achtung!"),
+      content: Text(message),
+      actions: [
+        TextButton(
+          child: const Text("OK"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        )
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 
