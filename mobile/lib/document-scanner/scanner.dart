@@ -20,11 +20,13 @@ class Scanner extends StatefulWidget {
 class _ScannerState extends State<Scanner> {
   File? scannedDocument;
   Future<PermissionStatus>? cameraPermissionFuture;
+  late TextEditingController documentName;
 
   @override
   void initState() {
     cameraPermissionFuture = Permission.camera.request();
     super.initState();
+    documentName = TextEditingController();
   }
 
   @override
@@ -75,18 +77,12 @@ class _ScannerState extends State<Scanner> {
                                     image: FileImage(scannedDocument!),
                                   )
                                 : DocumentScanner(
-                                    // documentAnimation: false,
                                     noGrayScale: true,
                                     onDocumentScanned:
                                         (ScannedImage scannedImage) {
-                                      print("document : " +
-                                          scannedImage.croppedImage!);
-
                                       setState(() {
                                         scannedDocument = scannedImage
                                             .getScannedDocumentAsFile();
-
-                                        // imageLocation = image;
                                       });
                                     },
                                   ),
@@ -100,7 +96,7 @@ class _ScannerState extends State<Scanner> {
                                 left: 10,
                                 right: 140,
                                 child: ElevatedButton(
-                                    child: const Text("Erneut scannen"),
+                                    child: const Text("Wiederholen"),
                                     onPressed: () {
                                       setState(() {
                                         scannedDocument = null;
@@ -113,11 +109,7 @@ class _ScannerState extends State<Scanner> {
                                   child: ElevatedButton(
                                     child: const Text("Speichern"),
                                     onPressed: () async {
-                                      await addFile(scannedDocument!);
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const Document()));
+                                      await openDialog();
                                     },
                                   ))
                             ])
@@ -139,36 +131,74 @@ class _ScannerState extends State<Scanner> {
     );
   }
 
-  Future<File> getPdf(File screenShot) async {
+  Future openDialog() => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: const Text("Dokumentname"),
+            content: TextFormField(
+              controller: documentName,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Bitte Dokumentname eingeben!";
+                } else {
+                  return null;
+                }
+              },
+              autofocus: true,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(100.0)),
+                  hintText: 'Dokumentname eingeben',
+                  hintStyle: const TextStyle(fontSize: 20.00)),
+              style: const TextStyle(fontSize: 20.00),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () async {
+                    await addFile(scannedDocument!, documentName.text);
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const Document()),
+                      (route) => false,
+                    );
+                  },
+                  child: const Text("Speichern")),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Abbrechen'),
+              ),
+            ],
+          ));
+
+  Future<File> getPdf(File screenShot, String fileName) async {
     pw.Document pdf = pw.Document();
     final image = pw.MemoryImage(screenShot.readAsBytesSync());
     pdf.addPage(pw.Page(build: (pw.Context context) {
       return pw.FullPage(
-                    ignoreMargins: true,
-                    child: pw.Image(image,fit: pw.BoxFit.fill),
-                  );// Center
+        ignoreMargins: true,
+        child: pw.Image(image, fit: pw.BoxFit.fill),
+      ); // Center
     }));
     final output = await getTemporaryDirectory();
-    File pdfFile = File('${output.path}/datei.pdf');
+    File pdfFile = File('${output.path}/$fileName.pdf');
     await pdfFile.writeAsBytes(await pdf.save());
     return pdfFile;
   }
 
-  Future<int> addFile(File scannedDocument) async {
+  Future<int> addFile(File scannedDocument, String fileName) async {
     String url = "https://backend.invoicer.at/api/Files";
     Uri uri = Uri.parse(url);
     String? token = await NetworkHandler.getToken();
     int responseCode = 0;
     if (token!.isNotEmpty) {
       token = token.toString();
-      File pdfFile = await getPdf(scannedDocument);
-      
+      File pdfFile = await getPdf(scannedDocument, fileName);
+
       Map<String, String> headers = {'Authorization': 'Bearer $token'};
       var request = http.MultipartRequest('POST', uri);
       request.headers.addAll(headers);
       request.files.add(http.MultipartFile.fromBytes(
           'file', File(pdfFile.path).readAsBytesSync(),
-          filename: 'datei.pdf'));
+          filename: '$fileName.pdf'));
       var response = await request.send();
       responseCode = response.statusCode;
       print(response.statusCode);

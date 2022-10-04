@@ -242,9 +242,14 @@ Future<List<Documents>> getFiles() async {
         Map obj = element;
         String fileName = obj["fileName"];
         String creationTime = obj["creationTime"];
+        String dateSplit = creationTime.split('T')[0];
+        String creationDate =
+        "${dateSplit.split('-')[2]}.${dateSplit.split('-')[1]}.${dateSplit.split('-')[0]}";
+        
+
         String id = obj["id"];
         String companyId = obj["companyId"];
-        Documents document = Documents(id, companyId, fileName, creationTime);
+        Documents document = Documents(id, companyId, fileName, creationDate);
         documents.add(document);
       }
     }
