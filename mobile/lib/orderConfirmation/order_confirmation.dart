@@ -251,6 +251,7 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
                                           builder: (context) =>
                                               EditOrderConfirmation(
                                                   id: snapshot.data?[index].id,
+                                                  companyId: snapshot.data?[index].companyId,
                                                   documentInformationId: snapshot
                                                       .data?[index]
                                                       .documentInformationId,
@@ -519,6 +520,7 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
               obj["documentInformation"]["typeOfDiscount"].toString();
           String tax = obj["documentInformation"]["tax"].toString();
           String clientId = obj["documentInformation"]["clientId"];
+          String companyId = obj["companyId"];
           String contactPersonId =
               obj["documentInformation"]["contactPersonId"];
           for (var position in obj["documentInformation"]["positions"]) {
@@ -546,6 +548,7 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
           }
           OrderConfirmations orderConfirmation = OrderConfirmations(
               id,
+              companyId,
               documentInformationId,
               orderConfirmationNumber,
               orderConfirmationDate,
@@ -574,6 +577,7 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
 
 class OrderConfirmations {
   final String id;
+  final String companyId;
   final String documentInformationId;
   final String orderConfirmationNum;
   final String orderConfirmationdate;
@@ -594,6 +598,7 @@ class OrderConfirmations {
 
   OrderConfirmations(
       this.id,
+      this.companyId,
       this.documentInformationId,
       this.orderConfirmationNum,
       this.orderConfirmationdate,

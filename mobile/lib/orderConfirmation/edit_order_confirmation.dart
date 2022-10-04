@@ -14,6 +14,7 @@ import '../user/user.dart';
 
 class EditOrderConfirmation extends StatefulWidget {
   final String id;
+  final String companyId;
   final String documentInformationId;
   final String orderConfirmationNum;
   final String orderConfirmationdate;
@@ -34,6 +35,7 @@ class EditOrderConfirmation extends StatefulWidget {
   const EditOrderConfirmation(
       {Key? key,
       required this.id,
+      required this.companyId,
       required this.documentInformationId,
       required this.orderConfirmationNum,
       required this.orderConfirmationdate,
@@ -653,6 +655,7 @@ class _EditOrderConfirmationsState extends State<EditOrderConfirmation> {
 
                                 await editOrderConfirmation(
                                     widget.id,
+                                    widget.companyId,
                                     widget.documentInformationId,
                                     orderConfirmationNum.text,
                                     orderConfirmationdate.text,
@@ -671,7 +674,8 @@ class _EditOrderConfirmationsState extends State<EditOrderConfirmation> {
                                     productPosition);
                                 Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(
-                                      builder: (context) => const OrderConfirmation()),
+                                      builder: (context) =>
+                                          const OrderConfirmation()),
                                   (route) => false,
                                 );
                               },
@@ -757,6 +761,7 @@ class _EditOrderConfirmationsState extends State<EditOrderConfirmation> {
 
   Future<int> editOrderConfirmation(
       String id,
+      String companyId,
       String documentInformationId,
       String orderConfirmationNum,
       String orderConfirmationDate,
@@ -812,7 +817,9 @@ class _EditOrderConfirmationsState extends State<EditOrderConfirmation> {
 
     if (typeOfDiscount == _delTypeOfDiscount[0] || typeOfDiscount == "0") {
       delTypeOfDiscount = _delTypeOfDiscount[0];
-    } else if (typeOfDiscount == "Prozent" || typeOfDiscount == "1") {
+    } else if (typeOfDiscount == "Prozent" ||
+        typeOfDiscount == "1" ||
+        typeOfDiscount == _delTypeOfDiscount[1]) {
       delTypeOfDiscount = _delTypeOfDiscount[1];
     }
 
@@ -881,7 +888,8 @@ class _EditOrderConfirmationsState extends State<EditOrderConfirmation> {
       body["subject"] = subject;
       body["headerText"] = headerText;
       body["flowText"] = flowText;
-      body["documentInformationsId"] = documentInformationId;
+      body["companyId"] = companyId;
+      body["documentInformationId"] = documentInformationId;
       body["documentInformation"] = {
         "totalDiscount": totalDiscount,
         "typeOfDiscount": delTypeOfDiscount,

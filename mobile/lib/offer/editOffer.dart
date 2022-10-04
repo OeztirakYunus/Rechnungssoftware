@@ -893,7 +893,9 @@ class _EditOffersState extends State<EditOffer> {
 
     if (typeOfDiscount == _delTypeOfDiscount[0] || typeOfDiscount == "0") {
       delTypeOfDiscount = _delTypeOfDiscount[0];
-    } else if (typeOfDiscount == "Prozent" || typeOfDiscount == "1") {
+    } else if (typeOfDiscount == "Prozent" ||
+        typeOfDiscount == "1" ||
+        typeOfDiscount == _delTypeOfDiscount[1]) {
       delTypeOfDiscount = _delTypeOfDiscount[1];
     }
 

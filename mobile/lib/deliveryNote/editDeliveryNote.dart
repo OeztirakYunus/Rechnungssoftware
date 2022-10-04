@@ -181,7 +181,7 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                           children: [
                             const Align(
                               alignment: Alignment(-0.95, 1),
-                              child: Text('Lieferscheinnummer *',
+                              child: Text('Lieferscheinnummer *', 
                                   style: TextStyle(fontSize: 20.00)),
                             ),
                             TextFormField(
@@ -813,7 +813,7 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
 
     if (typeOfDiscount == _delTypeOfDiscount[0] || typeOfDiscount == "0") {
       delTypeOfDiscount = _delTypeOfDiscount[0];
-    } else if (typeOfDiscount == "Prozent" || typeOfDiscount == "1") {
+    } else if (typeOfDiscount == "Prozent" || typeOfDiscount == "1"|| typeOfDiscount == _delTypeOfDiscount[1]) {
       delTypeOfDiscount = _delTypeOfDiscount[1];
     }
 
