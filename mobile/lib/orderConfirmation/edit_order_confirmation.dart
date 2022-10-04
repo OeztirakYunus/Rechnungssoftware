@@ -1,22 +1,63 @@
 import 'dart:convert';
-import 'package:demo5/contact/contacts.dart';
-import 'package:demo5/deliveryNote/delivery_note.dart';
-import 'package:demo5/network/networkHandler.dart';
-import 'package:demo5/products/product.dart';
-import 'package:demo5/user/user.dart';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:select_form_field/select_form_field.dart';
-import 'dynamicWidget.dart';
 
-class AddDeliveryNote extends StatefulWidget {
-  const AddDeliveryNote({Key? key}) : super(key: key);
+import 'package:demo5/orderConfirmation/order_confirmation.dart';
+import 'package:flutter/material.dart';
+import 'package:select_form_field/select_form_field.dart';
+
+import 'package:http/http.dart' as http;
+import '../contact/contacts.dart';
+import '../deliveryNote/dynamicWidget.dart';
+import '../deliveryNote/editDynamicWidget.dart';
+import '../network/networkHandler.dart';
+import '../products/product.dart';
+import '../user/user.dart';
+
+class EditOrderConfirmation extends StatefulWidget {
+  final String id;
+  final String documentInformationId;
+  final String orderConfirmationNum;
+  final String orderConfirmationdate;
+  final String status;
+  final String subject;
+  final String headerText;
+  final String flowText;
+  final String totalDiscount;
+  final String typeOfDiscount;
+  final String tax;
+  final String clientId;
+  final String contactPersonId;
+  final List<String> quantityPosition;
+  final List<String> discountPosition;
+  final List<String> typeOfDiscountPosition;
+  final List<String> productPosition;
+  final List<Products> products;
+  const EditOrderConfirmation(
+      {Key? key,
+      required this.id,
+      required this.documentInformationId,
+      required this.orderConfirmationNum,
+      required this.orderConfirmationdate,
+      required this.status,
+      required this.subject,
+      required this.headerText,
+      required this.flowText,
+      required this.totalDiscount,
+      required this.typeOfDiscount,
+      required this.tax,
+      required this.clientId,
+      required this.contactPersonId,
+      required this.quantityPosition,
+      required this.discountPosition,
+      required this.typeOfDiscountPosition,
+      required this.productPosition,
+      required this.products})
+      : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _AddDeliveryNotesState();
+  State<StatefulWidget> createState() => _EditOrderConfirmationsState();
 }
 
-class _AddDeliveryNotesState extends State<AddDeliveryNote> {
+class _EditOrderConfirmationsState extends State<EditOrderConfirmation> {
   final formGlobalKey = GlobalKey<FormState>();
   List<GlobalKey<FormState>> keys = [];
   String user = "";
@@ -25,14 +66,16 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
   String contact2 = "";
   bool productsIsEmpty = false;
   int count = 0;
-  List<DynamicWidget> dynamicList = [];
+  List<EditDynamicWidget> dynamicList = [];
+  List<DynamicWidget> addDynamicList = [];
   List<String> productPosition = [];
   List<String> quantityPosition = [];
   List<String> discountPosition = [];
   List<String> typeOfDiscountPosition = [];
 
-  TextEditingController deliveryNoteNumber = TextEditingController();
-  TextEditingController deliveryNoteDate = TextEditingController();
+  TextEditingController status = TextEditingController();
+  TextEditingController orderConfirmationNum = TextEditingController();
+  TextEditingController orderConfirmationdate = TextEditingController();
   TextEditingController headerText = TextEditingController();
   TextEditingController flowText = TextEditingController();
   TextEditingController subject = TextEditingController();
@@ -42,9 +85,59 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
   TextEditingController tax = TextEditingController();
 
   DateTime date = DateTime(2022, 10, 6);
+  String typeOfD = "";
+
+  @override
+  void initState() {
+    super.initState();
+    status.text = widget.status;
+    orderConfirmationNum.text = widget.orderConfirmationNum;
+
+    String dateSplit = widget.orderConfirmationdate.split('T')[0];
+    int year = int.parse(dateSplit.split('-')[0]);
+    int month = int.parse(dateSplit.split('-')[1]);
+    int day = int.parse(dateSplit.split('-')[2]);
+    date = DateTime(year, month, day);
+    orderConfirmationdate.text =
+        "${day.toString()}.${month.toString()}.${year.toString()}";
+
+    headerText.text = widget.headerText;
+    flowText.text = widget.flowText;
+    subject.text = widget.subject;
+    typeOfDiscount.text = widget.typeOfDiscount;
+    totalDiscount.text = widget.totalDiscount;
+    tax.text = widget.tax;
+    user = widget.contactPersonId;
+    contact = widget.clientId;
+
+    if (widget.typeOfDiscount == "Percent") {
+      typeOfD = "Prozent";
+    } else {
+      typeOfD = "Euro";
+    }
+
+    for (int i = 0; i < widget.quantityPosition.length; i++) {
+      dynamicList.add(EditDynamicWidget(
+          products: widget.products,
+          pPosition: widget.productPosition[i],
+          qPosition: widget.quantityPosition[i],
+          dPosition: widget.discountPosition[i],
+          typePosition: widget.typeOfDiscountPosition[i]));
+
+      productPosition.add(widget.productPosition[i]);
+      quantityPosition.add(widget.quantityPosition[i]);
+      discountPosition.add(widget.discountPosition[i]);
+      typeOfDiscountPosition.add(widget.typeOfDiscountPosition[i]);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> _status = [
+      {'value': 0, 'label': 'geöffnet'},
+      {'value': 1, 'label': 'geschlossen'}
+    ];
+
     List<Map<String, dynamic>> _typeOfDiscount = [
       {'value': 0, 'label': 'Euro'},
       {'value': 1, 'label': 'Prozent'}
@@ -59,10 +152,19 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
       ),
     );
 
+    Widget addDynamicTextField = Container(
+      width: 500,
+      child: ListView.builder(
+        itemCount: addDynamicList.length,
+        shrinkWrap: true,
+        itemBuilder: (_, index) => addDynamicList[index],
+      ),
+    );
+
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
-              title: const Text('Lieferschein anlegen',
+              title: const Text('Auftragsbestätigung bearbeiten',
                   style: TextStyle(
                       height: 1.00, fontSize: 25.00, color: Colors.white)),
               centerTitle: true,
@@ -78,17 +180,25 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                           children: [
                             const Align(
                               alignment: Alignment(-0.95, 1),
-                              child: Text('Lieferscheinnummer',
+                              child: Text('Auftragsbestätigungsnummer *',
                                   style: TextStyle(fontSize: 20.00)),
                             ),
                             TextFormField(
-                              controller: deliveryNoteNumber,
+                              controller: orderConfirmationNum,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Bitte Auftragsbestätigungsnummer eingeben!";
+                                } else {
+                                  return null;
+                                }
+                              },
                               autofocus: false,
                               decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius:
                                           BorderRadius.circular(100.0)),
-                                  hintText: 'Lieferscheinnummer eingeben',
+                                  hintText:
+                                      'Auftragsbestätigungsnummer eingeben',
                                   hintStyle: const TextStyle(fontSize: 20.00)),
                               style: const TextStyle(fontSize: 20.00),
                             ),
@@ -104,9 +214,11 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                             ),
                             TextFormField(
                               readOnly: true,
-                              controller: deliveryNoteDate,
+                              controller: orderConfirmationdate,
                               validator: (value) {
-                                if (value == null || value.isEmpty) {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    orderConfirmationdate.text.isEmpty) {
                                   return "Bitte Datum auswählen!";
                                 } else {
                                   return null;
@@ -116,13 +228,13 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                                   border: OutlineInputBorder(
                                       borderRadius:
                                           BorderRadius.circular(100.0)),
-                                  hintText: "Datum auswählen!",
                                   hintStyle: const TextStyle(fontSize: 20.00)),
                               style: const TextStyle(fontSize: 20.00),
                             ),
                             ElevatedButton(
                                 onPressed: () async {
                                   DateTime? newDate = await showDatePicker(
+                                      cancelText: "Abbrechen",
                                       context: context,
                                       initialDate: date,
                                       firstDate: DateTime(2000),
@@ -131,7 +243,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
 
                                   setState(() {
                                     date = newDate;
-                                    deliveryNoteDate.text =
+                                    orderConfirmationdate.text =
                                         '${date.day}.${date.month}.${date.year}';
                                   });
                                 },
@@ -142,12 +254,19 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                             const Align(
                               alignment: Alignment(-0.95, 1),
                               child: Text(
-                                'Kopftext',
+                                'Kopftext *',
                                 style: TextStyle(fontSize: 20.00),
                               ),
                             ),
                             TextFormField(
                               controller: headerText,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Bitte Kopftext eingeben!";
+                                } else {
+                                  return null;
+                                }
+                              },
                               maxLines: null,
                               autofocus: false,
                               decoration: InputDecoration(
@@ -164,13 +283,20 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                             const Align(
                               alignment: Alignment(-0.95, 1),
                               child: Text(
-                                'Betreff',
+                                'Betreff *',
                                 style: TextStyle(fontSize: 20.00),
                               ),
                             ),
                             TextFormField(
                               controller: subject,
                               autofocus: false,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Bitte Betreff eingeben!";
+                                } else {
+                                  return null;
+                                }
+                              },
                               decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius:
@@ -185,14 +311,21 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                             const Align(
                               alignment: Alignment(-0.95, 1),
                               child: Text(
-                                'Fließtext',
+                                'Fließtext*',
                                 style: TextStyle(fontSize: 20.00),
                               ),
                             ),
                             TextFormField(
                               controller: flowText,
-                              maxLines: null,
                               autofocus: false,
+                              maxLines: null,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Bitte Fließtext eingeben!";
+                                } else {
+                                  return null;
+                                }
+                              },
                               decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius:
@@ -200,6 +333,35 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                                   hintText: 'Fließtext eingeben',
                                   hintStyle: const TextStyle(fontSize: 20.00)),
                               style: const TextStyle(fontSize: 20.00),
+                            ),
+                            const SizedBox(
+                              height: 25.00,
+                            ),
+                            const Align(
+                              alignment: Alignment(-0.95, 1),
+                              child: Text('Status *',
+                                  style: TextStyle(fontSize: 20.00)),
+                            ),
+                            SelectFormField(
+                              controller: status,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  value = widget.status;
+                                }
+                                return null;
+                              },
+                              type: SelectFormFieldType.dropdown,
+                              labelText: 'Status *',
+                              items: _status,
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(100.0)),
+                                  hintText: widget.status,
+                                  hintStyle: const TextStyle(fontSize: 20.00)),
+                              onChanged: (val) => status.text = val,
+                              onSaved: (val) =>
+                                  val!.isNotEmpty ? status.text = val : val,
                             ),
                             const SizedBox(
                               height: 25.00,
@@ -240,7 +402,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                                   border: OutlineInputBorder(
                                       borderRadius:
                                           BorderRadius.circular(100.0)),
-                                  hintText: 'Ermäßigungstyp auswählen',
+                                  hintText: typeOfD,
                                   hintStyle: const TextStyle(fontSize: 20.00)),
                               onChanged: (val) => typeOfDiscount.text = val,
                               onSaved: (val) => val!.isNotEmpty
@@ -259,14 +421,14 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                             ),
                             TextFormField(
                               controller: tax,
-                              keyboardType: TextInputType.number,
-                              autofocus: false,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return "Bitte Steuer eingeben!";
+                                } else {
+                                  return null;
                                 }
-                                return null;
                               },
+                              autofocus: false,
                               decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius:
@@ -314,7 +476,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                                                 borderRadius:
                                                     BorderRadius.circular(
                                                         100.0)),
-                                            hintText: "Kunde auswählen",
+                                            hintText: 'Kunde auswählen',
                                             hintStyle: const TextStyle(
                                                 fontSize: 20.00)),
                                         isExpanded: true,
@@ -421,8 +583,9 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                                 }
                                 addDynamic(
                                     products,
-                                    deliveryNoteNumber,
-                                    deliveryNoteDate,
+                                    status,
+                                    orderConfirmationNum,
+                                    orderConfirmationdate,
                                     headerText,
                                     flowText,
                                     subject,
@@ -446,6 +609,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                               height: 25.00,
                             ),
                             dynamicTextField,
+                            addDynamicTextField,
                             const SizedBox(
                               height: 25.00,
                             ),
@@ -461,12 +625,13 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                                     count++;
                                   }
                                 }
+
                                 String message = "";
                                 if (contact == "" ||
                                     user == "" ||
                                     productsIsEmpty) {
                                   message =
-                                      "Es ist kein/keine Kunde/Ansprechperson/Produkt vorhanden!\nLieferschein Anlegen nicht möglich!";
+                                      "Es ist kein/keine Kunde/Ansprechperson/Produkt vorhanden!\nAuftragsbestätigung Bearbeiten nicht möglich!";
                                   showAlertDialog(context, message);
                                   return;
                                 }
@@ -476,16 +641,22 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                                   message =
                                       "Sie müssen mindestens eine Position hinzufügen!";
                                   showAlertDialog(context, message);
-                                  return;
                                 }
 
                                 if (count > 0) {
                                   return;
                                 }
+                                if (orderConfirmationdate.text == "") {
+                                  orderConfirmationdate.text =
+                                      "${date.day.toString()}.${date.month.toString()}.${date.year.toString()}";
+                                }
 
-                                int statusCode = await addDeliveryNote(
-                                    deliveryNoteNumber.text,
-                                    deliveryNoteDate.text,
+                                await editOrderConfirmation(
+                                    widget.id,
+                                    widget.documentInformationId,
+                                    orderConfirmationNum.text,
+                                    orderConfirmationdate.text,
+                                    status.text,
                                     subject.text,
                                     headerText.text,
                                     flowText.text,
@@ -498,19 +669,17 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                                     discountPosition,
                                     typeOfDiscountPosition,
                                     productPosition);
-                                if (statusCode == 200) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const DeliveryNote()),
-                                  );
-                                }
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const OrderConfirmation()),
+                                );
                               },
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(100)),
                               color: Colors.redAccent[700],
-                              child: const Text('Lieferschein anlegen',
+                              child: const Text('Auftragsbestätigung speichern',
                                   style:
                                       TextStyle(fontSize: 22.00, height: 1.35)),
                               textColor: Colors.white,
@@ -545,6 +714,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
 
   addDynamic(
       List<Products> products,
+      TextEditingController status,
       TextEditingController deliveryNoteNumber,
       TextEditingController deliveryNoteDate,
       TextEditingController headerText,
@@ -556,18 +726,10 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
       String user,
       String contact) {
     setState(() {
-      this.deliveryNoteNumber = deliveryNoteNumber;
-      this.deliveryNoteDate = deliveryNoteDate;
-      this.headerText = headerText;
-      this.flowText = flowText;
-      this.subject = subject;
-      this.typeOfDiscount = typeOfDiscount;
-      this.totalDiscount = totalDiscount;
-      this.tax = tax;
       this.user = user;
       this.contact = contact;
     });
-    dynamicList.add(DynamicWidget(
+    addDynamicList.add(DynamicWidget(
       products: products,
     ));
   }
@@ -578,8 +740,14 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
     discountPosition = [];
     typeOfDiscountPosition = [];
     keys = [];
-
     for (var widget in dynamicList) {
+      productPosition.add(widget.productPosition.text);
+      quantityPosition.add(widget.quantityPosition.text);
+      discountPosition.add(widget.discountPosition.text);
+      typeOfDiscountPosition.add(widget.typeOfDiscountPosition.text);
+      keys.add(widget.formGlobalKey);
+    }
+    for (var widget in addDynamicList) {
       productPosition.add(widget.productPosition.text);
       quantityPosition.add(widget.quantityPosition.text);
       discountPosition.add(widget.discountPosition.text);
@@ -588,27 +756,29 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
     }
   }
 
-  Future<int> addDeliveryNote(
-      String? delNoteNum,
-      String delNoteDate,
-      String? subject,
-      String? headerText,
-      String? flowText,
-      String? totalDiscount,
-      String? typeOfDiscount,
+  Future<int> editOrderConfirmation(
+      String id,
+      String documentInformationId,
+      String orderConfirmationNum,
+      String orderConfirmationDate,
+      String status,
+      String subject,
+      String headerText,
+      String flowText,
+      String totalDiscount,
+      String typeOfDiscount,
       String tax,
       String clientId,
       String contactPersonId,
       List<String> quantityPosition,
-      List<String>? discountPosition,
-      List<String>? typeOfDiscountPosition,
+      List<String> discountPosition,
+      List<String> typeOfDiscountPosition,
       List<String> productPosition) async {
-    String url = "https://backend.invoicer.at/api/Companies/add-delivery-note";
+    String url = "https://backend.invoicer.at/api/OrderConfirmations";
     Uri uri = Uri.parse(url);
     List<Products> products = await NetworkHandler.getProducts();
     List<Contact> contacts = await NetworkHandler.getClients();
     List<User> users = await NetworkHandler.getUsers();
-    int statusCode = 0;
 
     String firstName = "";
     String lastName = "";
@@ -629,16 +799,22 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
       }
     }
 
+    List<String> _status = ['OPEN', 'CLOSED'];
     List<String> _delTypeOfDiscount = ['Euro', 'Percent'];
-    int typeOfDisIndex = 0;
+
+    String delStatus = "";
     String delTypeOfDiscount = "";
-    if (typeOfDiscount != null && typeOfDiscount.isNotEmpty) {
-      typeOfDisIndex = int.parse(typeOfDiscount);
-      if (typeOfDisIndex == 0) {
-        delTypeOfDiscount = _delTypeOfDiscount[0];
-      } else if (typeOfDisIndex == 1) {
-        delTypeOfDiscount = _delTypeOfDiscount[1];
-      }
+
+    if (status == "geöffnet" || status == "0") {
+      delStatus = _status[0];
+    } else if (status == "geschlossen" || status == "1") {
+      delStatus = _status[1];
+    }
+
+    if (typeOfDiscount == _delTypeOfDiscount[0] || typeOfDiscount == "0") {
+      delTypeOfDiscount = _delTypeOfDiscount[0];
+    } else if (typeOfDiscount == "Prozent" || typeOfDiscount == "1") {
+      delTypeOfDiscount = _delTypeOfDiscount[1];
     }
 
     double delTax = double.parse(tax);
@@ -646,27 +822,45 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
     List<Map<String, dynamic>> _positions = [];
 
     for (int i = 0; i < quantityPosition.length; i++) {
-      int typeOfDisIndex = 0;
       Map<String, dynamic> positionBody = {};
+      positionBody["quantity"] = quantityPosition[i];
+      String productId = "";
+      if (int.tryParse(productPosition[i]) != null) {
+        int prodIndex = int.parse(productPosition[i]);
+        Products product = products.elementAt(prodIndex);
+        productId = product.productId;
+      } else {
+        for (var product in products) {
+          if (product.productName == productPosition[i]) {
+            productId = product.productId;
+          }
+        }
+      }
+      positionBody["productId"] = productId;
+
       String typeOfDis = "";
-      if (typeOfDiscountPosition != null &&
-          typeOfDiscountPosition[i].isNotEmpty) {
-        typeOfDisIndex = int.parse(typeOfDiscountPosition[i]);
+      if (typeOfDiscountPosition[i].isNotEmpty &&
+          int.tryParse(typeOfDiscountPosition[i]) != null) {
+        int typeOfDisIndex = int.parse(typeOfDiscountPosition[i]);
         if (typeOfDisIndex == 0) {
           typeOfDis = _delTypeOfDiscount[0];
         } else if (typeOfDisIndex == 1) {
           typeOfDis = _delTypeOfDiscount[1];
         }
         positionBody["typeOfDiscount"] = typeOfDis;
+      } else if (typeOfDiscountPosition[i].isNotEmpty &&
+          int.tryParse(typeOfDiscountPosition[i]) == null) {
+        if (typeOfDiscountPosition[i] == _delTypeOfDiscount[0]) {
+          typeOfDis = _delTypeOfDiscount[0];
+        } else if (typeOfDiscountPosition[i] == _delTypeOfDiscount[1] ||
+            typeOfDiscountPosition[i] == "Prozent") {
+          typeOfDis = _delTypeOfDiscount[1];
+        }
+        positionBody["typeOfDiscount"] = typeOfDis;
       }
 
-      int prodIndex = int.parse(productPosition[i]);
-      Products product = products.elementAt(prodIndex);
-
-      positionBody["quantity"] = quantityPosition[i];
-      positionBody["productId"] = product.productId;
       String discountPos = "";
-      if (discountPosition != null && discountPosition[i].isNotEmpty) {
+      if (discountPosition[i].isNotEmpty) {
         discountPos = discountPosition[i];
         positionBody["discount"] = discountPos;
       }
@@ -679,35 +873,24 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
       token = token.toString();
 
       var body = {};
-      String delDateSplit =
-          "${delNoteDate.split('.')[2]}-${delNoteDate.split('.')[1]}-${delNoteDate.split('.')[0]}";
-      body["deliveryNoteDate"] = delDateSplit;
-
-      body["documentInformations"] = {
+      body["id"] = id;
+      body["orderConfirmationNumber"] = orderConfirmationNum;
+      String orderConfirmationDateSplit =
+          "${orderConfirmationDate.split('.')[2]}-${orderConfirmationDate.split('.')[1]}-${orderConfirmationDate.split('.')[0]}";
+      body["orderConfirmationDate"] = orderConfirmationDateSplit;
+      body["status"] = delStatus;
+      body["subject"] = subject;
+      body["headerText"] = headerText;
+      body["flowText"] = flowText;
+      body["documentInformationsId"] = documentInformationId;
+      body["documentInformation"] = {
+        "totalDiscount": totalDiscount,
+        "typeOfDiscount": delTypeOfDiscount,
         "tax": delTax,
         "clientId": idClient,
         "contactPersonId": contactId,
         "positions": _positions
       };
-
-      if (delNoteNum != null && delNoteNum.isNotEmpty) {
-        body["deliveryNoteNumber"] = delNoteNum;
-      }
-      if (delTypeOfDiscount.isNotEmpty) {
-        body["documentInformations"]["typeOfDiscount"] = delTypeOfDiscount;
-      }
-      if (subject != null && subject.isNotEmpty) {
-        body["subject"] = subject;
-      }
-      if (headerText != null && headerText.isNotEmpty) {
-        body["headerText"] = headerText;
-      }
-      if (flowText != null && flowText.isNotEmpty) {
-        body["flowText"] = flowText;
-      }
-      if (totalDiscount != null && totalDiscount.isNotEmpty) {
-        body["documentInformations"]["totalDiscount"] = totalDiscount;
-      }
       var jsonBody = json.encode(body);
 
       final response = await http.put(uri,
@@ -717,9 +900,10 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
             'Authorization': 'Bearer $token'
           },
           body: jsonBody);
-      statusCode = response.statusCode;
+
+      print(response.statusCode);
     }
 
-    return statusCode;
+    return 0;
   }
 }

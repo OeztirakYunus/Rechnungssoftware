@@ -90,6 +90,7 @@ class _EditInvoicesState extends State<EditInvoice> {
   DateTime payDate = DateTime(2022, 9, 5);
   String invDateHint = "";
   String payDateHint = "";
+  String typeOfD = "";
 
   @override
   void initState() {
@@ -125,6 +126,12 @@ class _EditInvoicesState extends State<EditInvoice> {
     tax.text = widget.tax;
     user = widget.contactPersonId;
     contact = widget.clientId;
+
+    if (widget.typeOfDiscount == "Percent") {
+      typeOfD = "Prozent";
+    } else {
+      typeOfD = "Euro";
+    }
 
     for (int i = 0; i < widget.quantityPosition.length; i++) {
       dynamicList.add(EditDynamicWidget(
@@ -452,7 +459,7 @@ class _EditInvoicesState extends State<EditInvoice> {
                                   border: OutlineInputBorder(
                                       borderRadius:
                                           BorderRadius.circular(100.0)),
-                                  hintText: widget.typeOfDiscount,
+                                  hintText: typeOfD,
                                   hintStyle: const TextStyle(fontSize: 20.00)),
                               onChanged: (val) => typeOfDiscount.text = val,
                               onSaved: (val) => val!.isNotEmpty

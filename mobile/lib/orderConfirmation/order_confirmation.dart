@@ -13,6 +13,7 @@ import '../network/networkHandler.dart';
 import '../products/product.dart';
 import '../user/user.dart';
 import 'add_order_confirmation.dart';
+import 'edit_order_confirmation.dart';
 
 class OrderConfirmation extends StatefulWidget {
   const OrderConfirmation({Key? key}) : super(key: key);
@@ -84,7 +85,7 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
                       ),
                       trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                         SizedBox(
-                          width: 50.0,
+                          width: 45.0,
                           child: OutlinedButton(
                             onPressed: () async {
                               String deliveryNoteNumber =
@@ -117,10 +118,43 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
                           ),
                         ),
                         SizedBox(
-                            width: 50.0,
+                            width: 45.0,
                             child: OutlinedButton(
                               onPressed: () async {
-                                await getAsWord(snapshot.data?[index].id,snapshot.data?[index].orderConfirmationNum);
+                                String invoiceNumber =
+                                    await orderConfirmationToInvoice(
+                                        snapshot.data?[index].id);
+                                alert = AlertDialog(
+                                  title: const Text("Rechnung erzeugt!"),
+                                  content: Text(
+                                      "Die Rechnung wurde erfolgreich erzeugt. Die Rechnungsnummer lautet $invoiceNumber"),
+                                  actions: [
+                                    TextButton(
+                                      child: const Text("Ok"),
+                                      onPressed: () async {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return alert;
+                                  },
+                                );
+                              },
+                              child: Image.asset(
+                                "lib/assets/invoice.png",
+                                height: 25,
+                              ),
+                            )),
+                        SizedBox(
+                            width: 45.0,
+                            child: OutlinedButton(
+                              onPressed: () async {
+                                await getAsWord(snapshot.data?[index].id,
+                                    snapshot.data?[index].orderConfirmationNum);
                               },
                               child: Image.asset(
                                 "lib/assets/word.png",
@@ -128,10 +162,11 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
                               ),
                             )),
                         SizedBox(
-                            width: 50.0,
+                            width: 45.0,
                             child: OutlinedButton(
                               onPressed: () async {
-                                await getAsPdf(snapshot.data?[index].id,snapshot.data?[index].orderConfirmationNum);
+                                await getAsPdf(snapshot.data?[index].id,
+                                    snapshot.data?[index].orderConfirmationNum);
                               },
                               child: Image.asset(
                                 "lib/assets/pdf.png",
@@ -139,7 +174,7 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
                               ),
                             )),
                         SizedBox(
-                            width: 50.0,
+                            width: 45.0,
                             child: OutlinedButton(
                               onPressed: () => {
                                 alert = AlertDialog(
@@ -171,40 +206,61 @@ class _OrderConfirmationsState extends State<OrderConfirmation> {
                                   },
                                 )
                               },
-                              child: const Icon(Icons.delete),
-                            )),
-                        SizedBox(
-                            width: 50.0,
-                            child: OutlinedButton(
-                              onPressed: () async {
-                                String invoiceNumber =
-                                    await orderConfirmationToInvoice(
-                                        snapshot.data?[index].id);
-                                alert = AlertDialog(
-                                  title: const Text("Rechnung erzeugt!"),
-                                  content: Text(
-                                      "Die Rechnung wurde erfolgreich erzeugt. Die Rechnungsnummer lautet $invoiceNumber"),
-                                  actions: [
-                                    TextButton(
-                                      child: const Text("Ok"),
-                                      onPressed: () async {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return alert;
-                                  },
-                                );
-                              },
-                              child: Image.asset(
-                                "lib/assets/invoice.png",
-                                height: 25,
+                              child: const Icon(
+                                Icons.delete,
+                                size: 15,
                               ),
                             )),
+                        SizedBox(
+                            width: 45.0,
+                            child: OutlinedButton(
+                              onPressed: () => {
+                                  Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditOrderConfirmation(
+                                          id: snapshot.data?[index].id,
+                                          documentInformationId: snapshot
+                                              .data?[index]
+                                              .documentInformationId,
+                                          orderConfirmationNum:
+                                              snapshot.data?[index].orderConfirmationNum,
+                                          orderConfirmationdate:
+                                              snapshot.data?[index].orderConfirmationdate,
+                                          status: snapshot.data?[index].status,
+                                          subject:
+                                              snapshot.data?[index].subject,
+                                          headerText:
+                                              snapshot.data?[index].headerText,
+                                          flowText:
+                                              snapshot.data?[index].flowText,
+                                          totalDiscount: snapshot
+                                              .data?[index].totalDiscount,
+                                          typeOfDiscount: snapshot
+                                              .data?[index].typeOfDiscount,
+                                          tax: snapshot.data?[index].tax,
+                                          clientId:
+                                              snapshot.data?[index].clientId,
+                                          contactPersonId: snapshot
+                                              .data?[index].contactPersonId,
+                                          quantityPosition: snapshot
+                                              .data?[index].quantityPosition,
+                                          discountPosition: snapshot
+                                              .data?[index].discountPosition,
+                                          typeOfDiscountPosition: snapshot
+                                              .data?[index]
+                                              .typeOfDiscountPosition,
+                                          productPosition: snapshot
+                                              .data?[index].productPosition,
+                                          products:
+                                              snapshot.data?[index].products)),
+                                )
+                              },
+                              child: const Icon(
+                                Icons.edit,
+                                size: 15,
+                              ),
+                            ))
                       ]),
                     ),
                     shape: RoundedRectangleBorder(

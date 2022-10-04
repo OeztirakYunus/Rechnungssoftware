@@ -88,6 +88,7 @@ class _EditOffersState extends State<EditOffer> {
 
   DateTime date = DateTime(2022, 9, 5);
   DateTime validUntilDate = DateTime(2022, 9, 5);
+  String typeOfD = "";
 
   @override
   void initState() {
@@ -118,6 +119,12 @@ class _EditOffersState extends State<EditOffer> {
     tax.text = widget.tax;
     user = widget.contactPersonId;
     contact = widget.clientId;
+
+    if (widget.typeOfDiscount == "Percent") {
+      typeOfD = "Prozent";
+    } else {
+      typeOfD = "Euro";
+    }
 
     for (int i = 0; i < widget.quantityPosition.length; i++) {
       dynamicList.add(EditDynamicWidget(
@@ -452,7 +459,7 @@ class _EditOffersState extends State<EditOffer> {
                                   border: OutlineInputBorder(
                                       borderRadius:
                                           BorderRadius.circular(100.0)),
-                                  hintText: widget.typeOfDiscount,
+                                  hintText: typeOfD,
                                   hintStyle: const TextStyle(fontSize: 20.00)),
                               onChanged: (val) => typeOfDiscount.text = val,
                               onSaved: (val) => val!.isNotEmpty

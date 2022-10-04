@@ -422,6 +422,13 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                             TextFormField(
                               controller: tax,
                               autofocus: false,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Bitte Steuer eingeben!";
+                                } else {
+                                  return null;
+                                }
+                              },
                               decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius:
