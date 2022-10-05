@@ -6,12 +6,20 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:select_form_field/select_form_field.dart';
 
-class AddUser extends StatelessWidget {
-  const AddUser({Key? key}) : super(key: key);
+class AddUser extends StatefulWidget {
+  const AddUser({
+    Key? key,
+  }) : super(key: key);
 
+  @override
+  State<StatefulWidget> createState() => _AddUserState();
+}
+
+class _AddUserState extends State<AddUser> {
   @override
   Widget build(BuildContext context) {
     final formGlobalKey = GlobalKey<FormState>();
+    bool _passwordVisible = true;
     TextEditingController firstName = TextEditingController();
     TextEditingController lastName = TextEditingController();
     TextEditingController email = TextEditingController();
@@ -79,6 +87,13 @@ class AddUser extends StatelessWidget {
                         ),
                         TextFormField(
                           controller: firstName,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Bitte Vorname eingeben!";
+                            } else {
+                              return value;
+                            }
+                          },
                           autofocus: false,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
@@ -99,6 +114,13 @@ class AddUser extends StatelessWidget {
                         ),
                         TextFormField(
                           controller: lastName,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Bitte Nachname eingeben!";
+                            } else {
+                              return value;
+                            }
+                          },
                           autofocus: false,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
@@ -119,6 +141,13 @@ class AddUser extends StatelessWidget {
                         ),
                         TextFormField(
                           controller: email,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Bitte Email eingeben!";
+                            } else {
+                              return value;
+                            }
+                          },
                           autofocus: false,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
@@ -140,12 +169,31 @@ class AddUser extends StatelessWidget {
                         TextFormField(
                           controller: password,
                           autofocus: false,
-                          obscureText: true,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Bitte Passwort eingeben";
+                            }
+                            return null;
+                          },
+                          obscureText: !_passwordVisible,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(100.0)),
                             hintText: 'Passwort eingeben',
                             hintStyle: const TextStyle(fontSize: 20.00),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _passwordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Theme.of(context).primaryColorDark,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _passwordVisible = !_passwordVisible;
+                                });
+                              },
+                            ),
                           ),
                           style: const TextStyle(fontSize: 20.00),
                         ),
