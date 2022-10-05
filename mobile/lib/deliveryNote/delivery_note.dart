@@ -226,7 +226,7 @@ class _DeliveryNotesState extends State<DeliveryNote> {
                       );
                     },
                   );
-                } else {
+                } else {  
                   return const Center(child: CircularProgressIndicator());
                 }
               }),

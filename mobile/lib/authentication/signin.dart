@@ -43,6 +43,7 @@ class _LoginState extends State<Login> {
                   ),
                 )),
             Container(
+              height: 350,
               padding: const EdgeInsets.all(10),
               child: Form(
                 key: formGlobalKey,
@@ -132,10 +133,10 @@ class _LoginState extends State<Login> {
                               int statusCode =
                                   await loginUser(userMail.text, userPsw.text);
                               if (statusCode == 200) {
-                                Navigator.push(
-                                  context,
+                                Navigator.of(context).pushAndRemoveUntil(
                                   MaterialPageRoute(
                                       builder: (context) => const Categories()),
+                                  (route) => false,
                                 );
                               } else if (statusCode != 200) {
                                 String message =
@@ -166,7 +167,7 @@ class _LoginState extends State<Login> {
             ),
             Container(
               alignment: Alignment.bottomLeft,
-              width: 350,
+              width: 250,
               child: RichText(
                 text: TextSpan(
                     text: 'Noch kein Konto?',

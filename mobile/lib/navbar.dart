@@ -1,3 +1,4 @@
+import 'package:demo5/company/company.dart';
 import 'package:demo5/contact/categoryContact.dart';
 import 'package:demo5/document-scanner/display_delivery_note.dart';
 import 'package:demo5/invoice/invoice.dart';
@@ -45,7 +46,11 @@ class NavBar extends StatelessWidget {
         return;
       case 7:
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => UserRole()));
+            .push(MaterialPageRoute(builder: (context) =>const UserRole()));
+        return;
+         case 8:
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) =>const Companies()));
         return;
     }
   }
@@ -159,6 +164,18 @@ class NavBar extends StatelessWidget {
                 title: const Text('Benutzer',
                     style: TextStyle(color: Colors.white, fontSize: 18)),
                 onTap: () => selectedItem(context, 7),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                leading: Image.asset(
+                  "lib/assets/company.png",
+                  scale: 2.0,
+                  height: 38.0,
+                  width: 38.0,
+                ),
+                title: const Text('Unternehmen',
+                    style: TextStyle(color: Colors.white, fontSize: 18)),
+                onTap: () => selectedItem(context, 8),
               ),
             ],
           )),
