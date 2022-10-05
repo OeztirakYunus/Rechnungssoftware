@@ -11,6 +11,7 @@ class AddUser extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final formGlobalKey = GlobalKey<FormState>();
     TextEditingController firstName = TextEditingController();
     TextEditingController lastName = TextEditingController();
     TextEditingController email = TextEditingController();
@@ -36,6 +37,7 @@ class AddUser extends StatelessWidget {
             Container(
                 padding: const EdgeInsets.all(10),
                 child: Form(
+                  key: formGlobalKey,
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -157,6 +159,9 @@ class AddUser extends StatelessWidget {
                             ),
                             MaterialButton(
                               onPressed: () async {
+                                if (!formGlobalKey.currentState!.validate()) {
+                                  return;
+                                }
                                 int roleIndex = await addUser(
                                     firstName.text,
                                     lastName.text,

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:demo5/address/address.dart';
+import 'package:demo5/company/edit_company.dart';
 import 'package:demo5/navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -52,57 +53,28 @@ class _CompaniesState extends State<Companies> {
                   Padding(
                       padding: const EdgeInsets.only(right: 20),
                       child: GestureDetector(
-                        onTap: () => {
-                          /*Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => EditInvoice(
-                                                  id: snapshot.data?[index].id,
-                                                  documentInformationId: snapshot
-                                                      .data?[index]
-                                                      .documentInformationId,
-                                                  invoiceNum: snapshot
-                                                      .data?[index].invoiceNum,
-                                                  invoiceDate: snapshot
-                                                      .data?[index].invoiceDate,
-                                                  paymentTerm: snapshot
-                                                      .data?[index].paymentTerm,
-                                                  status: snapshot
-                                                      .data?[index].status,
-                                                  subject: snapshot
-                                                      .data?[index].subject,
-                                                  headerText: snapshot
-                                                      .data?[index].headerText,
-                                                  flowText: snapshot
-                                                      .data?[index].flowText,
-                                                  totalDiscount: snapshot
-                                                      .data?[index]
-                                                      .totalDiscount,
-                                                  typeOfDiscount: snapshot
-                                                      .data?[index]
-                                                      .typeOfDiscount,
-                                                  tax:
-                                                      snapshot.data?[index].tax,
-                                                  clientId: snapshot
-                                                      .data?[index].clientId,
-                                                  contactPersonId: snapshot
-                                                      .data?[index]
-                                                      .contactPersonId,
-                                                  quantityPosition: snapshot
-                                                      .data?[index]
-                                                      .quantityPosition,
-                                                  discountPosition: snapshot
-                                                      .data?[index]
-                                                      .discountPosition,
-                                                  typeOfDiscountPosition: snapshot
-                                                      .data?[index]
-                                                      .typeOfDiscountPosition,
-                                                  productPosition: snapshot
-                                                      .data?[index]
-                                                      .productPosition,
-                                                  products: snapshot
-                                                      .data?[index].products)),
-                                        )*/
+                        onTap: () async {
+                          Company company = await getCompany();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditCompany(
+                                    companyId: company.companyId,
+                                    companyName: company.companyName,
+                                    email: company.email,
+                                    phoneNumber: company.phoneNumber,
+                                    ustNumber: company.ustNumber,
+                                    street: company.addresses.street,
+                                    zipCode: company.addresses.zipCode,
+                                    city: company.addresses.city,
+                                    country: company.addresses.country,
+                                    bankName: company.bankInformation.bankName,
+                                    iban: company.bankInformation.iban,
+                                    bic: company.bankInformation.bic,
+                                    adressId: company.addressId,
+                                    bankInformationId:
+                                        company.bankInformation.id)),
+                          );
                         },
                         child: const Icon(Icons.edit),
                       )),
@@ -453,6 +425,8 @@ Future<Company> getCompany() async {
     String zipCode = "";
     String city = "";
     String country = "";
+    String addressId = "";
+    String bankInformationId = "";
     if (response.statusCode == 200) {
       for (var element in data.entries) {
         if (element.key == "id") {
@@ -465,6 +439,10 @@ Future<Company> getCompany() async {
           phoneNumber = element.value;
         } else if (element.key == "ustNumber") {
           ustNumber = element.value;
+        } else if (element.key == "addressId") {
+          addressId = element.value;
+        } else if (element.key == "bankInformationId") {
+          bankInformationId = element.value;
         } else if (element.key == "bankInformation") {
           Map obj = element.value;
           for (var entry in obj.entries) {
@@ -490,33 +468,20 @@ Future<Company> getCompany() async {
             }
           }
         }
-
-        /*String email = obj["email"];
-        String phoneNumber = obj["phoneNumber"];
-        String ustNumber = obj["ustNumber"];
-        String bankName = obj["bankInformation"]["bankName"];
-        String iban = obj["bankInformation"]["iban"];
-        String bic = obj["bankInformation"]["bic"];
-        BankInformation bankInformation = BankInformation(bankName, iban, bic);
-        String street = obj["address"]["street"];
-        String zipCode = obj["address"]["zipCode"];
-        String city = obj["address"]["city"];
-        String country = obj["address"]["country"];
-        Address address = Address(street, zipCode, city, country);
-        company = Company(companyId, companyName, email, phoneNumber, ustNumber,
-            address, bankInformation);*/
       }
     }
     Address address = Address(street, zipCode, city, country);
-    BankInformation bankInformation = BankInformation(bankName, iban, bic);
-    company = Company(companyId, companyName, email, phoneNumber, ustNumber,
-        address, bankInformation);
+    BankInformation bankInformation =
+        BankInformation(bankInformationId, bankName, iban, bic);
+    company = Company(companyId, addressId, companyName, email, phoneNumber,
+        ustNumber, address, bankInformation);
   }
   return company;
 }
 
 class Company {
   final String companyId;
+  final String addressId;
   final String companyName;
   final String email;
   final String phoneNumber;
@@ -524,14 +489,15 @@ class Company {
   final Address addresses;
   final BankInformation bankInformation;
 
-  Company(this.companyId, this.companyName, this.email, this.phoneNumber,
-      this.ustNumber, this.addresses, this.bankInformation);
+  Company(this.companyId, this.addressId, this.companyName, this.email,
+      this.phoneNumber, this.ustNumber, this.addresses, this.bankInformation);
 }
 
 class BankInformation {
+  final String id;
   final String bankName;
   final String iban;
   final String bic;
 
-  BankInformation(this.bankName, this.iban, this.bic);
+  BankInformation(this.id, this.bankName, this.iban, this.bic);
 }
