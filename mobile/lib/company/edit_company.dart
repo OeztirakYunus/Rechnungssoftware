@@ -71,7 +71,7 @@ class _EditCompanyState extends State<EditCompany> {
     country.text = widget.country;
 
     bankName.text = widget.bankName;
-    iban.text = widget.bankName;
+    iban.text = widget.iban;
     bic.text = widget.bic;
   }
 

@@ -186,8 +186,8 @@ class _SignUpState extends State<SignUp> {
                       controller: companyName,
                       autofocus: false,
                       validator: (value) {
-                        if (value == null) {
-                          companyName.text = "";
+                        if (value == null || value.isEmpty) {
+                          return "Bitte Firmenname eingeben!";
                         }
                         return null;
                       },
@@ -213,7 +213,7 @@ class _SignUpState extends State<SignUp> {
                       autofocus: false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          companyMail.text = "";
+                          return "Bitte Firmenmail eingeben!";
                         } else if (value.isNotEmpty &&
                             isEmailValid(value.toString())) {
                           return "Firmenmail ist nicht gültig";
@@ -243,7 +243,7 @@ class _SignUpState extends State<SignUp> {
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          companyPhoneNumber.text = "";
+                          return "Bitte Firmentelefonnummer eingeben!";
                         } else if (value.length < 4) {
                           return "Firmentelefonnummer muss mind. 8 Ziffern lang sein";
                         }
@@ -262,7 +262,7 @@ class _SignUpState extends State<SignUp> {
                     const Align(
                       alignment: Alignment(-0.95, 1),
                       child: Text(
-                        'UST',
+                        'Ust-Nummer',
                         style: TextStyle(fontSize: 20.00),
                       ),
                     ),
@@ -271,7 +271,7 @@ class _SignUpState extends State<SignUp> {
                       autofocus: false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          companyPhoneNumber.text = "";
+                          return "Bitte Ust-Nummer eingeben!";
                         }
                         return null;
                       },
@@ -297,10 +297,10 @@ class _SignUpState extends State<SignUp> {
                       autofocus: false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          companyAddress.text = "";
+                          return "Bitte Firmenadresse eingeben!";
                         } else if (value.isNotEmpty &&
                             !value.contains(RegExp(r'[0-9]'))) {
-                          return "Bitte Hausnummer eingeben";
+                          return "Bitte Hausnummer eingeben!";
                         }
                         return null;
                       },
@@ -317,7 +317,7 @@ class _SignUpState extends State<SignUp> {
                     const Align(
                       alignment: Alignment(-0.95, 1),
                       child: Text(
-                        'Postleitzahl',
+                        'Postleitzahl (PLZ)',
                         style: TextStyle(fontSize: 20.00),
                       ),
                     ),
@@ -326,7 +326,7 @@ class _SignUpState extends State<SignUp> {
                       autofocus: false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          companyPostalCode.text = "";
+                          return "PLZ!";
                         } else if (value.isNotEmpty && value.length != 4) {
                           return "Postleitzahl muss 4 Ziffern lang sein";
                         }
@@ -355,7 +355,7 @@ class _SignUpState extends State<SignUp> {
                       autofocus: false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          companyCity.text = "";
+                          return "Bitte Stadt eingeben!";
                         }
                         return null;
                       },
@@ -381,7 +381,7 @@ class _SignUpState extends State<SignUp> {
                       autofocus: false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          companyCountry.text = "";
+                          return "Bitte Land eingeben!";
                         }
                         return null;
                       },
@@ -407,7 +407,7 @@ class _SignUpState extends State<SignUp> {
                       autofocus: false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          companyBankName.text = "";
+                          return "Bitte Bankname eingeben!";
                         }
                         return null;
                       },
@@ -433,7 +433,7 @@ class _SignUpState extends State<SignUp> {
                       autofocus: false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          companyIban.text = "";
+                          return "Bitte IBAN eingeben!";
                         }
                         return null;
                       },
@@ -459,7 +459,7 @@ class _SignUpState extends State<SignUp> {
                       autofocus: false,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          companyBic.text = "";
+                          return "Bitte BIC eingeben!";
                         }
                         return null;
                       },
