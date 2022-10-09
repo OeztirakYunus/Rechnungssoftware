@@ -43,7 +43,7 @@ class _LoginState extends State<Login> {
                   ),
                 )),
             Container(
-              height: 350,
+              height: 320,
               padding: const EdgeInsets.all(10),
               child: Form(
                 key: formGlobalKey,

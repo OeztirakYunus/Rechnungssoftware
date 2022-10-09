@@ -80,7 +80,7 @@ class _EditCompanyState extends State<EditCompany> {
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
-              title: const Text('Unternehmen bearbeiten',
+              title: const Text('Unternehmen Bearbeiten',
                   style: TextStyle(
                       height: 1.00, fontSize: 25.00, color: Colors.white)),
               centerTitle: true,

@@ -122,7 +122,7 @@ class EditContact extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: const Text('Kontakt bearbeiten',
+        title: const Text('Kontakt Bearbeiten',
             style:
                 TextStyle(height: 1.00, fontSize: 25.00, color: Colors.white)),
         centerTitle: true,
@@ -494,7 +494,8 @@ class EditContact extends StatelessWidget {
       token = token.toString();
 
       for (int i = 0; i < typeOfContacts.length; i++) {
-        if (typeOfContacts[i] == typeOfContact || typeOfContactsDE[i] == typeOfContact||
+        if (typeOfContacts[i] == typeOfContact ||
+            typeOfContactsDE[i] == typeOfContact ||
             i == int.tryParse(typeOfContact) &&
                 categoryIndex <= typeOfContacts.length - 1) {
           categoryIndex = i;

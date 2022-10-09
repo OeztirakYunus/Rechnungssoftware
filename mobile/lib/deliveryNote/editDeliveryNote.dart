@@ -165,7 +165,7 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
-              title: const Text('Lieferschein bearbeiten',
+              title: const Text('Lieferschein Bearbeiten',
                   style: TextStyle(
                       height: 1.00, fontSize: 25.00, color: Colors.white)),
               centerTitle: true,
@@ -181,7 +181,7 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                           children: [
                             const Align(
                               alignment: Alignment(-0.95, 1),
-                              child: Text('Lieferscheinnummer *', 
+                              child: Text('Lieferscheinnummer *',
                                   style: TextStyle(fontSize: 20.00)),
                             ),
                             TextFormField(
@@ -627,6 +627,13 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                                 }
 
                                 String message = "";
+                                if (status.text == "geschlossen" ||
+                                    status.text == "CLOSED") {
+                                  message =
+                                      "Speichern nicht möglich, da der Status geschlossen ist!";
+                                  showAlertDialog(context, message);
+                                  return;
+                                }
                                 if (contact == "" ||
                                     user == "" ||
                                     productsIsEmpty) {
@@ -679,7 +686,7 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(100)),
                               color: Colors.redAccent[700],
-                              child: const Text('Lieferschein speichern',
+                              child: const Text('Speichern',
                                   style:
                                       TextStyle(fontSize: 22.00, height: 1.35)),
                               textColor: Colors.white,
@@ -813,7 +820,9 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
 
     if (typeOfDiscount == _delTypeOfDiscount[0] || typeOfDiscount == "0") {
       delTypeOfDiscount = _delTypeOfDiscount[0];
-    } else if (typeOfDiscount == "Prozent" || typeOfDiscount == "1"|| typeOfDiscount == _delTypeOfDiscount[1]) {
+    } else if (typeOfDiscount == "Prozent" ||
+        typeOfDiscount == "1" ||
+        typeOfDiscount == _delTypeOfDiscount[1]) {
       delTypeOfDiscount = _delTypeOfDiscount[1];
     }
 

@@ -181,7 +181,7 @@ class _EditInvoicesState extends State<EditInvoice> {
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
-              title: const Text('Rechnung bearbeiten',
+              title: const Text('Rechnung Bearbeiten',
                   style: TextStyle(
                       height: 1.00, fontSize: 25.00, color: Colors.white)),
               centerTitle: true,
@@ -685,6 +685,13 @@ class _EditInvoicesState extends State<EditInvoice> {
                                 }
 
                                 String message = "";
+                                if (status.text == "geschlossen" ||
+                                    status.text == "CLOSED") {
+                                  message =
+                                      "Speichern nicht möglich, da der Status geschlossen ist!";
+                                  showAlertDialog(context, message);
+                                  return;
+                                }
                                 if (contact == "" ||
                                     user == "" ||
                                     productsIsEmpty) {
@@ -758,7 +765,7 @@ class _EditInvoicesState extends State<EditInvoice> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(100)),
                               color: Colors.redAccent[700],
-                              child: const Text('Rechnung speichern',
+                              child: const Text('Speichern',
                                   style:
                                       TextStyle(fontSize: 22.00, height: 1.35)),
                               textColor: Colors.white,
