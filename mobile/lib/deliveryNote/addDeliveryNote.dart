@@ -62,7 +62,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
-              title: const Text('Lieferschein anlegen',
+              title: const Text('Lieferschein Anlegen',
                   style: TextStyle(
                       height: 1.00, fontSize: 25.00, color: Colors.white)),
               centerTitle: true,
@@ -124,6 +124,8 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                                 onPressed: () async {
                                   DateTime? newDate = await showDatePicker(
                                       context: context,
+                                      cancelText: "Abbrechen",
+                                      helpText: "Datum auswählen",
                                       initialDate: date,
                                       firstDate: DateTime(2000),
                                       lastDate: DateTime(2100));
@@ -510,7 +512,7 @@ class _AddDeliveryNotesState extends State<AddDeliveryNote> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(100)),
                               color: Colors.redAccent[700],
-                              child: const Text('Lieferschein anlegen',
+                              child: const Text('Anlegen',
                                   style:
                                       TextStyle(fontSize: 22.00, height: 1.35)),
                               textColor: Colors.white,

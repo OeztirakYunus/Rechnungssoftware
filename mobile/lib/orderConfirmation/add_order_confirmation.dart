@@ -62,7 +62,7 @@ class _AddOrderConfirmationsState extends State<AddOrderConfirmation> {
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
-              title: const Text('Auftragsbestätigung anlegen',
+              title: const Text('AB Anlegen',
                   style: TextStyle(
                       height: 1.00, fontSize: 24.50, color: Colors.white)),
               centerTitle: true,
@@ -125,6 +125,7 @@ class _AddOrderConfirmationsState extends State<AddOrderConfirmation> {
                                 onPressed: () async {
                                   DateTime? newDate = await showDatePicker(
                                       cancelText: "Abbrechen",
+                                      helpText: "Datum auswählen",
                                       context: context,
                                       initialDate: date,
                                       firstDate: DateTime(2000),
@@ -506,7 +507,7 @@ class _AddOrderConfirmationsState extends State<AddOrderConfirmation> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(100)),
                               color: Colors.redAccent[700],
-                              child: const Text('Auftragsbestätigung anlegen',
+                              child: const Text('Anlegen',
                                   style:
                                       TextStyle(fontSize: 22.00, height: 1.35)),
                               textColor: Colors.white,

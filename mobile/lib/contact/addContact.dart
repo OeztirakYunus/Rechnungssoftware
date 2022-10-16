@@ -43,7 +43,7 @@ class AddContact extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: const Text('Kontakt hinzufügen',
+        title: const Text('Kontakt Hinzufügen',
             style:
                 TextStyle(height: 1.00, fontSize: 25.00, color: Colors.white)),
         centerTitle: true,

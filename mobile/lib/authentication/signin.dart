@@ -34,6 +34,7 @@ class _LoginState extends State<Login> {
         child: Column(
           children: <Widget>[
             Container(
+                height: 150,
                 margin: const EdgeInsets.all(10),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(100),
@@ -43,7 +44,7 @@ class _LoginState extends State<Login> {
                   ),
                 )),
             Container(
-              height: 320,
+              height: 310,
               padding: const EdgeInsets.all(10),
               child: Form(
                 key: formGlobalKey,

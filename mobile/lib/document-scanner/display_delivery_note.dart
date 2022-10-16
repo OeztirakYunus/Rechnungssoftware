@@ -193,29 +193,26 @@ Future<int> deleteFile(String id) async {
 }
 
 Future downloadFile(String id, String fileName) async {
-  final status = await Permission.storage.status;
-  if (status == PermissionStatus.granted) {
-    final result = await Permission.storage.request();
-    if (result == PermissionStatus.granted) {
-      final baseStorage = await getExternalStorageDirectory();
-      String url = "https://backend.invoicer.at/api/Files/byId/" + id;
+  var status = await Permission.storage.request();
+  if (status.isGranted) {
+    final baseStorage = await getExternalStorageDirectory();
+    String url = "https://backend.invoicer.at/api/Files/byId/" + id;
 
-      Uri uri = Uri.parse(url);
+    Uri uri = Uri.parse(url);
 
-      String? token = await NetworkHandler.getToken();
+    String? token = await NetworkHandler.getToken();
 
-      if (token!.isNotEmpty) {
-        token = token.toString();
+    if (token!.isNotEmpty) {
+      token = token.toString();
 
-        await FlutterDownloader.enqueue(
-          url: url,
-          headers: {"Authorization": "Bearer $token"},
-          fileName: fileName,
-          savedDir: baseStorage!.path,
-          showNotification: true,
-          openFileFromNotification: true,
-        );
-      }
+      await FlutterDownloader.enqueue(
+        url: url,
+        headers: {"Authorization": "Bearer $token"},
+        fileName: fileName,
+        savedDir: baseStorage!.path,
+        showNotification: true,
+        openFileFromNotification: true,
+      );
     }
   }
 }
@@ -244,8 +241,7 @@ Future<List<Documents>> getFiles() async {
         String creationTime = obj["creationTime"];
         String dateSplit = creationTime.split('T')[0];
         String creationDate =
-        "${dateSplit.split('-')[2]}.${dateSplit.split('-')[1]}.${dateSplit.split('-')[0]}";
-        
+            "${dateSplit.split('-')[2]}.${dateSplit.split('-')[1]}.${dateSplit.split('-')[0]}";
 
         String id = obj["id"];
         String companyId = obj["companyId"];

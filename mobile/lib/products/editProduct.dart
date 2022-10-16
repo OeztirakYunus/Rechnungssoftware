@@ -15,7 +15,7 @@ class EditProduct extends StatelessWidget {
   final String unitOld;
   final String productId;
   final String companyId;
-  const EditProduct(
+  EditProduct(
       {Key? key,
       required this.productName,
       required this.description,
@@ -26,6 +26,7 @@ class EditProduct extends StatelessWidget {
       required this.productId,
       required this.companyId})
       : super(key: key);
+  final formGlobalKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +80,7 @@ class EditProduct extends StatelessWidget {
             Container(
                 padding: const EdgeInsets.all(10),
                 child: Form(
+                  key: formGlobalKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -140,7 +142,8 @@ class EditProduct extends StatelessWidget {
                       TextFormField(
                         controller: sellingPriceNet,
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
+                          if (value == null ||
+                              value.toString().trim().isEmpty) {
                             return "Verkaufspreis-Netto darf nicht leer sein!";
                           }
                           return null;
@@ -226,6 +229,9 @@ class EditProduct extends StatelessWidget {
                           ),
                           MaterialButton(
                             onPressed: () async {
+                              if (!formGlobalKey.currentState!.validate()) {
+                                return;
+                              }
                               int categoryIndex = await editProduct(
                                   articleNumber.text,
                                   productName.text,

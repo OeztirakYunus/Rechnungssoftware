@@ -236,6 +236,8 @@ class _EditDeliveryNotesState extends State<EditDeliveryNote> {
                                 onPressed: () async {
                                   DateTime? newDate = await showDatePicker(
                                       context: context,
+                                      cancelText: "Abbrechen",
+                                      helpText: "Datum auswählen",
                                       initialDate: date,
                                       firstDate: DateTime(2000),
                                       lastDate: DateTime(2100));

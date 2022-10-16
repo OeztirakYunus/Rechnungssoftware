@@ -242,6 +242,7 @@ class _EditOffersState extends State<EditOffer> {
                                 onPressed: () async {
                                   DateTime? newDate = await showDatePicker(
                                       cancelText: "Abbrechen",
+                                      helpText: "Datum auswählen",
                                       context: context,
                                       initialDate: date,
                                       firstDate: DateTime(2000),
@@ -287,6 +288,7 @@ class _EditOffersState extends State<EditOffer> {
                                 onPressed: () async {
                                   DateTime? newDate = await showDatePicker(
                                       cancelText: "Abbrechen",
+                                      helpText: "Datum auswählen",
                                       context: context,
                                       initialDate: validUntilDate,
                                       firstDate: DateTime(2000),

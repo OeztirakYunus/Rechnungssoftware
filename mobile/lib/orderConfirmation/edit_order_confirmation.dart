@@ -237,6 +237,7 @@ class _EditOrderConfirmationsState extends State<EditOrderConfirmation> {
                                 onPressed: () async {
                                   DateTime? newDate = await showDatePicker(
                                       cancelText: "Abbrechen",
+                                      helpText: "Datum auswählen",
                                       context: context,
                                       initialDate: date,
                                       firstDate: DateTime(2000),

@@ -65,7 +65,7 @@ class _AddOffersState extends State<AddOffer> {
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
-              title: const Text('Angebot anlegen',
+              title: const Text('Angebot Anlegen',
                   style: TextStyle(
                       height: 1.00, fontSize: 25.00, color: Colors.white)),
               centerTitle: true,
@@ -128,6 +128,7 @@ class _AddOffersState extends State<AddOffer> {
                                   DateTime? newDate = await showDatePicker(
                                       context: context,
                                       cancelText: "Abbrechen",
+                                      helpText: "Datum auswählen",
                                       initialDate: DateTime.now(),
                                       currentDate: date,
                                       firstDate: DateTime(2000),
@@ -174,6 +175,7 @@ class _AddOffersState extends State<AddOffer> {
                                   DateTime? newDate = await showDatePicker(
                                       context: context,
                                       cancelText: "Abbrechen",
+                                      helpText: "Datum auswählen",
                                       initialDate: DateTime.now(),
                                       currentDate: validUntilDate,
                                       firstDate: DateTime(2000),
@@ -584,7 +586,7 @@ class _AddOffersState extends State<AddOffer> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(100)),
                               color: Colors.redAccent[700],
-                              child: const Text('Angebot anlegen',
+                              child: const Text('Anlegen',
                                   style:
                                       TextStyle(fontSize: 22.00, height: 1.35)),
                               textColor: Colors.white,

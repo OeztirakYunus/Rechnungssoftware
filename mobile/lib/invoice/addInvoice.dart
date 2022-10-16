@@ -64,7 +64,7 @@ class _AddInvoicesState extends State<AddInvoice> {
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
-              title: const Text('Rechnung anlegen',
+              title: const Text('Rechnung Anlegen',
                   style: TextStyle(
                       height: 1.00, fontSize: 25.00, color: Colors.white)),
               centerTitle: true,
@@ -126,6 +126,7 @@ class _AddInvoicesState extends State<AddInvoice> {
                                 onPressed: () async {
                                   DateTime? newDate = await showDatePicker(
                                       cancelText: "Abbrechen",
+                                      helpText: "Datum auswählen",
                                       context: context,
                                       initialDate: DateTime.now(),
                                       currentDate: date,
@@ -165,6 +166,7 @@ class _AddInvoicesState extends State<AddInvoice> {
                                 onPressed: () async {
                                   DateTime? newDate = await showDatePicker(
                                       cancelText: "Abbrechen",
+                                      helpText: "Datum auswählen",
                                       context: context,
                                       initialDate: DateTime.now(),
                                       currentDate: payDate,
@@ -576,7 +578,7 @@ class _AddInvoicesState extends State<AddInvoice> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(100)),
                               color: Colors.redAccent[700],
-                              child: const Text('Rechnung anlegen',
+                              child: const Text('Anlegen',
                                   style:
                                       TextStyle(fontSize: 22.00, height: 1.35)),
                               textColor: Colors.white,
