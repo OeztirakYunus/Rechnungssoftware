@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
    <application
-        android:label="demo5"
+        android:label="Invoicer"
         android:icon="@mipmap/ic_launcher">
         
         <provider
