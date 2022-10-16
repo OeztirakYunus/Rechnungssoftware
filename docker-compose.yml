@@ -41,7 +41,9 @@ services:
       - traefik_web
 
   frontend:
-    image: nginx:1.20
+    build: ./Frontend/.
+    depends_on:
+      - backend
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend.rule=Host(`invoicer.at`)"
