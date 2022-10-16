@@ -460,5 +460,23 @@ namespace BillingSoftware.Persistence.Repository
                     .IncludeAllRecursively()
                     .SingleOrDefaultAsync(x => x.Id == id);
         }
+        public override async Task Update(Company entity)
+        {
+            AddressRepository addressRepository = new AddressRepository(_context);
+            BankInformationRepository bankInformationRepository = new BankInformationRepository(_context);
+            
+            var comp = await GetByIdAsync(entity.Id);
+            var add = await addressRepository.GetByIdAsync(entity.AddressId);
+            var bank = await bankInformationRepository.GetByIdAsync(entity.BankInformationId);
+
+            entity.CopyProperties(comp);
+            entity.Address.CopyProperties(add);
+            entity.BankInformation.CopyProperties(bank);
+
+
+            await Update(bank);
+            await Update(add);
+            await base.Update(comp);
+        }
     }
 }

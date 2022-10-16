@@ -51,7 +51,7 @@ namespace CommonBase.DocumentCreators
                 File.Delete(pdfFile);
             }
 
-            var convertApi = new ConvertApi("rdH5vHXH2xx8JBbX");
+            var convertApi = new ConvertApi("7TKzD9IlCa6qGmrY");
             var convert = await convertApi.ConvertAsync("docx", "pdf",
                 new ConvertApiFileParam("File", wordFile)
             );
