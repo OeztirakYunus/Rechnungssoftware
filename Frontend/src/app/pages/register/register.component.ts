@@ -1,5 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import {AuthService, RegisterDto} from "../../../../client";
 import {DialogService} from "../../services/dialog.service";
 import {emailValidator} from "../../validators/emailValidator";
@@ -40,7 +41,8 @@ export class RegisterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private router: Router
   ) {
   }
 
@@ -135,6 +137,7 @@ export class RegisterComponent implements OnInit {
     }
     this.authService.apiAuthRegisterPost(this.getData()).subscribe(x => {
       this.dialogService.open('Konto angelegt', 'Benutzeraccount wurde erfolgreich angelegt');
+      this.router.navigate(['']);
     });
   }
 }

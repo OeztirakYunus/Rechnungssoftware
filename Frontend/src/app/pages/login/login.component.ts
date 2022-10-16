@@ -4,6 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { filter, Subject, Subscription, take, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service.service';
+import { DialogService } from 'src/app/services/dialog.service';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,7 @@ export class LoginComponent implements OnInit {
   });
 
 
-  constructor(private authService : AuthService, private router: Router, private httpClient : HttpClient) { }
+  constructor(private authService : AuthService, private router: Router, private httpClient : HttpClient, private dialogService: DialogService,) { }
 
   public ngOnInit(): void {
   }
@@ -39,7 +40,6 @@ export class LoginComponent implements OnInit {
     console.log(email + password);
 
     await this.authService.login(email, password);
-    this.router.navigate(['']);
   }
 
 }

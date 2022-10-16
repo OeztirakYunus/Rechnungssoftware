@@ -23,6 +23,9 @@ export class AuthService {
         { headers }).toPromise();
       if(response != null) {
         this.cookieService.set('AuthToken', response.auth_token);
+        this.router.navigate(['']);
+        this.snackBar.snackbarSuccess("Erfolgreich eingeloggt!");
+
       }
     } catch (error: any) {
       this.snackBar.snackbarError("Error: " + error["error"]["message"]);
