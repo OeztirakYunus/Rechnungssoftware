@@ -4,7 +4,7 @@
     margin-bottom: 200px;
     z-index: 1000;">
     <mat-toolbar-row>
-      <button mat-icon-button>
+      <button mat-icon-button *ngIf="this.isLoggedIn()">
         <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
       </button>
       <h1>Invoicer</h1>
@@ -17,7 +17,7 @@
             <mat-icon>logout</mat-icon>
           </button>
 
-        <button [routerLink]="'/register'" mat-button>
+        <button [routerLink]="'/register'" mat-button *ngIf="!this.isLoggedIn()">
             <mat-icon>supervisor_account</mat-icon>
         </button>
 
@@ -31,14 +31,14 @@
         <a mat-list-item  [routerLink]="''" (click)="sidenav.toggle()">Startseite</a>
         <!-- <a mat-list-item  [routerLink]="'/login'" (click)="sidenav.toggle()">Login</a>
         <a mat-list-item  [routerLink]="'/register'" (click)="sidenav.toggle()">Register</a> -->
-        <a mat-list-item  [routerLink]="'/deliverynotes'" (click)="sidenav.toggle()">Delivery Notes</a>
-        <a mat-list-item  [routerLink]="'/contacts'" (click)="sidenav.toggle()">Contacts</a>
-        <a mat-list-item  [routerLink]="'/files'" (click)="sidenav.toggle()">Files</a>
-        <a mat-list-item  [routerLink]="'/invoices'" (click)="sidenav.toggle()">Invoices</a>
-        <a mat-list-item  [routerLink]="'/offers'" (click)="sidenav.toggle()">Offers</a>
-        <a mat-list-item  [routerLink]="'/orderconfirmation'" (click)="sidenav.toggle()">Order Confirmation</a>
-        <a mat-list-item  [routerLink]="'/products'" (click)="sidenav.toggle()">Products</a>
-        <a mat-list-item  [routerLink]="'/users'" (click)="sidenav.toggle()">Users</a>
+        <a mat-list-item  [routerLink]="'/deliverynotes'" (click)="sidenav.toggle()">Lieferscheine</a>
+        <a mat-list-item  [routerLink]="'/contacts'" (click)="sidenav.toggle()">Kontakte</a>
+        <a mat-list-item  [routerLink]="'/files'" (click)="sidenav.toggle()">Dokumente</a>
+        <a mat-list-item  [routerLink]="'/invoices'" (click)="sidenav.toggle()">Rechnungen</a>
+        <a mat-list-item  [routerLink]="'/offers'" (click)="sidenav.toggle()">Angebote</a>
+        <a mat-list-item  [routerLink]="'/orderconfirmation'" (click)="sidenav.toggle()">Auftragsbestätigungen</a>
+        <a mat-list-item  [routerLink]="'/products'" (click)="sidenav.toggle()">Produkte</a>
+        <a mat-list-item  [routerLink]="'/users'" (click)="sidenav.toggle()">Benutzer</a>
       </mat-nav-list>
     </mat-drawer>
     <div class="container-lg" style="padding-top: 100px;padding-bottom: 100px;">

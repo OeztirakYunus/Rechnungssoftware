@@ -31,7 +31,7 @@ export class ProductComponent implements OnInit, ControlValueAccessor {
       sellingPriceNet: ['', [Validators.required, Validators.min(0), doubleValidator()]],
       category: ['undefined', undefinedValidator()],
       unit: ['undefined', undefinedValidator()],
-      description: ['', [Validators.required]],
+      description: [''],
     }
   );
   onChange = (x: ProductModel) => {};

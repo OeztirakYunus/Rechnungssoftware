@@ -23,9 +23,9 @@ export class ContactComponent implements OnInit, ControlValueAccessor {
     title: [''],
     firstName	: ['', Validators.required],
     lastName: ['', Validators.required],
-    nameOfOrganisation: ['', Validators.required],
-    phoneNumber: ['', [Validators.required]],
-    email: ['', [Validators.required]],
+    nameOfOrganisation: [''],
+    phoneNumber: [''],
+    email: [''],
     address: ['', [Validators.required]]
   });
   @ViewChild('address') private addressComponent: AddressComponent | undefined = undefined;

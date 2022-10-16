@@ -41,7 +41,7 @@ export class RegisterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private newAuthService: AuthService,
+    private dialogService: DialogService,
     private router: Router
   ) {
   }
@@ -139,6 +139,5 @@ export class RegisterComponent implements OnInit {
       this.dialogService.open('Konto angelegt', 'Benutzeraccount wurde erfolgreich angelegt');
       this.router.navigate(['']);
     });
-    this.authService.login(this.email, this.password);
   }
 }

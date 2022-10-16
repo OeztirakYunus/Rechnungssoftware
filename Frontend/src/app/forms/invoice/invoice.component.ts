@@ -23,13 +23,13 @@ import {DialogService} from "../../services/dialog.service";
 })
 export class InvoiceComponent implements OnInit {
   invoiceForm: FormGroup = this.fb.group({
-    headerText: ['', Validators.required],
+    headerText: [''],
     invoiceDate: [new Date(), Validators.required],
     paymentTerm: [new Date(), Validators.required],
-    flowText: ['', Validators.required],
-    invoiceNumber: ['', Validators.required],
+    flowText: [''],
+    invoiceNumber: [''],
     status: ['undefined', [Validators.required, undefinedValidator()]],
-    subject: ['', [Validators.required]],
+    subject: [''],
     documentInformation: [null, []],
   });
   products: Product[] = [];

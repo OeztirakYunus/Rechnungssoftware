@@ -1,7 +1,7 @@
 
 <div [formGroup]="deliveryNoteForm">
   <div class="form-group mb-3">
-    <label for="deliveryNoteNumber">Lieferscheinnummer (*)</label>
+    <label for="deliveryNoteNumber">Lieferscheinnummer</label>
     <input type="text" class="form-control" [ngClass]="{'is-invalid': (deliveryNoteNumber?.invalid && (deliveryNoteNumber?.dirty || deliveryNoteNumber?.touched))}" formControlName="deliveryNoteNumber" id="deliveryNoteNumber" placeholder="">
     <div class="invalid-feedback">
       Geben Sie eine Lieferscheinnummer an.
@@ -11,7 +11,7 @@
   <app-date label="Datum (*)" inputId="deliveryNoteDate" formControlName="deliveryNoteDate"></app-date>
 
   <div class="form-group mb-3">
-    <label for="headerText">Bezeichnung (*)</label>
+    <label for="headerText">Kopftext</label>
     <input type="text" class="form-control" [ngClass]="{'is-invalid': (headerText?.invalid && (headerText?.dirty || headerText?.touched))}" formControlName="headerText" id="headerText" placeholder="">
     <div class="invalid-feedback">
       Geben Sie eine Bezeichnung an.
@@ -19,7 +19,7 @@
   </div>
 
   <div class="form-group mb-3">
-    <label for="subject">Thema (*)</label>
+    <label for="subject">Betreff</label>
     <input type="text" class="form-control" [ngClass]="{'is-invalid': (subject?.invalid && (subject?.dirty || subject?.touched))}" formControlName="subject" id="subject" placeholder="">
     <div class="invalid-feedback">
       Geben Sie ein Thema ein.
@@ -27,7 +27,7 @@
   </div>
 
   <div class="form-group mb-3">
-    <label for="subject">Fließtext (*)</label>
+    <label for="subject">Fließtext</label>
     <textarea type="text" class="form-control" [ngClass]="{'is-invalid': (flowText?.invalid && (flowText?.dirty || flowText?.touched))}" formControlName="flowText" id="flowText" rows="5" placeholder="">
     </textarea>
     <div class="invalid-feedback">

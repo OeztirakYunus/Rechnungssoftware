@@ -1,7 +1,7 @@
 <ng-container [formGroup]="invoiceForm">
 
   <div class="form-group mb-3">
-    <label for="totalDiscount">Ermäßigung</label>
+    <label for="totalDiscount">Gesamtermäßigung</label>
     <input type="text" class="form-control" [ngClass]="{'is-invalid': (totalDiscount?.invalid && (totalDiscount?.dirty || totalDiscount?.touched))}" formControlName="totalDiscount" id="totalDiscount" placeholder="">
     <div class="invalid-feedback" *ngIf="totalDiscount?.errors?.['required']">
       Geben Sie bitte die Ermäßigung an.
