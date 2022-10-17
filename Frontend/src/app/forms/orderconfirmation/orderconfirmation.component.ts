@@ -18,12 +18,12 @@ import {OrderConfirmation, OrderConfirmationDto} from "../../../../client";
 })
 export class OrderconfirmationComponent implements OnInit, ControlValueAccessor {
   orderconfirmationForm: FormGroup = this.fb.group({
-    headerText: ['', Validators.required],
+    headerText: [''],
     orderConfirmationDate: [new Date(), Validators.required],
-    flowText: ['', Validators.required],
-    orderConfirmationNumber: ['', Validators.required],
+    flowText: [''],
+    orderConfirmationNumber: [''],
     status: ['undefined', [Validators.required, undefinedValidator()]],
-    subject: ['', [Validators.required]],
+    subject: [''],
     documentInformation: [null, []],
   });
   private state: OrderConfirmation | undefined = undefined;

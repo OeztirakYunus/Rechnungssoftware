@@ -18,13 +18,13 @@ import {Contact, ContactDto, Offer, OfferDto} from "../../../../client";
 })
 export class OfferComponent implements OnInit, ControlValueAccessor {
   offerForm: FormGroup = this.fb.group({
-    headerText: ['', Validators.required],
+    headerText: [''],
     offerDate: [new Date(), Validators.required],
     validUntil: [new Date(), Validators.required],
-    flowText: ['', Validators.required],
-    offerNumber: ['', Validators.required],
+    flowText: [''],
+    offerNumber: [''],
     status: ['undefined', [Validators.required, undefinedValidator()]],
-    subject: ['', [Validators.required]],
+    subject: [''],
     documentInformation: [null, []],
   });
   @ViewChild('documentInformation') private documentInformationComponent: DocumentInformationComponent | undefined = undefined;

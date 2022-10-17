@@ -26,12 +26,12 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 export class DeliverynoteComponent implements OnInit, ControlValueAccessor {
   deliveryNoteForm: FormGroup = this.fb.group({
-    headerText: ['', Validators.required],
+    headerText: [''],
     deliveryNoteDate: [new Date(), Validators.required],
-    flowText: ['', Validators.required],
-    deliveryNoteNumber: ['', Validators.required],
+    flowText: [''],
+    deliveryNoteNumber: [''],
     status: ['undefined', [Validators.required, undefinedValidator()]],
-    subject: ['', [Validators.required]],
+    subject: [''],
     documentInformation: [null, []],
   });
   @ViewChild('documentInformation') private documentInformationComponent: DocumentInformationComponent | undefined = undefined;
